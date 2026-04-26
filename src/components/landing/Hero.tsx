@@ -20,24 +20,24 @@ export function Hero() {
         <div className="relative z-10 max-w-2xl">
           <ScrollReveal y="sm">
             <p className="mb-5 inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.08em] text-primary">
-              Early interest registration
+              Early access, starting with gestational surrogacy
             </p>
           </ScrollReveal>
           <ScrollReveal delay={70} y="sm">
             <h1 className="mb-5 max-w-[780px] text-[2.35rem] font-bold leading-[1.12] text-navy sm:text-5xl lg:text-[3.35rem]">
-              Every family&apos;s story deserves{" "}
+              A new path to{" "}
               <span className="bg-gradient-to-br from-primary to-[#ec4899] bg-clip-text text-transparent">
-                a beginning like this
+                parenthood
               </span>
-              .
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={130} y="sm">
             <p className="mb-8 max-w-[620px] text-base leading-8 text-gray-600 md:text-lg">
-              Natalyx is being built as a transparent, care-first online agency
-              for people hoping to grow their family and people considering
-              helping another family. Register interest now, and we will follow
-              up when there is a thoughtful next step to share.
+              Natalyx is building an independent online fertility agency and
+              ART marketplace, beginning with gestational surrogacy. We help
+              intended parents and gestational carriers understand the path
+              ahead, build structured profiles, and move toward the right next
+              step with more clarity, privacy, and support.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200} y="sm">
@@ -45,10 +45,13 @@ export function Hero() {
               <Button href="/signup" size="lg" className="w-full sm:w-auto">
                 Register interest
               </Button>
-              <p className="text-sm leading-6 text-gray-500 sm:max-w-48">
-                No commitment. No sensitive details needed yet.
-              </p>
             </div>
+          </ScrollReveal>
+          <ScrollReveal delay={250} y="sm">
+            <p className="mt-3 text-sm leading-6 text-gray-500 sm:max-w-[560px]">
+              Please do not share sensitive medical, legal, or financial
+              details in the public interest form.
+            </p>
           </ScrollReveal>
         </div>
 

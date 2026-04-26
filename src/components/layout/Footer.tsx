@@ -19,9 +19,7 @@ export function Footer() {
                 />
               </Link>
               <p className="max-w-sm text-sm leading-7 text-gray-500">
-                Natalyx is being built to support people growing their families
-                through gestational surrogacy, and those considering helping
-                along the way.
+                Natalyx - building clearer paths through assisted reproduction.
               </p>
             </div>
           </ScrollReveal>
@@ -77,7 +75,7 @@ export function Footer() {
               &copy; {new Date().getFullYear()} Natalyx. All rights reserved.
             </p>
             <p className="text-xs text-gray-400">
-              Early interest registration is open.
+              Early interest registration is open as access is introduced.
             </p>
           </div>
         </ScrollReveal>

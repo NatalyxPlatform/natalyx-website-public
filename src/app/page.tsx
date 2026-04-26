@@ -3,6 +3,7 @@ import { ValueCards } from "@/components/landing/ValueCards";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTABanner } from "@/components/landing/CTABanner";
+import { WhyNatalyx } from "@/components/landing/WhyNatalyx";
 
 export default function HomePage() {
   return (
@@ -10,6 +11,7 @@ export default function HomePage() {
       <Hero />
       <ValueCards />
       <HowItWorks />
+      <WhyNatalyx />
       <FAQ />
       <CTABanner />
     </>

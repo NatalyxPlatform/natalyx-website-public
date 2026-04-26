@@ -14,13 +14,13 @@ export function CTABanner() {
               id="cta-heading"
               className="mb-4 text-[1.9rem] font-bold leading-tight text-navy md:text-[2.35rem]"
             >
-              Tell us where you are starting, and we will be in touch.
+              Register interest now, and we&apos;ll follow up as access opens.
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={90}>
             <p className="mx-auto max-w-[620px] leading-7 text-gray-600">
-              We are not publicly available yet. Interest registration helps us
-              open access with care.
+              We are building Natalyx carefully, starting with gestational
+              surrogacy and expanding toward a more coordinated ART journey.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={160}>

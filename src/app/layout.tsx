@@ -4,9 +4,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Natalyx — The All-in-One Online Fertility Agency",
+  title: "Natalyx — A clearer path through assisted reproduction",
   description:
-    "Natalyx helps people learn about, contribute to, and pursue starting a family through fertility care, surrogacy, donation, and trusted support.",
+    "Natalyx is building an independent online fertility agency and ART marketplace, launching first with gestational surrogacy and designed for IVF, donor conception, and the wider assisted reproduction journey.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://natalyx.health"
   ),
@@ -15,9 +15,9 @@ export const metadata: Metadata = {
     apple: "/stork_icon.png",
   },
   openGraph: {
-    title: "Natalyx — The All-in-One Online Fertility Agency",
+    title: "Natalyx — A clearer path through assisted reproduction",
     description:
-      "Register interest in Natalyx for fertility care, surrogacy, donation, and trusted support.",
+      "Register interest in Natalyx, an independent online fertility agency and ART marketplace starting with gestational surrogacy.",
     type: "website",
     url: "/",
   },
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Natalyx — The All-in-One Online Fertility Agency",
+    title: "Natalyx — A clearer path through assisted reproduction",
     description:
-      "Register interest in Natalyx for fertility care, surrogacy, donation, and trusted support.",
+      "Register interest in Natalyx, an independent online fertility agency and ART marketplace starting with gestational surrogacy.",
   },
   robots: { index: true, follow: true },
 };

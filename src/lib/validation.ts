@@ -2,7 +2,7 @@ import { z } from "zod";
 import { NOTES_MAX_LENGTH } from "./constants";
 
 export const leadFormSchema = z.object({
-  role: z.enum(["intended_parent", "gestational_surrogate", "not_sure"], {
+  role: z.enum(["intended_parent", "gestational_surrogate", "donor", "not_sure"], {
     required_error: "Please choose the option that best describes you",
   }),
   name: z

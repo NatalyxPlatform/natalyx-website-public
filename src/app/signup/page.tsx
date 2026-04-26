@@ -4,13 +4,14 @@ import { SignupForm } from "@/components/signup/SignupForm";
 export const metadata: Metadata = {
   title: "Register Interest — Natalyx",
   description:
-    "Register your interest in Natalyx for fertility and parenthood journeys.",
+    "Register your interest in Natalyx for gestational surrogacy, IVF, donor conception, donation, and coordinated fertility support.",
   robots: { index: false, follow: false },
 };
 
 const allowedRoles = new Set([
   "intended_parent",
   "gestational_surrogate",
+  "donor",
   "not_sure",
 ]);
 
@@ -32,13 +33,14 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
               Early access
             </p>
             <h1 className="text-4xl md:text-5xl font-light text-navy mb-4">
-              Tell us where you are starting.
+              Tell us which path brings you here.
             </h1>
             <p className="text-gray-500 leading-relaxed">
-              Natalyx is not publicly available yet. Share a few general details,
-              and we will reach out when there is a thoughtful next step for your
-              journey. Please avoid medical, legal, financial, or confidential
-              case details here.
+              Natalyx is not publicly available yet. Share a few general
+              details so we can understand your starting point and reach out as
+              access opens. This is not a medical, legal, or clinical
+              eligibility decision. Please avoid medical, legal, financial, or
+              confidential case details here.
             </p>
           </div>
 

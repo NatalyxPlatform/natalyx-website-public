@@ -166,12 +166,12 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
 
       <fieldset className="mb-8">
         <legend className="mb-6 w-full border-b border-cyan-100 pb-3 text-base font-semibold text-navy">
-          Start with what fits today
+          Which path brings you here?
         </legend>
         <div className="grid grid-cols-1 gap-5">
           <Select
             id="role"
-            label="Which best describes you?"
+            label="Which option best describes your starting point?"
             required
             placeholder="Choose one"
             options={ROLE_OPTIONS as unknown as { value: string; label: string }[]}
@@ -181,7 +181,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
           />
           <Select
             id="journey_stage"
-            label="Where are you in the journey?"
+            label="Where are you in the journey right now?"
             placeholder="Choose one"
             options={JOURNEY_STAGE_OPTIONS as unknown as { value: string; label: string }[]}
             value={form.journey_stage}
@@ -314,8 +314,8 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
               Natalyx may contact me about early access.
             </span>
             <p className="mt-0.5 text-xs text-gray-500">
-              No commitment. Natalyx does not provide medical, legal, insurance,
-              psychological, or eligibility clearance through this form.
+              No commitment. This is not a medical, legal, insurance,
+              psychological, or clinical eligibility decision.
             </p>
             {errors.consent_to_contact && (
               <p
@@ -391,8 +391,8 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
           )}
         </Button>
         <p className="mt-3 text-xs text-gray-400">
-          We are not publicly available yet. This simply lets us know you would
-          like to hear from us.
+          We are not publicly available yet. This helps us understand your
+          starting point and contact you as access opens.
         </p>
       </div>
     </form>

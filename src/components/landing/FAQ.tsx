@@ -10,22 +10,27 @@ const faqs = [
   {
     question: "Who can register interest?",
     answer:
-      "People hoping to start or grow a family, people considering helping another family, and anyone still figuring out where they fit are welcome to register.",
+      "Intended parents, people considering becoming gestational carriers, people interested in future donor pathways, and anyone still figuring out where they fit are welcome to register.",
+  },
+  {
+    question: "What kinds of journeys is Natalyx being built for?",
+    answer:
+      "Natalyx is launching first with gestational surrogacy, but it is designed for the wider ART journey too, including IVF, donor conception, partner routing, structured intake, profile creation, and coordinated support.",
   },
   {
     question: "What happens after I register?",
     answer:
-      "We will keep your details private and contact you when there is a useful next step to share.",
+      "We will keep your details private and contact you as access opens and there is a relevant next step to share.",
   },
   {
     question: "Does Natalyx provide medical or legal advice?",
     answer:
-      "Natalyx does not provide medical, legal, insurance, psychological, or eligibility clearance directly. We can help point you toward qualified professionals whose experience fits your goals and where you are in the journey.",
+      "Natalyx does not make medical, legal, insurance, psychological, or clinical eligibility decisions through this public form. The platform is being built to help people understand pathways and move toward the right professional and operational next steps with more clarity.",
   },
   {
     question: "What should I include in the form?",
     answer:
-      "Share whatever feels useful for us to know at this first step. Please avoid medical, legal, financial, or confidential case details in the public form.",
+      "Share only general context that helps us understand your starting point. Please avoid medical, legal, financial, or confidential case details in the public form.",
   },
 ];
 
@@ -46,7 +51,7 @@ export function FAQ() {
               id="faq-heading"
               className="text-[1.9rem] font-bold leading-tight text-navy"
             >
-              Register interest with us now.
+              Questions before you register?
             </h2>
           </ScrollReveal>
         </div>

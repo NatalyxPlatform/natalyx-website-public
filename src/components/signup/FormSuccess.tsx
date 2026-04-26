@@ -22,7 +22,8 @@ export function FormSuccess({ alreadyRegistered = false }: FormSuccessProps) {
       </h2>
       <p className="text-gray-500 max-w-md mx-auto leading-relaxed mb-8">
         Thank you for reaching out. We are opening Natalyx carefully, and we
-        will be in touch when there is a useful next step to share.
+        will be in touch as access opens and there is a useful next step to
+        share.
       </p>
       <p className="text-sm text-gray-400 mb-10">
         In the meantime, if you have any questions, reach us at{" "}
