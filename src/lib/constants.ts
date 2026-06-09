@@ -21,3 +21,7 @@ export const PREFERRED_CONTACT_OPTIONS = [
 ] as const;
 
 export const NOTES_MAX_LENGTH = 1000;
+
+export const DEVELOPER_ACCESS_URL =
+  process.env.NEXT_PUBLIC_DEVELOPER_ACCESS_URL ??
+  "https://dev.app.natalyx.health/login";

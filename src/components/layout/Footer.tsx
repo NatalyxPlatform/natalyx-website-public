@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { DEVELOPER_ACCESS_URL } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -62,6 +63,14 @@ export function Footer() {
                     >
                       Register interest
                     </Link>
+                  </li>
+                  <li>
+                    <a
+                      href={DEVELOPER_ACCESS_URL}
+                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                    >
+                      Developer access
+                    </a>
                   </li>
                 </ul>
               </nav>
