@@ -5,21 +5,21 @@ import { DEVELOPER_ACCESS_URL } from "@/lib/constants";
 
 export function Footer() {
   return (
-    <footer className="border-t border-cyan-100 bg-[#F7FCF9]" aria-label="Site footer">
+    <footer className="border-t border-line bg-cream" aria-label="Site footer">
       <div className="mx-auto max-w-[1160px] px-5 py-12 md:px-6 md:py-16">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <ScrollReveal>
             <div className="flex flex-col gap-4">
               <Link href="/" aria-label="Natalyx — home">
                 <Image
-                  src="/natalyx_primary_logo.png"
+                  src="/natalyx_wordmark_bold.png"
                   alt="Natalyx"
-                  width={216}
-                  height={70}
+                  width={1291}
+                  height={480}
                   className="h-9 w-auto object-contain"
                 />
               </Link>
-              <p className="max-w-sm text-sm leading-7 text-gray-500">
+              <p className="max-w-sm text-sm leading-7 text-navy-light">
                 Natalyx - building clearer paths through assisted reproduction.
               </p>
             </div>
@@ -35,7 +35,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/#who-we-help"
-                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       Who we help
                     </Link>
@@ -43,7 +43,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/#support"
-                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       Next steps
                     </Link>
@@ -51,7 +51,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/#faq"
-                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       FAQ
                     </Link>
@@ -59,7 +59,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/signup"
-                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       Register interest
                     </Link>
@@ -67,7 +67,7 @@ export function Footer() {
                   <li>
                     <a
                       href={DEVELOPER_ACCESS_URL}
-                      className="text-sm text-gray-500 hover:text-primary transition-colors duration-150"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       Developer access
                     </a>
@@ -79,11 +79,11 @@ export function Footer() {
         </div>
 
         <ScrollReveal delay={140}>
-          <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-cyan-100 pt-7 sm:flex-row sm:items-center">
-            <p className="text-xs text-gray-400">
+          <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-line pt-7 sm:flex-row sm:items-center">
+            <p className="text-xs text-navy-light/60">
               &copy; {new Date().getFullYear()} Natalyx. All rights reserved.
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-navy-light/60">
               Early interest registration is open as access is introduced.
             </p>
           </div>

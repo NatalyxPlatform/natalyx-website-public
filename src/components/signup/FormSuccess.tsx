@@ -11,9 +11,9 @@ export function FormSuccess({ alreadyRegistered = false }: FormSuccessProps) {
       <div className="flex justify-center mb-8" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/stork_icon.png"
+          src="/natalyx_combined_icon.png"
           alt=""
-          className="h-24 w-auto opacity-75"
+          className="h-24 w-auto"
         />
       </div>
 

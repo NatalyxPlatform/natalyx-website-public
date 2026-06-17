@@ -39,17 +39,17 @@ export function FAQ() {
     <section
       id="faq"
       aria-labelledby="faq-heading"
-      className="bg-[#f8f9fb] py-20"
+      className="bg-paper py-20"
     >
       <div className="mx-auto max-w-[1080px] px-6">
         <div className="mx-auto mb-11 max-w-[640px] text-center">
           <ScrollReveal>
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#ec4899]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-accent-deep">
               FAQ
             </p>
             <h2
               id="faq-heading"
-              className="text-[1.9rem] font-bold leading-tight text-navy"
+              className="font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
               Questions before you register?
             </h2>
@@ -57,7 +57,7 @@ export function FAQ() {
         </div>
 
         <ScrollReveal delay={90}>
-          <div className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white px-5 shadow-[0_10px_40px_rgba(99,102,241,0.08)] md:px-8">
+          <div className="mx-auto max-w-3xl rounded-2xl border border-line bg-white px-5 shadow-[0_10px_40px_rgba(31,26,20,0.04)] md:px-8">
             {faqs.map((faq) => (
               <AccordionItem
                 key={faq.question}

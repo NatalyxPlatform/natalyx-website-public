@@ -1,13 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #6366F1;
-  --color-primary-dark: #4F46E5;
-  --color-primary-light: #EEF0FF;
-  --color-navy: #1A1A2E;
-  --color-navy-light: #4B5563;
+  /* Brand colors */
+  --color-primary: #00A8E8;
+  --color-primary-dark: #0089BE;
+  --color-primary-light: #E5F6FD;
+  --color-brand-orange: #f49858;
+  --color-brand-orange-dark: #df7f3f;
+
+  /* Ink + supporting neutrals */
+  --color-navy: #1f1a14;
+  --color-navy-light: #544a3c;
+  --color-mute: #8a7d6e;
+  --color-line: #e6dfd3;
+  --color-line-strong: #cfc4b1;
+  --color-cream: #fbf7ec;
+  --color-cream-deep: #f4eedc;
+  --color-paper: #ffffff;
+
+  /* Teal-green — editorial accent: eyebrows, italic emphasis */
+  --color-accent: #2f9e8b;
+  --color-accent-deep: #237a6b;
+  --color-accent-soft: #cfe9e2;
+  --color-accent-faint: #eef7f4;
+
+  /* Secondary accents — role-card variety */
+  --color-green: #88b168;
+  --color-green-deep: #5a9040;
+  --color-green-soft: #e1ecd3;
+  --color-blue: #6ba7c7;
+  --color-blue-soft: #d7e8ef;
 
   --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-serif: "Fraunces", Georgia, serif;
 
   --max-width-content: 1200px;
 }
@@ -18,7 +43,7 @@ html {
 
 body {
   color: var(--color-navy);
-  background-color: #f8f9fb;
+  background-color: var(--color-cream);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

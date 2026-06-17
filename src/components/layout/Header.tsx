@@ -29,8 +29,8 @@ export function Header() {
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-200 ${
         scrolled
-          ? "border-b border-gray-200/70 bg-[#f8f9fb]/90 shadow-sm backdrop-blur-md"
-          : "bg-[#f8f9fb]/75 backdrop-blur-sm"
+          ? "border-b border-line bg-cream/92 shadow-sm backdrop-blur-md"
+          : "bg-cream/75 backdrop-blur-sm"
       }`}
     >
       <div className="mx-auto flex h-[72px] max-w-[1080px] items-center justify-between px-6 md:h-20">
@@ -46,11 +46,11 @@ export function Header() {
           }`}
         >
           <Image
-            src="/natalyx_primary_logo.png"
+            src="/natalyx_wordmark_bold.png"
             alt="Natalyx"
-            width={278}
-            height={90}
-            className="h-10 w-auto object-contain md:h-12"
+            width={1291}
+            height={480}
+            className="h-9 w-auto object-contain md:h-10"
           />
         </Link>
 
@@ -59,7 +59,7 @@ export function Header() {
             <li>
               <Link
                 href="/#who-we-help"
-                className="text-sm font-medium text-gray-600 transition-colors duration-150 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                className="text-sm font-medium text-navy-light transition-colors duration-150 hover:text-accent-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
                 Mission
               </Link>
@@ -67,7 +67,7 @@ export function Header() {
             <li>
               <Link
                 href="/#support"
-                className="text-sm font-medium text-gray-600 transition-colors duration-150 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                className="text-sm font-medium text-navy-light transition-colors duration-150 hover:text-accent-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
                 Process
               </Link>
@@ -75,7 +75,7 @@ export function Header() {
             <li>
               <Link
                 href="/#faq"
-                className="text-sm font-medium text-gray-600 transition-colors duration-150 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                className="text-sm font-medium text-navy-light transition-colors duration-150 hover:text-accent-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
                 FAQ
               </Link>
@@ -87,7 +87,7 @@ export function Header() {
           href="/signup"
           aria-hidden={!scrolled}
           tabIndex={scrolled ? 0 : -1}
-          className={`inline-flex min-h-11 items-center justify-center rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(0,168,232,0.22)] transition-all duration-200 hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:px-6 ${
+          className={`inline-flex min-h-11 items-center justify-center rounded-lg bg-brand-orange px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,26,20,0.15)] transition-all duration-200 hover:bg-brand-orange-dark hover:text-white hover:shadow-[0_10px_24px_rgba(244,152,88,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 md:px-6 ${
             scrolled
               ? "translate-y-0 opacity-100"
               : "pointer-events-none -translate-y-1 opacity-0"

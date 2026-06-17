@@ -25,17 +25,14 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
   const initialRole = rawRole && allowedRoles.has(rawRole) ? rawRole : "";
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#F2FBFD_0%,#FFFFFF_42%,#F7FCF9_100%)] py-16">
+    <div className="min-h-screen bg-[linear-gradient(180deg,var(--color-cream)_0%,#ffffff_50%,var(--color-green-soft)_100%)] py-16">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="max-w-2xl mx-auto">
           <div className="mb-10">
-            <p className="mb-4 text-sm font-medium uppercase text-primary">
-              Early access
-            </p>
-            <h1 className="text-4xl md:text-5xl font-light text-navy mb-4">
-              Tell us which path brings you here.
+            <h1 className="text-4xl md:text-5xl font-medium font-serif text-navy mb-4">
+              Let&apos;s connect.
             </h1>
-            <p className="text-gray-500 leading-relaxed">
+            <p className="text-navy-light leading-relaxed">
               Natalyx is not publicly available yet. Share a few general
               details so we can understand your starting point and reach out as
               access opens. This is not a medical, legal, or clinical
@@ -44,7 +41,7 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
             </p>
           </div>
 
-          <div className="bg-white rounded-lg border border-cyan-100 shadow-sm p-8 md:p-10">
+          <div className="bg-white rounded-lg border border-line shadow-sm p-8 md:p-10">
             <SignupForm initialRole={initialRole} />
           </div>
         </div>

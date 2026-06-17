@@ -7,11 +7,15 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { FormSuccess } from "./FormSuccess";
 import {
-  JOURNEY_STAGE_OPTIONS,
   NOTES_MAX_LENGTH,
   PREFERRED_CONTACT_OPTIONS,
   ROLE_OPTIONS,
 } from "@/lib/constants";
+
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+const WEB3FORMS_ACCESS_KEY =
+  process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ??
+  "3bf87d87-e4b2-459a-aad2-549e24d5e1e2";
 
 interface FormState {
   role: string;
@@ -49,6 +53,13 @@ const initialForm: FormState = {
 type SignupFormProps = {
   initialRole?: string;
 };
+
+function labelFor(
+  options: readonly { value: string; label: string }[],
+  value: string
+) {
+  return options.find((option) => option.value === value)?.label ?? value;
+}
 
 export function SignupForm({ initialRole = "" }: SignupFormProps) {
   const [form, setForm] = useState<FormState>(() => ({
@@ -107,25 +118,47 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
     setSubmitting(true);
 
     try {
-      const res = await fetch("/api/leads", {
+      if (form.website_url) {
+        setSubmitted(true);
+        return;
+      }
+
+      const res = await fetch(WEB3FORMS_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
-          ...form,
-          journey_stage: form.journey_stage || undefined,
-          preferred_contact: form.preferred_contact || undefined,
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: "New Natalyx enquiry",
+          source: "website",
+          role: labelFor(ROLE_OPTIONS, form.role),
+          role_value: form.role,
+          name: form.name.trim(),
+          email: form.email.trim().toLowerCase(),
+          phone: form.phone.trim(),
+          country: form.country.trim(),
+          region: form.region.trim(),
+          preferred_contact: labelFor(
+            PREFERRED_CONTACT_OPTIONS,
+            form.preferred_contact
+          ),
+          preferred_contact_value: form.preferred_contact,
+          message: form.notes.trim() || "No note provided.",
+          consent_to_contact: form.consent_to_contact ? "yes" : "no",
         }),
       });
 
       const data = (await res.json()) as {
         success: boolean;
-        duplicate?: boolean;
+        message?: string;
         error?: string;
         errors?: Record<string, string[]>;
       };
 
-      if (res.status === 201 || res.ok) {
-        setAlreadyRegistered(!!data.duplicate);
+      if (res.ok && data.success) {
+        setAlreadyRegistered(false);
         setSubmitted(true);
         return;
       }
@@ -141,6 +174,8 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
         el?.focus();
       } else if (data.error) {
         setServerError(data.error);
+      } else if (data.message) {
+        setServerError(data.message);
       } else {
         setServerError("Something went wrong. Please try again.");
       }
@@ -165,13 +200,14 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
       )}
 
       <fieldset className="mb-8">
-        <legend className="mb-6 w-full border-b border-cyan-100 pb-3 text-base font-semibold text-navy">
-          Which path brings you here?
+        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold font-serif text-navy">
+          How can we help?
         </legend>
         <div className="grid grid-cols-1 gap-5">
           <Select
             id="role"
-            label="Which option best describes your starting point?"
+            label="How can we help?"
+            hideLabel
             required
             placeholder="Choose one"
             options={ROLE_OPTIONS as unknown as { value: string; label: string }[]}
@@ -179,20 +215,11 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
             onChange={(e) => setField("role", e.target.value)}
             error={errors.role}
           />
-          <Select
-            id="journey_stage"
-            label="Where are you in the journey right now?"
-            placeholder="Choose one"
-            options={JOURNEY_STAGE_OPTIONS as unknown as { value: string; label: string }[]}
-            value={form.journey_stage}
-            onChange={(e) => setField("journey_stage", e.target.value)}
-            error={errors.journey_stage}
-          />
         </div>
       </fieldset>
 
       <fieldset className="mb-8">
-        <legend className="mb-6 w-full border-b border-cyan-100 pb-3 text-base font-semibold text-navy">
+        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold font-serif text-navy">
           Your details
         </legend>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
@@ -257,7 +284,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
       </fieldset>
 
       <fieldset className="mb-8">
-        <legend className="mb-6 w-full border-b border-cyan-100 pb-3 text-base font-semibold text-navy">
+        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold font-serif text-navy">
           Anything you want us to know
         </legend>
         <Textarea
@@ -271,7 +298,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
           showCharCount
           currentLength={form.notes.length}
         />
-        <p className="mt-2 text-xs leading-relaxed text-gray-500">
+        <p className="mt-2 text-xs leading-relaxed text-navy-light/80">
           Please do not include medical, legal, financial, or confidential case
           details in this form.
         </p>
@@ -288,7 +315,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
               className="peer sr-only"
               aria-describedby={errors.consent_to_contact ? "consent_to_contact-err" : undefined}
             />
-            <div className="flex h-5 w-5 items-center justify-center rounded border border-gray-300 bg-white transition-colors group-hover:border-primary peer-checked:border-primary peer-checked:bg-primary peer-focus-visible:ring-2 peer-focus-visible:ring-primary peer-focus-visible:ring-offset-2">
+            <div className="flex h-5 w-5 items-center justify-center rounded border border-gray-300 bg-white transition-colors group-hover:border-accent-deep peer-checked:border-accent-deep peer-checked:bg-accent-deep peer-focus-visible:ring-2 peer-focus-visible:ring-accent-deep peer-focus-visible:ring-offset-2">
               {form.consent_to_contact && (
                 <svg
                   width="12"
@@ -313,7 +340,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
             <span className="text-sm font-medium text-navy">
               Natalyx may contact me about early access.
             </span>
-            <p className="mt-0.5 text-xs text-gray-500">
+            <p className="mt-0.5 text-xs text-navy-light/80">
               No commitment. This is not a medical, legal, insurance,
               psychological, or clinical eligibility decision.
             </p>
@@ -359,7 +386,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
           size="lg"
           disabled={submitting}
           aria-busy={submitting}
-          className="w-full sm:w-auto"
+          className="w-full !bg-brand-orange !text-white hover:!bg-brand-orange-dark hover:shadow-[0_8px_22px_rgba(244,152,88,0.28)] focus-visible:ring-brand-orange sm:w-auto"
         >
           {submitting ? (
             <>
@@ -390,7 +417,7 @@ export function SignupForm({ initialRole = "" }: SignupFormProps) {
             "Register interest"
           )}
         </Button>
-        <p className="mt-3 text-xs text-gray-400">
+        <p className="mt-3 text-xs text-navy-light/60">
           We are not publicly available yet. This helps us understand your
           starting point and contact you as access opens.
         </p>

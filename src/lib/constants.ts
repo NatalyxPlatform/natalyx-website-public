@@ -1,8 +1,8 @@
 export const ROLE_OPTIONS = [
-  { value: "intended_parent", label: "I am an intended parent" },
-  { value: "gestational_surrogate", label: "I am considering becoming a gestational carrier" },
-  { value: "donor", label: "I am interested in being a donor" },
-  { value: "not_sure", label: "I am not sure yet" },
+  { value: "intended_parent", label: "I want help as an intended parent" },
+  { value: "gestational_surrogate", label: "I want to learn about becoming a gestational carrier" },
+  { value: "donor", label: "I want to ask about donor pathways" },
+  { value: "not_sure", label: "I have a general enquiry" },
 ] as const;
 
 export const JOURNEY_STAGE_OPTIONS = [

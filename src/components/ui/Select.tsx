@@ -11,11 +11,23 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
   error?: string;
   description?: string;
+  hideLabel?: boolean;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (
-    { label, options, placeholder, error, description, required, id, className = "", ...props },
+    {
+      label,
+      options,
+      placeholder,
+      error,
+      description,
+      required,
+      id,
+      className = "",
+      hideLabel = false,
+      ...props
+    },
     ref
   ) => {
     const selectId = id ?? label.toLowerCase().replace(/\s+/g, "-");
@@ -26,7 +38,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
     return (
       <div className="flex flex-col gap-1">
-        <label htmlFor={selectId} className="text-sm font-medium text-navy">
+        <label
+          htmlFor={selectId}
+          className={hideLabel ? "sr-only" : "text-sm font-medium text-navy"}
+        >
           {label}
           {required && (
             <span className="text-red-500 ml-1" aria-hidden="true">
