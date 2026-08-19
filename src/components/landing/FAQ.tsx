@@ -3,44 +3,45 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 const faqs = [
   {
+    question: "Who is Natalyx for?",
+    answer:
+      "Fertility clinics and the staff who coordinate surrogacy journeys inside them. Intended parents, gestational carriers, and outside professionals take part in a journey, but the clinic is the customer and the practice Natalyx is built around.",
+  },
+  {
+    question: "What is a known-surrogate journey?",
+    answer:
+      "One where the intended parents already have a gestational carrier in mind, often a friend or family member, rather than being matched through an agency. There is no agency in the middle, so the coordination between the intended parents, the carrier, the clinic, and outside professionals tends to land on the clinic.",
+  },
+  {
     question: "Is Natalyx available now?",
     answer:
-      "Not yet. We are opening interest registration now so we can follow up thoughtfully as access becomes available.",
+      "Not generally. We are introducing it to clinics gradually, which is what the interest form is for. Registering is a record of interest rather than an application, and it commits your clinic to nothing.",
   },
   {
-    question: "Who can register interest?",
+    question: "Does Natalyx make clinical, legal, or eligibility decisions?",
     answer:
-      "Intended parents, people considering becoming gestational carriers, people interested in future donor pathways, and anyone still figuring out where they fit are welcome to register.",
+      "No. Natalyx does not make clinical, legal, insurance, psychological, or eligibility determinations, and it does not replace clinic staff, medical judgment, attorneys, mental-health evaluators, or any other professional. Those decisions stay with the clinic and the professionals involved; Natalyx organizes the coordination around them.",
   },
   {
-    question: "What kinds of journeys is Natalyx being built for?",
+    question: "Does this replace our coordinators?",
     answer:
-      "Natalyx is launching first with gestational surrogacy, but it is designed for the wider ART journey too, including IVF, donor conception, partner routing, structured intake, profile creation, and coordinated support.",
+      "No. It is built to reduce the repetitive parts of their work — chasing records, re-explaining the same steps, tracking what is still outstanding — so their time goes to the parts that need a person.",
   },
   {
-    question: "What happens after I register?",
+    question: "Is Natalyx only for known-surrogate journeys?",
     answer:
-      "We will keep your details private and contact you as access opens and there is a relevant next step to share.",
+      "That is where we are proving the product first, because the coordination burden is most concentrated there. The underlying problem of shared journey context and operational handoffs runs through assisted reproduction more broadly, and the platform is designed with that in mind.",
   },
   {
-    question: "Does Natalyx provide medical or legal advice?",
+    question: "What information does the interest form ask for?",
     answer:
-      "Natalyx does not make medical, legal, insurance, psychological, or clinical eligibility decisions through this public form. The platform is being built to help people understand pathways and move toward the right professional and operational next steps with more clarity.",
-  },
-  {
-    question: "What should I include in the form?",
-    answer:
-      "Share only general context that helps us understand your starting point. Please avoid medical, legal, financial, or confidential case details in the public form.",
+      "Your clinic name, your name, a work email, and a phone number. Nothing else. Please do not send patient, medical, legal, or case information through this public website.",
   },
 ];
 
 export function FAQ() {
   return (
-    <section
-      id="faq"
-      aria-labelledby="faq-heading"
-      className="bg-paper py-20"
-    >
+    <section id="faq" aria-labelledby="faq-heading" className="bg-paper py-20">
       <div className="mx-auto max-w-[1080px] px-6">
         <div className="mx-auto mb-11 max-w-[640px] text-center">
           <ScrollReveal>

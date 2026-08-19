@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { CLINIC_INTEREST_PATH } from "@/lib/constants";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -58,18 +59,18 @@ export function Header() {
           <ul className="hidden md:flex items-center gap-8 list-none">
             <li>
               <Link
-                href="/#who-we-help"
+                href="/#for-clinics"
                 className="text-sm font-medium text-navy-light transition-colors duration-150 hover:text-accent-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
-                Mission
+                For clinics
               </Link>
             </li>
             <li>
               <Link
-                href="/#support"
+                href="/#how-it-works"
                 className="text-sm font-medium text-navy-light transition-colors duration-150 hover:text-accent-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
               >
-                Process
+                How it works
               </Link>
             </li>
             <li>
@@ -84,7 +85,7 @@ export function Header() {
         </nav>
 
         <Link
-          href="/signup"
+          href={CLINIC_INTEREST_PATH}
           aria-hidden={!scrolled}
           tabIndex={scrolled ? 0 : -1}
           className={`inline-flex min-h-11 items-center justify-center rounded-lg bg-brand-orange px-5 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(31,26,20,0.15)] transition-all duration-200 hover:bg-brand-orange-dark hover:text-white hover:shadow-[0_10px_24px_rgba(244,152,88,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 md:px-6 ${
@@ -93,7 +94,7 @@ export function Header() {
               : "pointer-events-none -translate-y-1 opacity-0"
           }`}
         >
-          Register interest
+          Register your clinic
         </Link>
       </div>
     </header>

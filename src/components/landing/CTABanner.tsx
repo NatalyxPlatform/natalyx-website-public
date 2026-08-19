@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { CLINIC_INTEREST_PATH } from "@/lib/constants";
 
 export function CTABanner() {
   return (
@@ -14,19 +15,24 @@ export function CTABanner() {
               id="cta-heading"
               className="mb-4 font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.35rem]"
             >
-              Register interest now, and we&apos;ll follow up as access opens.
+              See whether this fits how your clinic already works.
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={90}>
             <p className="mx-auto max-w-[620px] leading-7 text-navy-light">
-              We are building Natalyx carefully, starting with gestational
-              surrogacy and expanding toward a more coordinated ART journey.
+              Register your clinic and we will get in touch as Natalyx is
+              introduced to new practices. Four details, no patient information,
+              no commitment.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={160}>
             <div className="mt-8">
-              <Button href="/signup" size="lg" className="w-full sm:w-auto">
-                Register interest
+              <Button
+                href={CLINIC_INTEREST_PATH}
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                Register your clinic&apos;s interest
               </Button>
             </div>
           </ScrollReveal>

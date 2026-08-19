@@ -1,26 +1,19 @@
-export const ROLE_OPTIONS = [
-  { value: "intended_parent", label: "I want help as an intended parent" },
-  { value: "gestational_surrogate", label: "I want to learn about becoming a gestational carrier" },
-  { value: "donor", label: "I want to ask about donor pathways" },
-  { value: "not_sure", label: "I have a general enquiry" },
-] as const;
+/** Where every acquisition CTA on the public site points. */
+export const CLINIC_INTEREST_PATH = "/clinic-interest";
 
-export const JOURNEY_STAGE_OPTIONS = [
-  { value: "just_exploring", label: "Just exploring" },
-  { value: "already_started", label: "I have already started" },
-  { value: "have_clinic_or_lawyer", label: "I already have a clinic, lawyer, or support team" },
-  { value: "know_other_party", label: "I already know the other party" },
-  { value: "questions_first", label: "I have questions before I decide" },
-  { value: "prefer_not_to_say", label: "Prefer not to say" },
-] as const;
+/** Server route that accepts clinic-interest submissions. */
+export const CLINIC_INTEREST_ENDPOINT = "/api/clinic-interest";
 
-export const PREFERRED_CONTACT_OPTIONS = [
-  { value: "email", label: "Email" },
-  { value: "phone", label: "Phone" },
-  { value: "either", label: "Either is fine" },
-] as const;
+/**
+ * Lead discriminators. These travel with every delivered record so clinic
+ * interest can never be confused with the historical participant leads
+ * captured by the retired `/signup` flow.
+ */
+export const CLINIC_INTEREST_LEAD_TYPE = "clinic_interest";
+export const CLINIC_INTEREST_SCHEMA_VERSION = 1;
+export const CLINIC_INTEREST_SOURCE = "website_clinic_interest";
 
-export const NOTES_MAX_LENGTH = 1000;
+export const CONTACT_EMAIL = "hello@natalyx.health";
 
 export const DEVELOPER_ACCESS_URL =
   process.env.NEXT_PUBLIC_DEVELOPER_ACCESS_URL ??
