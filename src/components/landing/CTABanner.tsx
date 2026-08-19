@@ -30,7 +30,7 @@ export function CTABanner() {
               <Button
                 href={CLINIC_INTEREST_PATH}
                 size="lg"
-                className="w-full sm:w-auto"
+                className="w-full !bg-brand-orange !text-white hover:!bg-brand-orange-dark hover:shadow-[0_8px_22px_rgba(244,152,88,0.28)] focus-visible:ring-brand-orange sm:w-auto"
               >
                 Register your clinic&apos;s interest
               </Button>

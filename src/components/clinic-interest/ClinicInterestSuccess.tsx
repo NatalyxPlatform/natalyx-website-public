@@ -19,8 +19,9 @@ export function ClinicInterestSuccess() {
       </h2>
       <p className="mx-auto mb-8 max-w-md leading-relaxed text-navy-light">
         Thank you. Your registration has been recorded. Natalyx is being
-        introduced to clinics gradually, and this is a record of interest rather
-        than an application or an onboarding decision.
+        introduced to clinics gradually. This records your clinic&apos;s
+        interest; it is not an application, and not a decision about working
+        together.
       </p>
       <p className="mb-10 text-sm text-navy-light/70">
         If you need to reach us in the meantime, write to{" "}
