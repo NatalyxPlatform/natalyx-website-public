@@ -38,7 +38,9 @@ substrate that establishes it, because evidence is scoped by where it ran.
 | C5 | Server | Rate limit exceeded for a client IP | Submit again | HTTP 429 and no delivery | Unlimited relaying to the delivery provider | `route` |
 | C6 | Server | `SUPABASE_*` set | Submit | Row inserted into `marketing_private.clinic_interest_leads` | Any write to `marketing_private.public_interest_leads` | `unit`, `route` |
 | C6b | Server | A lead already exists for that work email | Submit again with a corrected phone | Both submissions are stored (append-only) | Silently discarding a submission the page reported as recorded | `unit` |
-| C7 | Server | A configured storage channel fails | Submit | HTTP 502 and an error response | A success response after a storage failure | `route` |
+| C7 | Server | A configured storage channel fails | Submit | HTTP 200 still carrying `forward`, with the failure logged | Blocking the email because supplementary storage failed | `route`, `unit` |
+| C7d | Server | Storage throws unexpectedly | Submit | Same: the email still goes, the throw is logged | An optional dependency taking down the primary delivery path | `route` |
+| C7e | Server | Log mode, and the log write itself fails | Submit | Still forwards nothing | Falling through to emailing a real lead during local testing | `route` |
 | C7b | Server | No storage configured | Submit | HTTP 200 carrying `forward`; email is the browser's job | Treating an absent Supabase as an error | `unit`, `route` |
 | C7c | Any reader | Whole repo | Locate the Web3Forms call | It appears only in client code; `leadDelivery.ts` and the route never call it | A server-side Web3Forms call - rejected 403 in production while passing every `log`-mode test | `source` |
 | C8 | Browser | Server returns `forward` | Submit | The browser POSTs that record, unmodified, to Web3Forms, and shows success only if it returns `success: true` | Showing success when Web3Forms refused, or composing the payload client-side | `dom`, `browser` |

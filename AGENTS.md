@@ -72,8 +72,14 @@ Load-bearing properties — check these before changing anything here:
   import `leadDelivery` or build a lead itself.
 - **Nothing is verified.** Email and phone normalization is formatting only.
   No copy may imply an address or number was checked.
-- **Server-side storage is best-effort.** Supabase may be unconfigured; that is
-  not an error. Success is decided by Web3Forms accepting the browser's relay.
+- **Server-side storage is best-effort, and the code must mean it.**
+  `deliverClinicInterestLead` never throws; a Supabase failure is logged and the
+  route still returns `forward`. Making storage able to fail a submission
+  recreates the outage in a new place - an optional dependency taking down the
+  primary delivery path. Success is decided by Web3Forms accepting the relay.
+- **Log mode is decided by the environment, not by success.** `isLogOnlyMode()`
+  gates forwarding, so a failed log write can never fall through to emailing a
+  real lead during local testing.
 
 ## Leads
 

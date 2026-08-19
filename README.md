@@ -71,7 +71,8 @@ ClinicInterestForm  ->  POST /api/clinic-interest  ->  clinicInterestSchema
   client and the route, so the two cannot drift. Unknown keys are stripped.
 - `src/lib/leadDelivery.ts` builds the delivered record from named fields and
   runs the **server-side** channels (Supabase, or the `log` mode). It may
-  legitimately have none.
+  legitimately have none, and it never throws: a storage failure is logged and
+  reported back, never allowed to block the email.
 - **Email delivery happens in the browser.** Web3Forms rejects server-to-server
   calls on the free plan (403 "Use our API in client side"), so the route hands
   the built payload back as `forward` and the form POSTs it to Web3Forms. The

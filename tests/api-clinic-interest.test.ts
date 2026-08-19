@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ClinicInterestLead } from "@/lib/leadDelivery";
-import { LeadDeliveryError } from "@/lib/leadDelivery";
 import { RATE_LIMIT_MAX_REQUESTS, resetRateLimit } from "@/lib/rateLimit";
 
 // Hoisted so the vi.mock factory (which runs first) can reach it.
@@ -50,12 +49,16 @@ async function json(response: Response) {
   };
 }
 
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
 beforeEach(() => {
   resetRateLimit();
   deliver.mockReset();
   // Production default: no server-side storage configured, so the browser
   // is asked to forward the lead to Web3Forms.
-  deliver.mockResolvedValue({ delivered: [] });
+  deliver.mockResolvedValue({ delivered: [], failures: [] });
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -140,7 +143,21 @@ describe("POST /api/clinic-interest — what the browser must forward", () => {
   });
 
   it("forwards nothing in log mode, so nothing leaves the machine", async () => {
-    deliver.mockResolvedValue({ delivered: ["log"] });
+    vi.stubEnv("LEAD_DELIVERY_MODE", "log");
+    deliver.mockResolvedValue({ delivered: ["log"], failures: [] });
+    const response = await POST(post(validBody));
+    const body = (await response.json()) as { ok: boolean; forward?: unknown };
+    expect(body.ok).toBe(true);
+    expect(body.forward).toBeUndefined();
+  });
+
+  it("forwards nothing in log mode even if the log write failed", async () => {
+    // Never fall through to emailing a real lead during local testing.
+    vi.stubEnv("LEAD_DELIVERY_MODE", "log");
+    deliver.mockResolvedValue({
+      delivered: [],
+      failures: [{ channel: "log", reason: "write failed" }],
+    });
     const response = await POST(post(validBody));
     const body = (await response.json()) as { ok: boolean; forward?: unknown };
     expect(body.ok).toBe(true);
@@ -148,7 +165,7 @@ describe("POST /api/clinic-interest — what the browser must forward", () => {
   });
 
   it("forwards when only storage-less delivery ran", async () => {
-    deliver.mockResolvedValue({ delivered: [] });
+    deliver.mockResolvedValue({ delivered: [], failures: [] });
     const response = await POST(post(validBody));
     const body = (await response.json()) as { forward?: unknown };
     expect(body.forward).toBeDefined();
@@ -322,23 +339,44 @@ describe("POST /api/clinic-interest — spam and abuse controls", () => {
 });
 
 describe("POST /api/clinic-interest — failures never become success", () => {
-  it("answers 502 when server-side storage fails", async () => {
-    deliver.mockRejectedValue(
-      new LeadDeliveryError([{ channel: "supabase", reason: "db down" }])
-    );
+  it("still forwards when server-side storage fails", async () => {
+    // Regression: a configured-but-broken Supabase used to 502 here, which
+    // stopped the browser reaching Web3Forms and recreated the outage.
+    deliver.mockResolvedValue({
+      delivered: [],
+      failures: [{ channel: "supabase", reason: "db down" }],
+    });
     const response = await POST(post(validBody));
-    expect(response.status).toBe(502);
-    expect((await json(response)).ok).toBe(false);
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { ok: boolean; forward?: unknown };
+    expect(body.ok).toBe(true);
+    expect(body.forward).toBeDefined();
   });
 
-  it("never returns ok:true on a delivery failure", async () => {
+  it("logs a storage failure without echoing contact details", async () => {
+    const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
+    deliver.mockResolvedValue({
+      delivered: [],
+      failures: [{ channel: "supabase", reason: "db down" }],
+    });
+    await POST(post(validBody));
+    const logged = JSON.stringify(errorLog.mock.calls);
+    expect(logged).toContain("db down");
+    expect(logged).not.toContain("bayview.example");
+    expect(logged).not.toContain("Dana Reyes");
+  });
+
+  it("still forwards when storage throws unexpectedly", async () => {
+    // Storage is contracted not to throw; if it does, the email must still go.
     deliver.mockRejectedValue(new Error("boom"));
     const response = await POST(post(validBody));
-    expect(response.ok).toBe(false);
-    expect((await json(response)).ok).not.toBe(true);
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { ok: boolean; forward?: unknown };
+    expect(body.ok).toBe(true);
+    expect(body.forward).toBeDefined();
   });
 
-  it("does not log submitted contact details when delivery fails", async () => {
+  it("does not log submitted contact details when storage fails", async () => {
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
     deliver.mockRejectedValue(new Error("boom"));
     await POST(post(validBody));
@@ -359,8 +397,7 @@ describe("POST /api/clinic-interest — failures never become success", () => {
     expect(forward).toBeDefined();
     expect(JSON.stringify(rest)).not.toContain("bayview.example");
 
-    deliver.mockRejectedValue(new Error("boom"));
-    const failed = await POST(post(validBody));
-    expect(JSON.stringify(await json(failed))).not.toContain("bayview.example");
+    const refused = await POST(post({ ...validBody, work_email: "nope" }));
+    expect(JSON.stringify(await json(refused))).not.toContain("bayview.example");
   });
 });

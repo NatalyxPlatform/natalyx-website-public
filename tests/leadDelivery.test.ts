@@ -3,7 +3,7 @@ import {
   buildClinicInterestLead,
   CLINIC_INTEREST_TABLE,
   deliverClinicInterestLead,
-  LeadDeliveryError,
+  isLogOnlyMode,
   resolveDeliveryChannels,
 } from "@/lib/leadDelivery";
 import { clinicInterestSchema } from "@/lib/validation";
@@ -187,6 +187,15 @@ describe("resolveDeliveryChannels", () => {
   });
 });
 
+describe("isLogOnlyMode", () => {
+  it("is true only for an explicit log mode", () => {
+    expect(isLogOnlyMode({ LEAD_DELIVERY_MODE: "log" })).toBe(true);
+    expect(isLogOnlyMode({})).toBe(false);
+    expect(isLogOnlyMode({ LEAD_DELIVERY_MODE: "" })).toBe(false);
+    expect(isLogOnlyMode(supabaseEnv)).toBe(false);
+  });
+});
+
 describe("test harness safety", () => {
   it("blocks any unstubbed network request", async () => {
     // Nothing in the test suite may reach the network. tests/setup.ts enforces
@@ -210,7 +219,7 @@ describe("deliverClinicInterestLead", () => {
     // Not an error: the browser still delivers by email afterwards.
     await expect(
       deliverClinicInterestLead(buildClinicInterestLead(parsed()), {})
-    ).resolves.toEqual({ delivered: [] });
+    ).resolves.toEqual({ delivered: [], failures: [] });
   });
 
   it("logs a redacted record on the log channel", async () => {
@@ -276,25 +285,28 @@ describe("deliverClinicInterestLead", () => {
     );
   });
 
-  it("throws when supabase is configured and fails", async () => {
+  it("reports a supabase failure without throwing", async () => {
+    // Storage must never fail the submission: the browser still has to deliver
+    // the lead by email. An optional dependency taking down the primary path is
+    // the outage this design exists to prevent.
     supabaseInsert = vi.fn(async () => ({ error: { message: "db down" } }));
+    const outcome = await deliverClinicInterestLead(
+      buildClinicInterestLead(parsed()),
+      supabaseEnv
+    );
+    expect(outcome.delivered).toEqual([]);
+    expect(outcome.failures).toEqual([
+      { channel: "supabase", reason: "db down" },
+    ]);
+  });
+
+  it("never throws, whatever the storage layer does", async () => {
+    supabaseInsert = vi.fn(async () => {
+      throw new Error("connection reset");
+    });
     await expect(
       deliverClinicInterestLead(buildClinicInterestLead(parsed()), supabaseEnv)
-    ).rejects.toBeInstanceOf(LeadDeliveryError);
+    ).resolves.toMatchObject({ delivered: [] });
   });
 
-  it("throws when both configured channels fail", async () => {
-    supabaseInsert = vi.fn(async () => ({ error: { message: "db down" } }));
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 }))
-    );
-
-    await expect(
-      deliverClinicInterestLead(buildClinicInterestLead(parsed()), {
-        ...supabaseEnv,
-        WEB3FORMS_ACCESS_KEY: "key",
-      })
-    ).rejects.toBeInstanceOf(LeadDeliveryError);
-  });
 });

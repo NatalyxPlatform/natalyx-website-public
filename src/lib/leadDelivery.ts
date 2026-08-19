@@ -71,17 +71,6 @@ export function buildClinicInterestLead(
  */
 export type DeliveryChannelName = "supabase" | "log";
 
-export class LeadDeliveryError extends Error {
-  constructor(readonly failures: { channel: DeliveryChannelName; reason: string }[]) {
-    super(
-      `Every configured delivery channel failed: ${failures
-        .map((f) => `${f.channel} (${f.reason})`)
-        .join(", ")}`
-    );
-    this.name = "LeadDeliveryError";
-  }
-}
-
 type Env = Record<string, string | undefined>;
 
 /**
@@ -92,6 +81,16 @@ type Env = Record<string, string | undefined>;
  * the lead server-side and suppresses the browser's Web3Forms call, so the
  * whole path can be exercised without sending anything to a third party.
  */
+/**
+ * True when this process must not cause any email to be sent - the browser is
+ * told to forward nothing. Deliberately derived from the environment, not from
+ * whether the log write succeeded: a failed log must never fall through to
+ * emailing a real lead during local testing.
+ */
+export function isLogOnlyMode(env: Env = process.env): boolean {
+  return env.LEAD_DELIVERY_MODE === "log";
+}
+
 export function resolveDeliveryChannels(env: Env = process.env): DeliveryChannelName[] {
   if (env.LEAD_DELIVERY_MODE === "log") {
     return ["log"];
@@ -151,22 +150,28 @@ function deliverToLog(lead: ClinicInterestLead): void {
   });
 }
 
+export type DeliveryOutcome = {
+  delivered: DeliveryChannelName[];
+  failures: { channel: DeliveryChannelName; reason: string }[];
+};
+
 /**
- * Runs every configured server-side channel.
+ * Runs the configured server-side storage channels.
  *
- * Storage is best-effort and never decides the outcome of a submission: the
- * authoritative delivery is the browser's Web3Forms call, and the form only
- * reports success once that succeeds. Throws only when channels were
- * configured and every one of them failed, so a broken Supabase is still
- * surfaced rather than swallowed.
+ * Best-effort, and it means it: this never throws. Storage is supplementary to
+ * the email, so a broken Supabase must not stop the browser from delivering
+ * the lead to a human. Letting an optional dependency fail the whole
+ * submission is what caused the outage this design exists to prevent.
+ *
+ * Failures are returned for the caller to log, never swallowed silently.
  */
 export async function deliverClinicInterestLead(
   lead: ClinicInterestLead,
   env: Env = process.env
-): Promise<{ delivered: DeliveryChannelName[] }> {
+): Promise<DeliveryOutcome> {
   const channels = resolveDeliveryChannels(env);
   if (channels.length === 0) {
-    return { delivered: [] };
+    return { delivered: [], failures: [] };
   }
 
   const delivered: DeliveryChannelName[] = [];
@@ -188,16 +193,5 @@ export async function deliverClinicInterestLead(
     }
   }
 
-  if (delivered.length === 0) {
-    throw new LeadDeliveryError(failures);
-  }
-
-  if (failures.length > 0) {
-    console.warn(
-      "[clinic-interest] partial delivery",
-      failures.map((f) => `${f.channel}: ${f.reason}`)
-    );
-  }
-
-  return { delivered };
+  return { delivered, failures };
 }
