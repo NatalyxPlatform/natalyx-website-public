@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { CLINIC_INTEREST_PATH } from "@/lib/constants";
 
 export function Hero() {
   return (
@@ -14,38 +15,42 @@ export function Hero() {
       />
       <div className="mx-auto grid min-h-[calc(100svh-72px)] max-w-[1080px] grid-cols-1 items-center gap-10 px-6 pb-14 pt-8 md:min-h-[680px] lg:grid-cols-[1fr_0.95fr] lg:gap-12 lg:pb-16 lg:pt-16">
         <div className="relative z-10 max-w-2xl">
+          <ScrollReveal delay={40} y="sm">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.08em] text-accent-deep">
+              For fertility clinics
+            </p>
+          </ScrollReveal>
           <ScrollReveal delay={70} y="sm">
-            <h1 className="mb-5 max-w-[780px] font-serif text-[2.35rem] font-medium leading-[1.12] text-navy sm:text-5xl lg:text-[3.35rem] tracking-tight">
-              A new path to{" "}
-              <span className="relative inline-block italic text-brand-orange after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:h-2 after:rounded-full after:bg-brand-orange/15 after:z-[-1]">
-                parenthood
+            <h1 className="mb-5 max-w-[780px] font-serif text-[2.35rem] font-medium leading-[1.12] tracking-tight text-navy sm:text-5xl lg:text-[3.35rem]">
+              Coordinate known-surrogate journeys without{" "}
+              <span className="relative inline-block italic text-brand-orange after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:z-[-1] after:h-2 after:rounded-full after:bg-brand-orange/15">
+                another operational burden
               </span>
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={130} y="sm">
             <p className="mb-8 max-w-[620px] text-base leading-8 text-navy-light md:text-lg">
-              Natalyx is an independent fertility agency and ART marketplace.
-              We help intended parents and gestational carriers understand the
-              path ahead, coordinate and control all clinical and
-              administrative steps on one platform, and move towards the
-              tailored right next step with more clarity and support.
+              Natalyx helps fertility clinics organize participant preparation,
+              provider handoffs, outstanding records, appointments, and shared
+              journey context — while the clinic and its providers remain
+              authoritative throughout.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200} y="sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <Button
-                href="/signup"
+                href={CLINIC_INTEREST_PATH}
                 size="lg"
                 className="w-full !bg-brand-orange !text-white hover:!bg-brand-orange-dark hover:shadow-[0_8px_22px_rgba(244,152,88,0.28)] focus-visible:ring-brand-orange sm:w-auto"
               >
-                Register interest
+                Register your clinic&apos;s interest
               </Button>
             </div>
           </ScrollReveal>
           <ScrollReveal delay={250} y="sm">
             <p className="mt-3 text-sm leading-6 text-navy-light/70 sm:max-w-[560px]">
-              Please do not share sensitive medical, legal, or financial
-              details in the public interest form.
+              Four details, no patient information. Natalyx is not generally
+              available yet.
             </p>
           </ScrollReveal>
         </div>

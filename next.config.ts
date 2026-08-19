@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // The retired /signup route is redirected in src/middleware.ts, not here:
+  // a config redirect forwards the request query string, which would carry
+  // ?role=<retired participant role> into the clinic flow.
   async headers() {
     return [
       {

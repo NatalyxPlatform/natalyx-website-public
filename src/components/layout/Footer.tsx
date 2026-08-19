@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { DEVELOPER_ACCESS_URL } from "@/lib/constants";
+import { CLINIC_INTEREST_PATH, DEVELOPER_ACCESS_URL } from "@/lib/constants";
 
 export function Footer() {
   return (
@@ -20,7 +20,7 @@ export function Footer() {
                 />
               </Link>
               <p className="max-w-sm text-sm leading-7 text-navy-light">
-                Natalyx - building clearer paths through assisted reproduction.
+                Natalyx - operational infrastructure for fertility clinics coordinating surrogacy journeys.
               </p>
             </div>
           </ScrollReveal>
@@ -34,18 +34,18 @@ export function Footer() {
                 <ul className="flex list-none flex-col gap-2">
                   <li>
                     <Link
-                      href="/#who-we-help"
+                      href="/#for-clinics"
                       className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
-                      Who we help
+                      For clinics
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/#support"
+                      href="/#how-it-works"
                       className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
-                      Next steps
+                      How it works
                     </Link>
                   </li>
                   <li>
@@ -58,10 +58,10 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="/signup"
+                      href={CLINIC_INTEREST_PATH}
                       className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
-                      Register interest
+                      Register your clinic&apos;s interest
                     </Link>
                   </li>
                   <li>
@@ -84,7 +84,7 @@ export function Footer() {
               &copy; {new Date().getFullYear()} Natalyx. All rights reserved.
             </p>
             <p className="text-xs text-navy-light/60">
-              Early interest registration is open as access is introduced.
+              Clinic interest registration is open as Natalyx is introduced to new practices.
             </p>
           </div>
         </ScrollReveal>

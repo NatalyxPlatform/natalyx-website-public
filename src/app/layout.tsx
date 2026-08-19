@@ -4,9 +4,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-  title: "Natalyx — A clearer path through assisted reproduction",
+  title: "Natalyx — Clinic-first coordination for surrogacy journeys",
   description:
-    "Natalyx is building an independent online fertility agency and ART marketplace, launching first with gestational surrogacy and designed for IVF, donor conception, and the wider assisted reproduction journey.",
+    "Natalyx is building the operational layer for fertility clinics coordinating known-surrogate journeys: participant preparation, provider handoffs, outstanding records, appointments, and shared journey context. The clinic and its providers stay authoritative.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://natalyx.health"
   ),
@@ -15,9 +15,9 @@ export const metadata: Metadata = {
     apple: "/stork_icon.png",
   },
   openGraph: {
-    title: "Natalyx — A clearer path through assisted reproduction",
+    title: "Natalyx — Clinic-first coordination for surrogacy journeys",
     description:
-      "Register interest in Natalyx, an independent online fertility agency and ART marketplace starting with gestational surrogacy.",
+      "Coordinate known-surrogate journeys without adding another operational burden to your clinic. Register your clinic's interest in Natalyx.",
     type: "website",
     url: "/",
   },
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Natalyx — A clearer path through assisted reproduction",
+    title: "Natalyx — Clinic-first coordination for surrogacy journeys",
     description:
-      "Register interest in Natalyx, an independent online fertility agency and ART marketplace starting with gestational surrogacy.",
+      "Coordinate known-surrogate journeys without adding another operational burden to your clinic. Register your clinic's interest in Natalyx.",
   },
   robots: { index: true, follow: true },
 };
