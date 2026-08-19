@@ -301,6 +301,33 @@ describe("claims stay inside what the repository can support", () => {
   });
 });
 
+describe("the agent docs match the delivery behaviour", () => {
+  // Docs contradicting code caused real defects repeatedly on this branch, and
+  // AGENTS.md steers future work - a stale rule here can reintroduce an outage.
+  const docs = () => `${read("AGENTS.md")}
+${read("README.md")}`;
+
+  it("never claims a storage failure answers 502", () => {
+    expect(docs()).not.toMatch(/every channel failing raises/i);
+    expect(docs()).not.toMatch(/route answers 502/i);
+    expect(read("src/app/api/clinic-interest/route.ts")).not.toMatch(/502/);
+  });
+
+  it("states the three failure cases the code actually implements", () => {
+    const agents = read("AGENTS.md");
+    expect(agents).toMatch(/optional storage fails/i);
+    expect(agents).toMatch(/still returns `forward`/i);
+    expect(agents).toMatch(/Web3Forms rejects/i);
+    expect(agents).toMatch(/LEAD_DELIVERY_MODE=log/);
+  });
+
+  it("keeps the browser-delivery rule that the outage taught", () => {
+    expect(read("AGENTS.md")).toMatch(
+      /Email delivery is a browser step, and must stay one/i
+    );
+  });
+});
+
 describe("the form discloses what happens to the details", () => {
   it("says what is stored, why, and that processors are involved", () => {
     const form = read("src/components/clinic-interest/ClinicInterestForm.tsx");

@@ -60,9 +60,15 @@ Load-bearing properties — check these before changing anything here:
 - **The lead is built from named fields.** A key added to the form cannot reach
   delivery without being added to `buildClinicInterestLead`, and unknown keys
   are stripped by the schema.
-- **A failure is never a success.** Every channel failing raises; the route
-  answers 502 and the form renders an error. Success renders only on an
-  explicit `ok: true`.
+- **A failure is never a success — but only the right failure blocks it.**
+  Success renders only when Web3Forms accepts the browser's relay. Distinguish
+  three cases and do not collapse them:
+  - **Optional storage fails** (Supabase down, misconfigured, absent) → the
+    route still returns `forward`; the email still goes. Logged, not surfaced.
+  - **Web3Forms rejects, or the request fails** → the form shows an error and
+    keeps the typed values. This is the only failure that withholds success.
+  - **Explicit `LEAD_DELIVERY_MODE=log`** → nothing is forwarded and no email
+    is sent. The safe local exception, and the only one.
 - **Email delivery is a browser step, and must stay one.** Web3Forms rejects
   server-to-server calls on the free plan (403 "Use our API in client side").
   Never move that call back into the route - it fails in production while
