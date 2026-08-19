@@ -4,7 +4,11 @@ import { useId, useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ClinicInterestSuccess } from "./ClinicInterestSuccess";
-import { CLINIC_INTEREST_ENDPOINT } from "@/lib/constants";
+import {
+  CLINIC_INTEREST_ENDPOINT,
+  WEB3FORMS_ACCESS_KEY,
+  WEB3FORMS_ENDPOINT,
+} from "@/lib/constants";
 import {
   CLINIC_INTEREST_FIELDS,
   clinicInterestSchema,
@@ -37,6 +41,46 @@ const FOCUS_ORDER: string[] = [...CLINIC_INTEREST_FIELDS, "consent_to_contact"];
 
 const GENERIC_FAILURE =
   "We could not record your request just now. Please try again in a moment.";
+
+/**
+ * Relays the server-built record to Web3Forms.
+ *
+ * This runs in the browser because Web3Forms' free plan rejects server-to-server
+ * calls outright (403 "Use our API in client side"). The server has already
+ * validated, rate-limited and honeypot-checked, and it composed this payload -
+ * the browser only forwards it, so nothing here can widen what gets sent.
+ *
+ * Returns whether Web3Forms actually accepted it. The caller must not show
+ * success unless it did.
+ */
+async function forwardToWeb3Forms(
+  lead: Record<string, unknown>
+): Promise<boolean> {
+  try {
+    const response = await fetch(WEB3FORMS_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_ACCESS_KEY,
+        subject: "New Natalyx clinic interest registration",
+        from_name: "Natalyx website",
+        // Web3Forms treats `email` as the reply-to address, so replying to the
+        // notification reaches the clinic rather than nobody.
+        email: lead.work_email,
+        ...lead,
+      }),
+    });
+    const payload = (await response.json().catch(() => null)) as {
+      success?: boolean;
+    } | null;
+    return response.ok && payload?.success === true;
+  } catch {
+    return false;
+  }
+}
 
 export function ClinicInterestForm() {
   const [form, setForm] = useState<FormState>(initialForm);
@@ -94,10 +138,17 @@ export function ClinicInterestForm() {
         ok?: boolean;
         error?: string;
         fieldErrors?: Record<string, string>;
+        forward?: Record<string, unknown>;
       } | null;
 
       // Success renders only on an explicit affirmative response.
       if (response.ok && data?.ok === true) {
+        // When the server hands back a payload, email delivery has not happened
+        // yet - it happens here, and success waits on it.
+        if (data.forward && !(await forwardToWeb3Forms(data.forward))) {
+          setServerError(GENERIC_FAILURE);
+          return;
+        }
         setSubmitted(true);
         return;
       }

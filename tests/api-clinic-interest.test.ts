@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { ClinicInterestLead } from "@/lib/leadDelivery";
-import {
-  LeadDeliveryConfigError,
-  LeadDeliveryError,
-} from "@/lib/leadDelivery";
+import { LeadDeliveryError } from "@/lib/leadDelivery";
 import { RATE_LIMIT_MAX_REQUESTS, resetRateLimit } from "@/lib/rateLimit";
 
 // Hoisted so the vi.mock factory (which runs first) can reach it.
@@ -56,7 +53,9 @@ async function json(response: Response) {
 beforeEach(() => {
   resetRateLimit();
   deliver.mockReset();
-  deliver.mockResolvedValue({ delivered: ["log"] });
+  // Production default: no server-side storage configured, so the browser
+  // is asked to forward the lead to Web3Forms.
+  deliver.mockResolvedValue({ delivered: [] });
   vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
@@ -64,7 +63,7 @@ describe("POST /api/clinic-interest — happy path", () => {
   it("accepts a complete clinic submission", async () => {
     const response = await POST(post(validBody));
     expect(response.status).toBe(200);
-    expect(await json(response)).toEqual({ ok: true });
+    expect((await json(response)).ok).toBe(true);
     expect(deliver).toHaveBeenCalledTimes(1);
   });
 
@@ -99,6 +98,71 @@ describe("POST /api/clinic-interest — happy path", () => {
     const lead = deliver.mock.calls[0][0];
     expect(lead.work_email).toBe("dana.reyes@bayview.example");
     expect(lead.phone_normalized).toBe("4155550142");
+  });
+});
+
+describe("POST /api/clinic-interest — what the browser must forward", () => {
+  it("hands back the built lead for the browser to relay", async () => {
+    const response = await POST(post(validBody));
+    const body = (await response.json()) as {
+      ok: boolean;
+      forward?: Record<string, unknown>;
+    };
+    expect(body.ok).toBe(true);
+    expect(Object.keys(body.forward ?? {}).sort()).toEqual([
+      "clinic_name",
+      "consent_to_contact",
+      "contact_name",
+      "lead_type",
+      "phone",
+      "phone_normalized",
+      "referrer",
+      "schema_version",
+      "source",
+      "user_agent",
+      "work_email",
+    ]);
+  });
+
+  it("forwards the same record it handed to server-side storage", async () => {
+    const response = await POST(post(validBody));
+    const body = (await response.json()) as { forward?: unknown };
+    expect(body.forward).toEqual(deliver.mock.calls[0][0]);
+  });
+
+  it("forwards nothing on a honeypot hit, so no email is sent", async () => {
+    const response = await POST(
+      post({ ...validBody, website_url: "http://spam.example" })
+    );
+    const body = (await response.json()) as { ok: boolean; forward?: unknown };
+    expect(body.ok).toBe(true);
+    expect(body.forward).toBeUndefined();
+  });
+
+  it("forwards nothing in log mode, so nothing leaves the machine", async () => {
+    deliver.mockResolvedValue({ delivered: ["log"] });
+    const response = await POST(post(validBody));
+    const body = (await response.json()) as { ok: boolean; forward?: unknown };
+    expect(body.ok).toBe(true);
+    expect(body.forward).toBeUndefined();
+  });
+
+  it("forwards when only storage-less delivery ran", async () => {
+    deliver.mockResolvedValue({ delivered: [] });
+    const response = await POST(post(validBody));
+    const body = (await response.json()) as { forward?: unknown };
+    expect(body.forward).toBeDefined();
+  });
+
+  it.each([
+    "role",
+    "role_value",
+    "journey_stage",
+    "notes",
+  ])("never forwards retired participant field %s", async (field) => {
+    const response = await POST(post({ ...validBody, [field]: "intended_parent" }));
+    const body = (await response.json()) as { forward?: Record<string, unknown> };
+    expect(body.forward).not.toHaveProperty(field);
   });
 });
 
@@ -258,16 +322,9 @@ describe("POST /api/clinic-interest — spam and abuse controls", () => {
 });
 
 describe("POST /api/clinic-interest — failures never become success", () => {
-  it("answers 500 when no delivery channel is configured", async () => {
-    deliver.mockRejectedValue(new LeadDeliveryConfigError());
-    const response = await POST(post(validBody));
-    expect(response.status).toBe(500);
-    expect((await json(response)).ok).toBe(false);
-  });
-
-  it("answers 502 when every delivery channel fails", async () => {
+  it("answers 502 when server-side storage fails", async () => {
     deliver.mockRejectedValue(
-      new LeadDeliveryError([{ channel: "web3forms", reason: "HTTP 500" }])
+      new LeadDeliveryError([{ channel: "supabase", reason: "db down" }])
     );
     const response = await POST(post(validBody));
     expect(response.status).toBe(502);
@@ -292,9 +349,15 @@ describe("POST /api/clinic-interest — failures never become success", () => {
     expect(logged).not.toContain("Dana Reyes");
   });
 
-  it("does not echo contact details back in any response body", async () => {
+  it("puts contact details only inside `forward`, never elsewhere", async () => {
+    // The success response legitimately carries the payload: it is the
+    // submitter's own data, going back to their own browser to be relayed.
+    // Nothing else in the body may contain it, and no failure response may.
     const ok = await POST(post(validBody));
-    expect(JSON.stringify(await json(ok))).not.toContain("bayview.example");
+    const body = (await ok.json()) as Record<string, unknown>;
+    const { forward, ...rest } = body;
+    expect(forward).toBeDefined();
+    expect(JSON.stringify(rest)).not.toContain("bayview.example");
 
     deliver.mockRejectedValue(new Error("boom"));
     const failed = await POST(post(validBody));

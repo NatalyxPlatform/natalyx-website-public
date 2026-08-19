@@ -50,7 +50,8 @@ the company.
 ## Submission path
 
 `ClinicInterestForm` → `POST /api/clinic-interest` → `clinicInterestSchema` →
-`buildClinicInterestLead` → `deliverClinicInterestLead`.
+`buildClinicInterestLead` → `deliverClinicInterestLead` (server-side storage)
+→ response `forward` → **browser** POSTs it to Web3Forms.
 
 Load-bearing properties — check these before changing anything here:
 
@@ -62,15 +63,17 @@ Load-bearing properties — check these before changing anything here:
 - **A failure is never a success.** Every channel failing raises; the route
   answers 502 and the form renders an error. Success renders only on an
   explicit `ok: true`.
-- **Delivery always has a channel.** `leadDelivery.ts` carries a built-in
-  Web3Forms access key (public by that provider's design), so an unconfigured
-  deployment delivers rather than dropping leads. `WEB3FORMS_ACCESS_KEY`
-  overrides it. Keep the key in server-only code - not for secrecy, but so
-  submissions keep going through our validated endpoint.
+- **Email delivery is a browser step, and must stay one.** Web3Forms rejects
+  server-to-server calls on the free plan (403 "Use our API in client side").
+  Never move that call back into the route - it fails in production while
+  passing every local test that uses `LEAD_DELIVERY_MODE=log`.
+- **The browser relays, it never composes.** The route returns `forward`, the
+  exact record it built; the form sends that. A client component must never
+  import `leadDelivery` or build a lead itself.
 - **Nothing is verified.** Email and phone normalization is formatting only.
   No copy may imply an address or number was checked.
-- **The browser never posts to a third party.** Never import `leadDelivery`
-  from a client component.
+- **Server-side storage is best-effort.** Supabase may be unconfigured; that is
+  not an error. Success is decided by Web3Forms accepting the browser's relay.
 
 ## Leads
 

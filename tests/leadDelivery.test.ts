@@ -3,11 +3,8 @@ import {
   buildClinicInterestLead,
   CLINIC_INTEREST_TABLE,
   deliverClinicInterestLead,
-  LeadDeliveryConfigError,
   LeadDeliveryError,
   resolveDeliveryChannels,
-  WEB3FORMS_FALLBACK_ACCESS_KEY,
-  web3formsAccessKey,
 } from "@/lib/leadDelivery";
 import { clinicInterestSchema } from "@/lib/validation";
 
@@ -156,90 +153,44 @@ describe("buildClinicInterestLead", () => {
 });
 
 describe("resolveDeliveryChannels", () => {
-  it("delivers via web3forms even with no configuration at all", () => {
-    // The point of the built-in access key: an unconfigured deployment still
-    // delivers leads instead of dropping them.
-    expect(resolveDeliveryChannels({})).toEqual(["web3forms"]);
+  it("resolves no server channel when nothing is configured", () => {
+    // Legitimate: email delivery happens in the browser, because Web3Forms
+    // rejects server-to-server calls on the free plan.
+    expect(resolveDeliveryChannels({})).toEqual([]);
   });
 
-  it.each([
-    ["empty", {}],
-    ["half-configured supabase", { SUPABASE_URL: "https://example.supabase.co" }],
-    ["unrelated variables only", { NODE_ENV: "production" }],
-  ])("never resolves an empty channel list (%s)", (_label, env) => {
-    expect(resolveDeliveryChannels(env).length).toBeGreaterThan(0);
+  it("never lists web3forms as a server channel", () => {
+    for (const env of [
+      {},
+      { WEB3FORMS_ACCESS_KEY: "key" },
+      { ...supabaseEnv, WEB3FORMS_ACCESS_KEY: "key" },
+    ]) {
+      expect(resolveDeliveryChannels(env)).not.toContain("web3forms");
+    }
   });
 
-  it("adds supabase when both supabase variables are present", () => {
-    expect(
-      resolveDeliveryChannels({
-        SUPABASE_URL: "https://example.supabase.co",
-        SUPABASE_SERVICE_ROLE_KEY: "service-role",
-      })
-    ).toEqual(["supabase", "web3forms"]);
+  it("uses supabase when both supabase variables are present", () => {
+    expect(resolveDeliveryChannels(supabaseEnv)).toEqual(["supabase"]);
   });
 
   it("ignores a half-configured supabase", () => {
     expect(
       resolveDeliveryChannels({ SUPABASE_URL: "https://example.supabase.co" })
-    ).toEqual(["web3forms"]);
+    ).toEqual([]);
   });
 
   it("uses the log channel only when explicitly asked", () => {
     expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "log" })).toEqual([
       "log",
     ]);
-    expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "" })).toEqual([
-      "web3forms",
-    ]);
-  });
-
-  it("never falls back to the log channel when real channels are configured", () => {
-    expect(
-      resolveDeliveryChannels({ WEB3FORMS_ACCESS_KEY: "key" })
-    ).not.toContain("log");
-  });
-});
-
-describe("web3formsAccessKey", () => {
-  it("uses the built-in key when the environment sets none", () => {
-    expect(web3formsAccessKey({})).toBe(WEB3FORMS_FALLBACK_ACCESS_KEY);
-  });
-
-  it("lets the environment override the destination without a code change", () => {
-    expect(web3formsAccessKey({ WEB3FORMS_ACCESS_KEY: "override" })).toBe(
-      "override"
-    );
-  });
-
-  it("ignores an empty override rather than sending to nowhere", () => {
-    expect(web3formsAccessKey({ WEB3FORMS_ACCESS_KEY: "" })).toBe(
-      WEB3FORMS_FALLBACK_ACCESS_KEY
-    );
-  });
-
-  it("sends the resolved key to the provider", async () => {
-    const fetchMock = vi.fn<
-      (url: string, init: RequestInit) => Promise<Response>
-    >(async () =>
-      new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      })
-    );
-    vi.stubGlobal("fetch", fetchMock);
-
-    await deliverClinicInterestLead(buildClinicInterestLead(parsed()), {});
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(body.access_key).toBe(WEB3FORMS_FALLBACK_ACCESS_KEY);
+    expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "" })).toEqual([]);
   });
 });
 
 describe("test harness safety", () => {
   it("blocks any unstubbed network request", async () => {
-    // Web3Forms is now always a resolved channel, so a delivery test that
-    // forgot to stub fetch would post a lead to the live inbox. tests/setup.ts
-    // makes that impossible; this asserts the guard is actually in place.
+    // Nothing in the test suite may reach the network. tests/setup.ts enforces
+    // it; this asserts the guard is actually in place.
     await expect(fetch("https://api.web3forms.com/submit")).rejects.toThrow(
       /Unstubbed network request/
     );
@@ -255,65 +206,11 @@ describe("test harness safety", () => {
 });
 
 describe("deliverClinicInterestLead", () => {
-  it("keeps the config guard for a future conditional fallback", () => {
-    // Unreachable today by construction; asserted so the guard is not quietly
-    // deleted as dead code.
-    expect(new LeadDeliveryConfigError()).toBeInstanceOf(Error);
-    expect(new LeadDeliveryConfigError().name).toBe("LeadDeliveryConfigError");
-  });
-
-  it("throws when the only configured channel fails", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 }))
-    );
+  it("is a no-op when no server channel is configured", async () => {
+    // Not an error: the browser still delivers by email afterwards.
     await expect(
-      deliverClinicInterestLead(buildClinicInterestLead(parsed()), {
-        WEB3FORMS_ACCESS_KEY: "key",
-      })
-    ).rejects.toBeInstanceOf(LeadDeliveryError);
-  });
-
-  it("throws when the provider answers 200 with success:false", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ success: false, message: "bad key" }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
-    await expect(
-      deliverClinicInterestLead(buildClinicInterestLead(parsed()), {
-        WEB3FORMS_ACCESS_KEY: "key",
-      })
-    ).rejects.toBeInstanceOf(LeadDeliveryError);
-  });
-
-  it("delivers the exact lead payload to the provider", async () => {
-    const fetchMock = vi.fn<
-      (url: string, init: RequestInit) => Promise<Response>
-    >(async () =>
-      new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      })
-    );
-    vi.stubGlobal("fetch", fetchMock);
-
-    await deliverClinicInterestLead(buildClinicInterestLead(parsed()), {
-      WEB3FORMS_ACCESS_KEY: "key",
-    });
-
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    for (const field of RETIRED_PARTICIPANT_KEYS) {
-      expect(body).not.toHaveProperty(field);
-    }
-    expect(Object.keys(body).sort()).toEqual(
-      [...EXPECTED_LEAD_KEYS, "access_key", "from_name", "subject"].sort()
-    );
+      deliverClinicInterestLead(buildClinicInterestLead(parsed()), {})
+    ).resolves.toEqual({ delivered: [] });
   });
 
   it("logs a redacted record on the log channel", async () => {
@@ -379,27 +276,11 @@ describe("deliverClinicInterestLead", () => {
     );
   });
 
-  it("still succeeds when one of two channels fails", async () => {
+  it("throws when supabase is configured and fails", async () => {
     supabaseInsert = vi.fn(async () => ({ error: { message: "db down" } }));
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(JSON.stringify({ success: true }), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-      )
-    );
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-    const result = await deliverClinicInterestLead(
-      buildClinicInterestLead(parsed()),
-      { ...supabaseEnv, WEB3FORMS_ACCESS_KEY: "key" }
-    );
-
-    expect(result.delivered).toEqual(["web3forms"]);
-    expect(warn).toHaveBeenCalled();
+    await expect(
+      deliverClinicInterestLead(buildClinicInterestLead(parsed()), supabaseEnv)
+    ).rejects.toBeInstanceOf(LeadDeliveryError);
   });
 
   it("throws when both configured channels fail", async () => {

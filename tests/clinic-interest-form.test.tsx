@@ -20,6 +20,17 @@ function jsonResponse(body: unknown, status = 200) {
 
 let fetchMock: ReturnType<typeof vi.fn>;
 
+const WEB3FORMS = "https://api.web3forms.com/submit";
+
+/** Server accepts and asks the browser to relay; Web3Forms accepts the relay. */
+function twoStepSuccess() {
+  return vi.fn(async (url: string) =>
+    url === WEB3FORMS
+      ? jsonResponse({ success: true })
+      : jsonResponse({ ok: true, forward: { work_email: VALID.work_email } })
+  );
+}
+
 beforeEach(() => {
   fetchMock = vi.fn(async () => jsonResponse({ ok: true }));
   vi.stubGlobal("fetch", fetchMock);
@@ -280,6 +291,83 @@ describe("clinic interest form — submission", () => {
     expect(text).not.toMatch(/we will (call|respond|reply) (you )?(within|in)/i);
     expect(text).not.toMatch(/you are now a partner|onboarding will begin/i);
     expect(text).not.toMatch(/accepted|approved/i);
+  });
+});
+
+describe("clinic interest form — relaying to Web3Forms from the browser", () => {
+  it("posts to Web3Forms after the server validates", async () => {
+    fetchMock.mockImplementation(twoStepSuccess());
+    const user = userEvent.setup();
+    render(<ClinicInterestForm />);
+    await fillValidForm(user);
+    await user.click(submitButton());
+
+    await screen.findByRole("status");
+    const urls = fetchMock.mock.calls.map((c) => c[0]);
+    expect(urls).toEqual(["/api/clinic-interest", WEB3FORMS]);
+  });
+
+  it("relays the server's payload verbatim, plus the access key", async () => {
+    fetchMock.mockImplementation(twoStepSuccess());
+    const user = userEvent.setup();
+    render(<ClinicInterestForm />);
+    await fillValidForm(user);
+    await user.click(submitButton());
+    await screen.findByRole("status");
+
+    const relay = JSON.parse(
+      (fetchMock.mock.calls[1][1] as RequestInit).body as string
+    );
+    expect(relay.access_key).toBeTruthy();
+    expect(relay.work_email).toBe(VALID.work_email);
+    // Web3Forms uses `email` as the reply-to address.
+    expect(relay.email).toBe(VALID.work_email);
+  });
+
+  it("skips Web3Forms entirely when the server forwards nothing", async () => {
+    // Honeypot hit, or log mode: the server handled it, nothing should be sent.
+    fetchMock.mockResolvedValue(jsonResponse({ ok: true }));
+    const user = userEvent.setup();
+    render(<ClinicInterestForm />);
+    await fillValidForm(user);
+    await user.click(submitButton());
+
+    await screen.findByRole("status");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0][0]).toBe("/api/clinic-interest");
+  });
+
+  it.each([
+    ["Web3Forms returns success:false", () => jsonResponse({ success: false })],
+    ["Web3Forms returns 403", () => jsonResponse({ success: false }, 403)],
+    ["Web3Forms returns an unparseable body", () => new Response("nope")],
+  ])("shows an error, not success, when %s", async (_label, respond) => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url === WEB3FORMS
+        ? respond()
+        : jsonResponse({ ok: true, forward: { work_email: VALID.work_email } })
+    );
+    const user = userEvent.setup();
+    render(<ClinicInterestForm />);
+    await fillValidForm(user);
+    await user.click(submitButton());
+
+    expect(await screen.findByRole("alert")).toBeVisible();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("shows an error, not success, when the Web3Forms request throws", async () => {
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url === WEB3FORMS) throw new TypeError("network down");
+      return jsonResponse({ ok: true, forward: { work_email: VALID.work_email } });
+    });
+    const user = userEvent.setup();
+    render(<ClinicInterestForm />);
+    await fillValidForm(user);
+    await user.click(submitButton());
+
+    expect(await screen.findByRole("alert")).toBeVisible();
+    expect(screen.queryByRole("status")).toBeNull();
   });
 });
 
