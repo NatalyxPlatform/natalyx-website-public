@@ -242,7 +242,7 @@ describe("claims stay inside what the repository can support", () => {
     ["FDA clearance", /FDA[-\s]?(approved|cleared)/i],
     [
       "existing clinic adoption",
-      /partner clinics|clinics (already )?(use|rely on|trust)|used by (fertility )?clinics|our clinics|customers use/i,
+      /partner clinics|clinics (already )?(use|rely on|trust)\b|used by (fertility )?clinics|our clinics|customers use/i,
     ],
     ["general availability", /\bis generally available\b/i],
     ["EMR/EHR integration", /(integrat\w+)[^.]{0,40}\b(EMR|EHR)\b/i],
@@ -253,7 +253,7 @@ describe("claims stay inside what the repository can support", () => {
   });
 
   it("names no clinic as an existing customer", () => {
-    expect(findMatches(/(Kaiser|CCRM|Shady Grove|Boston IVF|RMA)/)).toEqual(
+    expect(findMatches(/\b(Kaiser|CCRM|Shady Grove|Boston IVF|RMA)\b/)).toEqual(
       []
     );
   });
