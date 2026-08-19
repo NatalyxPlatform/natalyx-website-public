@@ -68,10 +68,15 @@ Load-bearing properties — check these before changing anything here:
 
 ## Leads
 
-Clinic leads go to `marketing_private.clinic_interest_leads`. The historical
-participant leads in `marketing_private.public_interest_leads` are read-only
-history: not migrated, not rewritten, not reinterpreted, and no longer written
-by this site. Both carry an explicit `lead_type`.
+Clinic leads go to `marketing_private.clinic_interest_leads`, append-only: one
+row per submission, so a corrected phone number or a second clinic registered
+from one address is never silently dropped.
+
+The historical participant leads in `marketing_private.public_interest_leads`
+are treated as history: not migrated, not rewritten, not reinterpreted, and no
+longer written by this site. That is a property of this code — **no database
+rule enforces it**. The two populations are separated by being separate tables;
+only the clinic table has a `lead_type` column.
 
 ## Checks
 

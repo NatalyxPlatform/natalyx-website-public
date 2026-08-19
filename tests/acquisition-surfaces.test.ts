@@ -67,7 +67,11 @@ function findInCode(pattern: RegExp): string[] {
 
 describe("no retired participant acquisition path survives", () => {
   it("links to the retired /signup route nowhere in the app", () => {
-    expect(findInCode(/["'`]\/signup/)).toEqual([]);
+    // src/middleware.ts must name /signup: it is the redirect source, not a
+    // link. Anywhere else is a live participant entry point.
+    expect(
+      findInCode(/["'`]\/signup/).filter((p) => p !== "src/middleware.ts")
+    ).toEqual([]);
   });
 
   it("has no role-preselection links", () => {
@@ -111,11 +115,15 @@ describe("no retired participant acquisition path survives", () => {
     expect(routes).toEqual(["src/app/api/clinic-interest/route.ts"]);
   });
 
-  it("redirects the stale /signup link permanently", () => {
-    const config = read("next.config.ts");
-    expect(config).toMatch(/source:\s*"\/signup"/);
-    expect(config).toMatch(/destination:\s*"\/clinic-interest"/);
-    expect(config).toMatch(/permanent:\s*true/);
+  it("redirects the stale /signup link permanently, without its query", () => {
+    const middleware = read("src/middleware.ts");
+    expect(middleware).toMatch(/matcher:\s*"\/signup"/);
+    expect(middleware).toMatch(/pathname = "\/clinic-interest"/);
+    expect(middleware).toMatch(/url\.search = ""/);
+    expect(middleware).toMatch(/308/);
+
+    // A config redirect would forward ?role=... into the clinic flow.
+    expect(read("next.config.ts")).not.toMatch(/async redirects\(/);
   });
 
   it("never posts to a third party from the browser", () => {
@@ -232,7 +240,10 @@ describe("claims stay inside what the repository can support", () => {
     ["HIPAA compliance", /HIPAA[-\s]?compliant/i],
     ["clinical validation", /clinically[-\s]validated/i],
     ["FDA clearance", /FDA[-\s]?(approved|cleared)/i],
-    ["existing partner clinics", /partner clinics|clinics already use|trusted by/i],
+    [
+      "existing clinic adoption",
+      /partner clinics|clinics (already )?(use|rely on|trust)|used by (fertility )?clinics|our clinics|customers use/i,
+    ],
     ["general availability", /\bis generally available\b/i],
     ["EMR/EHR integration", /(integrat\w+)[^.]{0,40}\b(EMR|EHR)\b/i],
     ["replacing professionals", /replaces?\s+(your\s+)?(staff|coordinators|lawyers|attorneys|doctors)/i],
@@ -262,6 +273,15 @@ describe("claims stay inside what the repository can support", () => {
     expect(landing).toMatch(
       /does not make clinical, legal, insurance, psychological, or eligibility determinations/i
     );
+  });
+});
+
+describe("the form discloses what happens to the details", () => {
+  it("says what is stored, why, and that processors are involved", () => {
+    const form = read("src/components/clinic-interest/ClinicInterestForm.tsx");
+    expect(form).toMatch(/stored so we can contact your clinic/i);
+    expect(form).toMatch(/email and database providers/i);
+    expect(form).toMatch(/not used for anything else/i);
   });
 });
 
@@ -330,6 +350,33 @@ describe("historical participant leads are preserved", () => {
     expect(migration).toMatch(/lead_type text not null default 'clinic_interest'/);
     expect(migration).toMatch(/schema_version integer not null default 1/);
     expect(migration).toMatch(/comment on table marketing_private\.public_interest_leads/);
+  });
+
+  it("does not claim a lead_type column the historical table lacks", () => {
+    // The historical table genuinely has no such column.
+    expect(read(legacyTable)).not.toMatch(/lead_type/);
+
+    for (const doc of [clinicTable, "README.md", "AGENTS.md"]) {
+      expect(read(doc), doc).not.toMatch(
+        /both (tables )?carry an explicit lead_type/i
+      );
+    }
+  });
+
+  it("does not claim database-enforced immutability it has not implemented", () => {
+    const migration = read(clinicTable);
+    // "Read-only" reads as an enforced guarantee; nothing enforces it.
+    expect(migration).not.toMatch(/Read-only:/);
+    expect(migration).toMatch(/not enforced in the database/i);
+    expect(read("AGENTS.md")).toMatch(/no database\s+rule enforces it/i);
+  });
+
+  it("stores clinic leads append-only", () => {
+    const migration = read(clinicTable);
+    expect(migration).toMatch(/append-only/);
+    expect(migration).not.toMatch(/work_email text not null unique/);
+    expect(read("src/lib/leadDelivery.ts")).not.toMatch(/ignoreDuplicates/);
+    expect(read("src/lib/leadDelivery.ts")).toMatch(/\.insert\(lead\)/);
   });
 
   it("writes only to the clinic table from application code", () => {

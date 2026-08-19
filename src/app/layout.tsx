@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 export const metadata: Metadata = {
   title: "Natalyx — Clinic-first coordination for surrogacy journeys",
   description:
-    "Natalyx is the operational layer fertility clinics use to coordinate known-surrogate journeys: participant preparation, provider handoffs, outstanding records, appointments, and shared journey context. The clinic and its providers stay authoritative.",
+    "Natalyx is building the operational layer for fertility clinics coordinating known-surrogate journeys: participant preparation, provider handoffs, outstanding records, appointments, and shared journey context. The clinic and its providers stay authoritative.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://natalyx.health"
   ),

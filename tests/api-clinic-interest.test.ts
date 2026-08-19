@@ -169,6 +169,44 @@ describe("POST /api/clinic-interest — retired participant fields", () => {
     expect(deliver.mock.calls[0][0]).not.toHaveProperty(field);
   });
 
+  it("never lets a retired role reach the lead through the Referer header", async () => {
+    const request = new Request("https://natalyx.health/api/clinic-interest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-forwarded-for": "203.0.113.200",
+        referer: "https://natalyx.health/clinic-interest?role=gestational_surrogate",
+      },
+      body: JSON.stringify(validBody),
+    });
+    await POST(request);
+
+    const lead = deliver.mock.calls[0][0];
+    expect(lead.referrer).not.toContain("role=");
+    expect(lead.referrer).not.toContain("gestational_surrogate");
+  });
+
+  it.each([
+    "intended_parent",
+    "gestational_surrogate",
+    "donor",
+    "not_sure",
+  ])("no retired identifier %s appears anywhere in the delivered lead", async (identifier) => {
+    const request = new Request("https://natalyx.health/api/clinic-interest", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-forwarded-for": "203.0.113.201",
+        referer: `https://natalyx.health/clinic-interest?role=${identifier}&utm_source=x`,
+        "user-agent": "vitest",
+      },
+      body: JSON.stringify({ ...validBody, role: identifier }),
+    });
+    await POST(request);
+
+    expect(JSON.stringify(deliver.mock.calls[0][0])).not.toContain(identifier);
+  });
+
   it("accepts the submission without a role field at all", async () => {
     const response = await POST(post(validBody));
     expect(response.status).toBe(200);

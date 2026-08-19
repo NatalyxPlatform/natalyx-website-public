@@ -234,6 +234,11 @@ export function ClinicInterestForm() {
               Registering interest is not an application, and creates no
               agreement or obligation for your clinic.
             </p>
+            <p className="mt-2 text-xs text-navy-light/80">
+              The four details above are stored so we can contact your clinic
+              about Natalyx, and are handled by our email and database providers
+              for that purpose. They are not used for anything else.
+            </p>
             {errors.consent_to_contact && (
               <p
                 id="consent_to_contact-err"

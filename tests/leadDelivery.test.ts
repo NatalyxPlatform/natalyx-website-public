@@ -15,13 +15,12 @@ const supabaseEnv = {
 };
 
 /** Swapped per test so no suite ever reaches a real Supabase project. */
-let supabaseUpsert: (
-  row: unknown,
-  options: unknown
+let supabaseInsert: (
+  row: unknown
 ) => Promise<{ error: { message: string } | null }>;
 
 const supabaseFrom = vi.fn((table: string) => ({
-  upsert: (row: unknown, options: unknown) => supabaseUpsert(row, options),
+  insert: (row: unknown) => supabaseInsert(row),
   table,
 }));
 
@@ -70,7 +69,7 @@ const RETIRED_PARTICIPANT_KEYS = [
 
 beforeEach(() => {
   supabaseFrom.mockClear();
-  supabaseUpsert = async () => {
+  supabaseInsert = async () => {
     throw new Error("supabase channel not configured for this test");
   };
 });
@@ -130,6 +129,22 @@ describe("buildClinicInterestLead", () => {
     });
     expect(withMeta.user_agent).toHaveLength(500);
     expect(withMeta.referrer).toBeNull();
+  });
+
+  it("stores only the origin and path of the referrer", () => {
+    const lead = buildClinicInterestLead(parsed(), {
+      referrer:
+        "https://natalyx.health/clinic-interest?role=gestational_surrogate&utm=x#frag",
+    });
+    expect(lead.referrer).toBe("https://natalyx.health/clinic-interest");
+  });
+
+  it.each([
+    "not a url",
+    "javascript:alert(1)",
+    "",
+  ])("drops an unusable referrer %j rather than storing it", (referrer) => {
+    expect(buildClinicInterestLead(parsed(), { referrer }).referrer).toBeNull();
   });
 
   it("targets the clinic table, never the historical participant table", () => {
@@ -255,6 +270,7 @@ describe("deliverClinicInterestLead", () => {
 
     const record = info.mock.calls[0][1] as Record<string, unknown>;
     expect(record.fields).toEqual(EXPECTED_LEAD_KEYS);
+    expect(JSON.stringify(record)).not.toContain("role=");
     expect(record.work_email).toBe("d***@bayview.example");
     expect(record.phone).toBe("***42");
     expect(JSON.stringify(record)).not.toContain("dana.reyes@bayview.example");
@@ -263,10 +279,10 @@ describe("deliverClinicInterestLead", () => {
   });
 
   it("inserts into the clinic table via supabase", async () => {
-    const upsert = vi.fn<
-      (row: unknown, options: unknown) => Promise<{ error: null }>
-    >(async () => ({ error: null }));
-    supabaseUpsert = upsert;
+    const insert = vi.fn<(row: unknown) => Promise<{ error: null }>>(
+      async () => ({ error: null })
+    );
+    supabaseInsert = insert;
 
     const result = await deliverClinicInterestLead(
       buildClinicInterestLead(parsed()),
@@ -275,18 +291,38 @@ describe("deliverClinicInterestLead", () => {
 
     expect(supabaseFrom).toHaveBeenCalledWith("clinic_interest_leads");
     expect(supabaseFrom).not.toHaveBeenCalledWith("public_interest_leads");
-    expect(upsert.mock.calls[0][1]).toEqual({
-      onConflict: "work_email",
-      ignoreDuplicates: true,
-    });
     expect(
-      Object.keys(upsert.mock.calls[0][0] as Record<string, unknown>).sort()
+      Object.keys(insert.mock.calls[0][0] as Record<string, unknown>).sort()
     ).toEqual(EXPECTED_LEAD_KEYS);
     expect(result.delivered).toEqual(["supabase"]);
   });
 
+  it("appends a repeat submission instead of silently discarding it", async () => {
+    const rows: unknown[] = [];
+    supabaseInsert = async (row) => {
+      rows.push(row);
+      return { error: null };
+    };
+
+    await deliverClinicInterestLead(buildClinicInterestLead(parsed()), supabaseEnv);
+    await deliverClinicInterestLead(
+      buildClinicInterestLead(parsed({ phone: "+1 (415) 555 0199" })),
+      supabaseEnv
+    );
+
+    // Same address, corrected phone: both must be recorded, because the page
+    // told the sender both times that the submission was received.
+    expect(rows).toHaveLength(2);
+    expect((rows[0] as { phone_normalized: string }).phone_normalized).toBe(
+      "+14155550142"
+    );
+    expect((rows[1] as { phone_normalized: string }).phone_normalized).toBe(
+      "+14155550199"
+    );
+  });
+
   it("still succeeds when one of two channels fails", async () => {
-    supabaseUpsert = vi.fn(async () => ({ error: { message: "db down" } }));
+    supabaseInsert = vi.fn(async () => ({ error: { message: "db down" } }));
     vi.stubGlobal(
       "fetch",
       vi.fn(
@@ -309,7 +345,7 @@ describe("deliverClinicInterestLead", () => {
   });
 
   it("throws when both configured channels fail", async () => {
-    supabaseUpsert = vi.fn(async () => ({ error: { message: "db down" } }));
+    supabaseInsert = vi.fn(async () => ({ error: { message: "db down" } }));
     vi.stubGlobal(
       "fetch",
       vi.fn(async () => new Response("nope", { status: 500 }))

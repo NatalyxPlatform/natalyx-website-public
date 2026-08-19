@@ -85,8 +85,18 @@ ClinicInterestForm  ->  POST /api/clinic-interest  ->  clinicInterestSchema
 New clinic leads go to `marketing_private.clinic_interest_leads`. The
 historical participant submissions in `marketing_private.public_interest_leads`
 are left exactly as they are - not migrated, not rewritten, not reinterpreted -
-and the website no longer writes to that table. Both carry an explicit
-`lead_type` so the two populations stay distinguishable.
+and the website no longer writes to that table. Nothing in the database enforces
+that; it is a property of this code, not a constraint.
+
+The two populations are kept apart by being separate tables. The clinic table
+additionally stamps `lead_type` on every row; the historical table has no such
+column and is not being altered to add one, so anything unioning the two must
+supply the discriminator for the older rows.
+
+Submissions are append-only - every submission is a row. A clinic correcting a
+phone number, or one address registering a second clinic, must not be dropped
+while the page reports success. De-duplication belongs to whoever reads the
+leads.
 
 ### Deployment note
 

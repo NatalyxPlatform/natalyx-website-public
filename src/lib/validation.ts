@@ -34,6 +34,25 @@ export function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
 }
 
+/**
+ * Keeps the page a submission came from and discards everything after it.
+ *
+ * A referrer is attacker- and history-controlled, and our own retired /signup
+ * links carried `?role=<participant role>`. Storing the raw header would put
+ * retired participant roles (and any other query data) into a clinic lead, so
+ * only the origin and path survive.
+ */
+export function sanitizeReferrer(value: string | null | undefined): string | null {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return `${url.origin}${url.pathname}`;
+  } catch {
+    return null;
+  }
+}
+
 export const clinicInterestSchema = z.object({
   clinic_name: z
     .string()

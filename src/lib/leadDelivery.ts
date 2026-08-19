@@ -4,7 +4,11 @@ import {
   CLINIC_INTEREST_SOURCE,
 } from "./constants";
 import { getSupabaseAdmin } from "./supabase";
-import { normalizePhone, type ClinicInterestParsed } from "./validation";
+import {
+  normalizePhone,
+  sanitizeReferrer,
+  type ClinicInterestParsed,
+} from "./validation";
 
 /**
  * Clinic-interest leads live in their own table. The historical participant
@@ -55,7 +59,7 @@ export function buildClinicInterestLead(
     schema_version: CLINIC_INTEREST_SCHEMA_VERSION,
     source: CLINIC_INTEREST_SOURCE,
     user_agent: meta.userAgent?.slice(0, 500) ?? null,
-    referrer: meta.referrer?.slice(0, 500) ?? null,
+    referrer: sanitizeReferrer(meta.referrer),
   };
 }
 
@@ -117,11 +121,15 @@ function redactPhone(phone: string): string {
   return digits.length <= 2 ? "***" : `***${digits.slice(-2)}`;
 }
 
+/**
+ * Append-only: every accepted submission becomes a row. Dropping a repeat
+ * submission would discard a corrected phone number, or a second clinic
+ * registered from one address, while the page told the sender it was recorded.
+ * De-duplication belongs to whoever reads these leads.
+ */
 async function deliverToSupabase(lead: ClinicInterestLead): Promise<void> {
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase
-    .from(CLINIC_INTEREST_TABLE)
-    .upsert(lead, { onConflict: "work_email", ignoreDuplicates: true });
+  const { error } = await supabase.from(CLINIC_INTEREST_TABLE).insert(lead);
 
   if (error) {
     throw new Error(error.message);
@@ -167,6 +175,8 @@ function deliverToLog(lead: ClinicInterestLead): void {
     work_email: redactEmail(lead.work_email),
     phone: redactPhone(lead.phone_normalized),
     consent_to_contact: lead.consent_to_contact,
+    // Sanitized to origin + path, so this carries no query data and no PII.
+    referrer: lead.referrer,
   });
 }
 
