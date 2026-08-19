@@ -130,8 +130,19 @@ describe("no retired participant acquisition path survives", () => {
     const clientFiles = sources.filter(({ text }) => text.includes("use client"));
     for (const file of clientFiles) {
       expect(file.text, file.path).not.toMatch(/https?:\/\/api\.web3forms\.com/);
+      // Importing the delivery module from a client component would pull the
+      // access key and the provider endpoint into the browser bundle.
+      expect(file.text, file.path).not.toMatch(/leadDelivery/);
     }
     expect(findInCode(/NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY/)).toEqual([]);
+  });
+
+  it("keeps the built-in access key in server-only code", () => {
+    // Public by Web3Forms' design, so this is not a secrecy control - it is
+    // what keeps submissions flowing through our own validated endpoint.
+    expect(findMatches(/3bf87d87-e4b2-459a-aad2-549e24d5e1e2/)).toEqual([
+      "src/lib/leadDelivery.ts",
+    ]);
   });
 });
 

@@ -38,7 +38,9 @@ substrate that establishes it, because evidence is scoped by where it ran.
 | C5 | Server | Rate limit exceeded for a client IP | Submit again | HTTP 429 and no delivery | Unlimited relaying to the delivery provider | `route` |
 | C6 | Server | `SUPABASE_*` set | Submit | Row inserted into `marketing_private.clinic_interest_leads` | Any write to `marketing_private.public_interest_leads` | `unit`, `route` |
 | C6b | Server | A lead already exists for that work email | Submit again with a corrected phone | Both submissions are stored (append-only) | Silently discarding a submission the page reported as recorded | `unit` |
-| C7 | Server | No delivery channel configured | Submit | HTTP 500 and an error response | A success response with nothing delivered | `route` |
+| C7 | Server | Every configured channel fails | Submit | HTTP 502 and an error response | A success response with nothing delivered | `route` |
+| C7b | Server | No environment configuration at all | Resolve channels | Web3Forms resolves via the built-in access key; the channel list is never empty | An unconfigured deployment accepting leads it cannot deliver | `unit` |
+| C7c | Any reader | Whole repo | Locate the built-in access key | It appears only in `src/lib/leadDelivery.ts`, and no client component imports that module | The key or the provider endpoint reaching the browser bundle | `source` |
 | D1 | Clinic visitor | Valid submission, delivery succeeds | Submit | Success state confirms the request was **received** | Echoing the submitted email/phone/clinic name back; promising acceptance, onboarding, partnership, or a response time | `dom`, `route` |
 | D2 | Clinic visitor | Valid submission, delivery fails (500/network) | Submit | An error state and the form still present with values intact | Any success state rendering after a failed submission | `dom` |
 | E1 | Any reader | Whole repo | Search acquisition surfaces | No "Register interest" / "Join as…" / role-selection CTA copy remains on acquisition surfaces; no `?role=` links | Retired acquisition copy surviving in metadata, OG tags, or nav | `source` |
@@ -57,9 +59,11 @@ These are real obligations that local evidence cannot discharge. They are listed
 so nothing here is mistaken for having covered them:
 
 - **Production delivery.** `LEAD_DELIVERY_MODE=log` proves the chain, not that
-  a deployed environment delivers. Applying the migration, granting schema
-  permissions, and exercising a configured Supabase or Web3Forms channel are
-  deployment-time verification.
+  a deployed environment delivers. Exercising the real Web3Forms channel, and
+  applying the migration plus schema permissions if Supabase is ever enabled,
+  are deployment-time verification. No test here makes a real network request:
+  `tests/setup.ts` blocks unstubbed `fetch`, which matters because the built-in
+  access key would otherwise post to the live inbox.
 - **Processor suitability.** Whether Web3Forms and Supabase are approved to
   handle business-contact PII, and what privacy notice must accompany that, is
   a decision outside this repository. The form carries an inline disclosure; a

@@ -71,9 +71,11 @@ ClinicInterestForm  ->  POST /api/clinic-interest  ->  clinicInterestSchema
   client and the route, so the two cannot drift. Unknown keys are stripped.
 - `src/lib/leadDelivery.ts` builds the delivered record from named fields and
   fans it out to the configured channels (`supabase`, `web3forms`, or the
-  explicit `log` mode). Nothing configured, or every channel failing, raises -
-  the route answers 500/502 and the form shows an error. A submission that was
-  not delivered is never shown as a success.
+  explicit `log` mode). Web3Forms is always available: the module carries a
+  built-in access key, so a deployment with no environment configuration still
+  delivers leads. If every channel fails the route answers 502 and the form
+  shows an error. A submission that was not delivered is never shown as a
+  success.
 - `src/lib/rateLimit.ts` is a best-effort per-address throttle on the public
   endpoint. Read its header comment before relying on it: it is per process and
   trusts the platform's forwarded headers.
@@ -98,11 +100,20 @@ phone number, or one address registering a second clinic, must not be dropped
 while the page reports success. De-duplication belongs to whoever reads the
 leads.
 
-### Deployment note
+### The Web3Forms access key
 
-The Web3Forms access key moved from a bundled `NEXT_PUBLIC_` variable with a
-hard-coded fallback to the server-only `WEB3FORMS_ACCESS_KEY`. There is no
-fallback any more, so a deployment that relies on Web3Forms must set it.
+It moved out of the browser bundle into server-only code, and
+`WEB3FORMS_ACCESS_KEY` overrides it. **No deployment configuration is
+required** - the built-in key means the form works on a fresh deploy.
+
+This is not a secrecy control. Web3Forms access keys are public by design;
+their documentation says the key "can be public", because it is normally
+embedded in a client-side HTML form. It names a destination inbox and grants no
+account access. What the move actually buys is that submissions now travel
+through our own endpoint, where they are validated, honeypot-checked and
+rate-limited before anything is forwarded.
+
+Set `WEB3FORMS_ACCESS_KEY` only to point leads at a different inbox.
 
 ## Repo Ownership
 

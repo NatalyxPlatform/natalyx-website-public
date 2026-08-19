@@ -59,12 +59,18 @@ Load-bearing properties — check these before changing anything here:
 - **The lead is built from named fields.** A key added to the form cannot reach
   delivery without being added to `buildClinicInterestLead`, and unknown keys
   are stripped by the schema.
-- **A failure is never a success.** No channel configured, or every channel
-  failing, raises; the route answers 500/502 and the form renders an error.
-  Success renders only on an explicit `ok: true`.
+- **A failure is never a success.** Every channel failing raises; the route
+  answers 502 and the form renders an error. Success renders only on an
+  explicit `ok: true`.
+- **Delivery always has a channel.** `leadDelivery.ts` carries a built-in
+  Web3Forms access key (public by that provider's design), so an unconfigured
+  deployment delivers rather than dropping leads. `WEB3FORMS_ACCESS_KEY`
+  overrides it. Keep the key in server-only code - not for secrecy, but so
+  submissions keep going through our validated endpoint.
 - **Nothing is verified.** Email and phone normalization is formatting only.
   No copy may imply an address or number was checked.
-- **The browser never posts to a third party.** Delivery keys are server-only.
+- **The browser never posts to a third party.** Never import `leadDelivery`
+  from a client component.
 
 ## Leads
 

@@ -6,6 +6,8 @@ import {
   LeadDeliveryConfigError,
   LeadDeliveryError,
   resolveDeliveryChannels,
+  WEB3FORMS_FALLBACK_ACCESS_KEY,
+  web3formsAccessKey,
 } from "@/lib/leadDelivery";
 import { clinicInterestSchema } from "@/lib/validation";
 
@@ -154,40 +156,42 @@ describe("buildClinicInterestLead", () => {
 });
 
 describe("resolveDeliveryChannels", () => {
-  it("returns nothing when no channel is configured", () => {
-    expect(resolveDeliveryChannels({})).toEqual([]);
+  it("delivers via web3forms even with no configuration at all", () => {
+    // The point of the built-in access key: an unconfigured deployment still
+    // delivers leads instead of dropping them.
+    expect(resolveDeliveryChannels({})).toEqual(["web3forms"]);
   });
 
-  it("uses supabase when both supabase variables are present", () => {
+  it.each([
+    ["empty", {}],
+    ["half-configured supabase", { SUPABASE_URL: "https://example.supabase.co" }],
+    ["unrelated variables only", { NODE_ENV: "production" }],
+  ])("never resolves an empty channel list (%s)", (_label, env) => {
+    expect(resolveDeliveryChannels(env).length).toBeGreaterThan(0);
+  });
+
+  it("adds supabase when both supabase variables are present", () => {
     expect(
       resolveDeliveryChannels({
         SUPABASE_URL: "https://example.supabase.co",
         SUPABASE_SERVICE_ROLE_KEY: "service-role",
       })
-    ).toEqual(["supabase"]);
+    ).toEqual(["supabase", "web3forms"]);
   });
 
   it("ignores a half-configured supabase", () => {
     expect(
       resolveDeliveryChannels({ SUPABASE_URL: "https://example.supabase.co" })
-    ).toEqual([]);
-  });
-
-  it("uses both channels when both are configured", () => {
-    expect(
-      resolveDeliveryChannels({
-        SUPABASE_URL: "https://example.supabase.co",
-        SUPABASE_SERVICE_ROLE_KEY: "service-role",
-        WEB3FORMS_ACCESS_KEY: "key",
-      })
-    ).toEqual(["supabase", "web3forms"]);
+    ).toEqual(["web3forms"]);
   });
 
   it("uses the log channel only when explicitly asked", () => {
     expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "log" })).toEqual([
       "log",
     ]);
-    expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "" })).toEqual([]);
+    expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "" })).toEqual([
+      "web3forms",
+    ]);
   });
 
   it("never falls back to the log channel when real channels are configured", () => {
@@ -197,11 +201,65 @@ describe("resolveDeliveryChannels", () => {
   });
 });
 
+describe("web3formsAccessKey", () => {
+  it("uses the built-in key when the environment sets none", () => {
+    expect(web3formsAccessKey({})).toBe(WEB3FORMS_FALLBACK_ACCESS_KEY);
+  });
+
+  it("lets the environment override the destination without a code change", () => {
+    expect(web3formsAccessKey({ WEB3FORMS_ACCESS_KEY: "override" })).toBe(
+      "override"
+    );
+  });
+
+  it("ignores an empty override rather than sending to nowhere", () => {
+    expect(web3formsAccessKey({ WEB3FORMS_ACCESS_KEY: "" })).toBe(
+      WEB3FORMS_FALLBACK_ACCESS_KEY
+    );
+  });
+
+  it("sends the resolved key to the provider", async () => {
+    const fetchMock = vi.fn<
+      (url: string, init: RequestInit) => Promise<Response>
+    >(async () =>
+      new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await deliverClinicInterestLead(buildClinicInterestLead(parsed()), {});
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(body.access_key).toBe(WEB3FORMS_FALLBACK_ACCESS_KEY);
+  });
+});
+
+describe("test harness safety", () => {
+  it("blocks any unstubbed network request", async () => {
+    // Web3Forms is now always a resolved channel, so a delivery test that
+    // forgot to stub fetch would post a lead to the live inbox. tests/setup.ts
+    // makes that impossible; this asserts the guard is actually in place.
+    await expect(fetch("https://api.web3forms.com/submit")).rejects.toThrow(
+      /Unstubbed network request/
+    );
+  });
+
+  it("leaves the guard in place after a test stubs and unstubs fetch", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("ok")));
+    vi.unstubAllGlobals();
+    await expect(fetch("https://api.web3forms.com/submit")).rejects.toThrow(
+      /Unstubbed network request/
+    );
+  });
+});
+
 describe("deliverClinicInterestLead", () => {
-  it("refuses to report success when nothing is configured", async () => {
-    await expect(
-      deliverClinicInterestLead(buildClinicInterestLead(parsed()), {})
-    ).rejects.toBeInstanceOf(LeadDeliveryConfigError);
+  it("keeps the config guard for a future conditional fallback", () => {
+    // Unreachable today by construction; asserted so the guard is not quietly
+    // deleted as dead code.
+    expect(new LeadDeliveryConfigError()).toBeInstanceOf(Error);
+    expect(new LeadDeliveryConfigError().name).toBe("LeadDeliveryConfigError");
   });
 
   it("throws when the only configured channel fails", async () => {

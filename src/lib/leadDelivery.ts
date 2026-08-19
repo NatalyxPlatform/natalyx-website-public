@@ -20,6 +20,30 @@ export const CLINIC_INTEREST_TABLE = "clinic_interest_leads";
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
+/**
+ * Built-in Web3Forms access key, so a deployment delivers leads with no
+ * environment configuration at all.
+ *
+ * This is not a secret. Web3Forms access keys are public by design - their own
+ * documentation says "Don't worry this can be public" - because the key is
+ * normally embedded in a client-side HTML form. It identifies the destination
+ * inbox; it grants no account access.
+ *
+ * `WEB3FORMS_ACCESS_KEY` still takes precedence, so the destination can be
+ * changed through environment configuration without a code change.
+ *
+ * It lives here, in server-only code, rather than in the form component. That
+ * keeps it out of the browser bundle - not for secrecy, but because routing
+ * submissions through our own endpoint is what lets us validate on the server,
+ * enforce the honeypot, and rate-limit.
+ */
+export const WEB3FORMS_FALLBACK_ACCESS_KEY =
+  "3bf87d87-e4b2-459a-aad2-549e24d5e1e2";
+
+export function web3formsAccessKey(env: Env = process.env): string {
+  return env.WEB3FORMS_ACCESS_KEY || WEB3FORMS_FALLBACK_ACCESS_KEY;
+}
+
 export type ClinicInterestLead = {
   clinic_name: string;
   contact_name: string;
@@ -65,10 +89,16 @@ export function buildClinicInterestLead(
 
 export type DeliveryChannelName = "supabase" | "web3forms" | "log";
 
+/**
+ * Defensive invariant. `resolveDeliveryChannels` cannot currently return an
+ * empty list, because Web3Forms is always available via the built-in access
+ * key. This guard exists so that if that fallback is ever made conditional,
+ * the result is a loud failure rather than a lead accepted and dropped.
+ */
 export class LeadDeliveryConfigError extends Error {
   constructor() {
     super(
-      "No clinic-interest delivery channel is configured. Set SUPABASE_URL + " +
+      "No clinic-interest delivery channel resolved. Set SUPABASE_URL + " +
         "SUPABASE_SERVICE_ROLE_KEY, or WEB3FORMS_ACCESS_KEY, or " +
         "LEAD_DELIVERY_MODE=log for local development."
     );
@@ -104,9 +134,9 @@ export function resolveDeliveryChannels(env: Env = process.env): DeliveryChannel
   if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
     channels.push("supabase");
   }
-  if (env.WEB3FORMS_ACCESS_KEY) {
-    channels.push("web3forms");
-  }
+  // Always available: the access key falls back to a built-in value, so an
+  // unconfigured deployment still delivers rather than dropping leads.
+  channels.push("web3forms");
   return channels;
 }
 
@@ -202,7 +232,7 @@ export async function deliverClinicInterestLead(
       if (channel === "supabase") {
         await deliverToSupabase(lead);
       } else if (channel === "web3forms") {
-        await deliverToWeb3Forms(lead, env.WEB3FORMS_ACCESS_KEY as string);
+        await deliverToWeb3Forms(lead, web3formsAccessKey(env));
       } else {
         deliverToLog(lead);
       }
