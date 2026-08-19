@@ -4,7 +4,7 @@ import { ClinicInterestForm } from "@/components/clinic-interest/ClinicInterestF
 export const metadata: Metadata = {
   title: "Register your clinic's interest — Natalyx",
   description:
-    "Fertility clinics can register interest in Natalyx, the coordination layer for known-surrogate journeys. Four details, no patient information.",
+    "Tell Natalyx about your clinic. Natalyx is the coordination layer for known-surrogate journeys: four details, no patient information.",
   robots: { index: false, follow: false },
 };
 
