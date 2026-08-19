@@ -2,15 +2,13 @@ import { NextResponse } from "next/server";
 import {
   buildClinicInterestLead,
   deliverClinicInterestLead,
+  isLogOnlyMode,
   type ClinicInterestLead,
 } from "@/lib/leadDelivery";
 import { checkRateLimit, clientIpFromHeaders } from "@/lib/rateLimit";
 import { clinicInterestSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
-
-const GENERIC_FAILURE =
-  "We could not record your request just now. Please try again in a moment.";
 
 /**
  * `forward` is the record the browser must POST to Web3Forms, whose free plan
@@ -87,23 +85,32 @@ export async function POST(
     referrer: request.headers.get("referer"),
   });
 
-  let recordedServerSide = false;
+  // Storage is supplementary and must never block the email: an optional
+  // dependency failing the primary delivery path is the outage this design
+  // exists to avoid.
+  //
+  // Only channel names are logged. A provider error message can carry the
+  // submitted data verbatim - a Postgres unique violation, for instance, quotes
+  // the offending value - so the reason stays out of our logs. The provider's
+  // own dashboard has the detail.
   try {
-    const { delivered } = await deliverClinicInterestLead(lead);
-    recordedServerSide = delivered.includes("log");
-  } catch (error) {
-    // Never echo contact details into the log.
-    console.error(
-      "[clinic-interest] server-side storage failed",
-      error instanceof Error ? `${error.name}: ${error.message}` : "unknown error"
-    );
-    return failure(502, GENERIC_FAILURE);
+    const { failures } = await deliverClinicInterestLead(lead);
+    if (failures.length > 0) {
+      console.error(
+        "[clinic-interest] server-side storage failed for channel(s):",
+        failures.map((f) => f.channel).join(", ")
+      );
+    }
+  } catch {
+    // deliverClinicInterestLead is contracted not to throw. If it ever does,
+    // that is a storage bug - still not a reason to withhold the email.
+    console.error("[clinic-interest] server-side storage threw unexpectedly");
   }
 
-  // In log mode the lead is already recorded and nothing should leave the
-  // machine, so the browser is given nothing to forward.
+  // Gated on the environment, never on whether the log write succeeded: a
+  // failed log must not fall through to emailing a real lead during testing.
   return NextResponse.json<SuccessBody>(
-    recordedServerSide ? { ok: true } : { ok: true, forward: lead },
+    isLogOnlyMode() ? { ok: true } : { ok: true, forward: lead },
     { status: 200 }
   );
 }

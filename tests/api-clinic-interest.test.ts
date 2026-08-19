@@ -353,16 +353,27 @@ describe("POST /api/clinic-interest — failures never become success", () => {
     expect(body.forward).toBeDefined();
   });
 
-  it("logs a storage failure without echoing contact details", async () => {
+  it("logs only the channel, never the provider's error text", async () => {
+    // A provider message can quote the submitted data verbatim - a Postgres
+    // unique violation includes the offending value - so the reason must not
+    // reach our logs.
     const errorLog = vi.spyOn(console, "error").mockImplementation(() => {});
     deliver.mockResolvedValue({
       delivered: [],
-      failures: [{ channel: "supabase", reason: "db down" }],
+      failures: [
+        {
+          channel: "supabase",
+          reason:
+            'duplicate key value violates unique constraint "x" Key (work_email)=(dana.reyes@bayview.example) already exists',
+        },
+      ],
     });
     await POST(post(validBody));
+
     const logged = JSON.stringify(errorLog.mock.calls);
-    expect(logged).toContain("db down");
+    expect(logged).toContain("supabase");
     expect(logged).not.toContain("bayview.example");
+    expect(logged).not.toContain("duplicate key");
     expect(logged).not.toContain("Dana Reyes");
   });
 

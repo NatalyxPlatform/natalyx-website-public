@@ -32,9 +32,21 @@ export const CONTACT_EMAIL = "hello@natalyx.health";
  */
 export const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 
-export const WEB3FORMS_ACCESS_KEY =
-  process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ??
+export const WEB3FORMS_BUILTIN_ACCESS_KEY =
   "3bf87d87-e4b2-459a-aad2-549e24d5e1e2";
+
+/**
+ * `??` would accept an empty or whitespace-only override and send Web3Forms a
+ * blank access key, which fails every submission. An unset, empty or blank
+ * variable all mean "not configured", so all three fall back.
+ */
+export function resolveWeb3FormsAccessKey(value?: string): string {
+  return value?.trim() ? value.trim() : WEB3FORMS_BUILTIN_ACCESS_KEY;
+}
+
+export const WEB3FORMS_ACCESS_KEY = resolveWeb3FormsAccessKey(
+  process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY
+);
 
 export const DEVELOPER_ACCESS_URL =
   process.env.NEXT_PUBLIC_DEVELOPER_ACCESS_URL ??

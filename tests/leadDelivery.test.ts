@@ -6,6 +6,10 @@ import {
   isLogOnlyMode,
   resolveDeliveryChannels,
 } from "@/lib/leadDelivery";
+import {
+  resolveWeb3FormsAccessKey,
+  WEB3FORMS_BUILTIN_ACCESS_KEY,
+} from "@/lib/constants";
 import { clinicInterestSchema } from "@/lib/validation";
 
 const supabaseEnv = {
@@ -184,6 +188,22 @@ describe("resolveDeliveryChannels", () => {
       "log",
     ]);
     expect(resolveDeliveryChannels({ LEAD_DELIVERY_MODE: "" })).toEqual([]);
+  });
+});
+
+describe("resolveWeb3FormsAccessKey", () => {
+  it.each([undefined, "", "   ", "\t\n"])(
+    "falls back to the built-in key for %j",
+    (value) => {
+      // `??` would pass a blank key through and fail every submission.
+      expect(resolveWeb3FormsAccessKey(value)).toBe(
+        WEB3FORMS_BUILTIN_ACCESS_KEY
+      );
+    }
+  );
+
+  it("uses a real override, trimmed", () => {
+    expect(resolveWeb3FormsAccessKey("  other-key  ")).toBe("other-key");
   });
 });
 
