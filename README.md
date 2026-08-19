@@ -70,12 +70,14 @@ ClinicInterestForm  ->  POST /api/clinic-interest  ->  clinicInterestSchema
 - `src/lib/validation.ts` holds the single zod schema used by **both** the
   client and the route, so the two cannot drift. Unknown keys are stripped.
 - `src/lib/leadDelivery.ts` builds the delivered record from named fields and
-  fans it out to the configured channels (`supabase`, `web3forms`, or the
-  explicit `log` mode). Web3Forms is always available: the module carries a
-  built-in access key, so a deployment with no environment configuration still
-  delivers leads. If every channel fails the route answers 502 and the form
-  shows an error. A submission that was not delivered is never shown as a
-  success.
+  runs the **server-side** channels (Supabase, or the `log` mode). It may
+  legitimately have none, and it never throws: a storage failure is logged and
+  reported back, never allowed to block the email.
+- **Email delivery happens in the browser.** Web3Forms rejects server-to-server
+  calls on the free plan (403 "Use our API in client side"), so the route hands
+  the built payload back as `forward` and the form POSTs it to Web3Forms. The
+  browser only relays what the server composed, so it cannot widen or alter
+  what is sent, and the form reports success only once Web3Forms accepts.
 - `src/lib/rateLimit.ts` is a best-effort per-address throttle on the public
   endpoint. Read its header comment before relying on it: it is per process and
   trusts the platform's forwarded headers.
@@ -102,18 +104,20 @@ leads.
 
 ### The Web3Forms access key
 
-It moved out of the browser bundle into server-only code, and
-`WEB3FORMS_ACCESS_KEY` overrides it. **No deployment configuration is
-required** - the built-in key means the form works on a fresh deploy.
+A built-in key ships in `src/lib/constants.ts`, so **no deployment
+configuration is required**. `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` overrides it to
+route leads to a different inbox.
 
-This is not a secrecy control. Web3Forms access keys are public by design;
-their documentation says the key "can be public", because it is normally
-embedded in a client-side HTML form. It names a destination inbox and grants no
-account access. What the move actually buys is that submissions now travel
-through our own endpoint, where they are validated, honeypot-checked and
-rate-limited before anything is forwarded.
+`NEXT_PUBLIC_` is correct here: the key genuinely must reach the browser,
+because the browser is what calls Web3Forms. Their access keys are public by
+design - the docs say the key "can be public", since it is normally embedded in
+client-side HTML. It names a destination inbox and grants no account access.
 
-Set `WEB3FORMS_ACCESS_KEY` only to point leads at a different inbox.
+Note what this does and does not buy. Routing through `/api/clinic-interest`
+first still gives server-side validation, honeypot enforcement and rate
+limiting on our endpoint, and it means the emailed payload is composed
+server-side. It does not stop anyone posting to Web3Forms directly with the
+public key - nothing can, and nothing could before.
 
 ## Repo Ownership
 

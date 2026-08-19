@@ -126,23 +126,37 @@ describe("no retired participant acquisition path survives", () => {
     expect(read("next.config.ts")).not.toMatch(/async redirects\(/);
   });
 
-  it("never posts to a third party from the browser", () => {
-    const clientFiles = sources.filter(({ text }) => text.includes("use client"));
-    for (const file of clientFiles) {
-      expect(file.text, file.path).not.toMatch(/https?:\/\/api\.web3forms\.com/);
-      // Importing the delivery module from a client component would pull the
-      // access key and the provider endpoint into the browser bundle.
-      expect(file.text, file.path).not.toMatch(/leadDelivery/);
+  it("never calls Web3Forms from server code", () => {
+    // Web3Forms rejects server-to-server calls (403, free plan). The browser
+    // must be the caller; the server route must never try. Comments explaining
+    // that are fine, so this scans code only.
+    expect(findInCode(/api\.web3forms\.com/)).toEqual(["src/lib/constants.ts"]);
+    for (const path of [
+      "src/lib/leadDelivery.ts",
+      "src/app/api/clinic-interest/route.ts",
+    ]) {
+      const code = sources.find((f) => f.path === path)?.code ?? "";
+      expect(code, path).not.toMatch(/web3forms/i);
     }
-    expect(findInCode(/NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY/)).toEqual([]);
   });
 
-  it("keeps the built-in access key in server-only code", () => {
-    // Public by Web3Forms' design, so this is not a secrecy control - it is
-    // what keeps submissions flowing through our own validated endpoint.
+  it("keeps the browser a relay, never the author of the payload", () => {
+    // The browser sends what the server handed it. If a client component could
+    // build the lead itself, server-side validation would be bypassable.
+    const form = read("src/components/clinic-interest/ClinicInterestForm.tsx");
+    expect(form).not.toMatch(/leadDelivery|buildClinicInterestLead/);
+    expect(form).toMatch(/data\.forward/);
+  });
+
+  it("holds the access key in one place, marked client-visible", () => {
+    // Public by Web3Forms' design and genuinely needed in the browser, so
+    // NEXT_PUBLIC_ is correct here - but it must not be duplicated around.
     expect(findMatches(/3bf87d87-e4b2-459a-aad2-549e24d5e1e2/)).toEqual([
-      "src/lib/leadDelivery.ts",
+      "src/lib/constants.ts",
     ]);
+    expect(read("src/lib/constants.ts")).toMatch(
+      /NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY/
+    );
   });
 });
 
@@ -283,6 +297,33 @@ describe("claims stay inside what the repository can support", () => {
     expect(landing).toMatch(/authoritative/i);
     expect(landing).toMatch(
       /does not make clinical, legal, insurance, psychological, or eligibility determinations/i
+    );
+  });
+});
+
+describe("the agent docs match the delivery behaviour", () => {
+  // Docs contradicting code caused real defects repeatedly on this branch, and
+  // AGENTS.md steers future work - a stale rule here can reintroduce an outage.
+  const docs = () => `${read("AGENTS.md")}
+${read("README.md")}`;
+
+  it("never claims a storage failure answers 502", () => {
+    expect(docs()).not.toMatch(/every channel failing raises/i);
+    expect(docs()).not.toMatch(/route answers 502/i);
+    expect(read("src/app/api/clinic-interest/route.ts")).not.toMatch(/502/);
+  });
+
+  it("states the three failure cases the code actually implements", () => {
+    const agents = read("AGENTS.md");
+    expect(agents).toMatch(/optional storage fails/i);
+    expect(agents).toMatch(/still returns `forward`/i);
+    expect(agents).toMatch(/Web3Forms rejects/i);
+    expect(agents).toMatch(/LEAD_DELIVERY_MODE=log/);
+  });
+
+  it("keeps the browser-delivery rule that the outage taught", () => {
+    expect(read("AGENTS.md")).toMatch(
+      /Email delivery is a browser step, and must stay one/i
     );
   });
 });

@@ -38,9 +38,13 @@ substrate that establishes it, because evidence is scoped by where it ran.
 | C5 | Server | Rate limit exceeded for a client IP | Submit again | HTTP 429 and no delivery | Unlimited relaying to the delivery provider | `route` |
 | C6 | Server | `SUPABASE_*` set | Submit | Row inserted into `marketing_private.clinic_interest_leads` | Any write to `marketing_private.public_interest_leads` | `unit`, `route` |
 | C6b | Server | A lead already exists for that work email | Submit again with a corrected phone | Both submissions are stored (append-only) | Silently discarding a submission the page reported as recorded | `unit` |
-| C7 | Server | Every configured channel fails | Submit | HTTP 502 and an error response | A success response with nothing delivered | `route` |
-| C7b | Server | No environment configuration at all | Resolve channels | Web3Forms resolves via the built-in access key; the channel list is never empty | An unconfigured deployment accepting leads it cannot deliver | `unit` |
-| C7c | Any reader | Whole repo | Locate the built-in access key | It appears only in `src/lib/leadDelivery.ts`, and no client component imports that module | The key or the provider endpoint reaching the browser bundle | `source` |
+| C7 | Server | A configured storage channel fails | Submit | HTTP 200 still carrying `forward`, with the failure logged | Blocking the email because supplementary storage failed | `route`, `unit` |
+| C7d | Server | Storage throws unexpectedly | Submit | Same: the email still goes, the throw is logged | An optional dependency taking down the primary delivery path | `route` |
+| C7e | Server | Log mode, and the log write itself fails | Submit | Still forwards nothing | Falling through to emailing a real lead during local testing | `route` |
+| C7b | Server | No storage configured | Submit | HTTP 200 carrying `forward`; email is the browser's job | Treating an absent Supabase as an error | `unit`, `route` |
+| C7c | Any reader | Whole repo | Locate the Web3Forms call | It appears only in client code; `leadDelivery.ts` and the route never call it | A server-side Web3Forms call - rejected 403 in production while passing every `log`-mode test | `source` |
+| C8 | Browser | Server returns `forward` | Submit | The browser POSTs that record, unmodified, to Web3Forms, and shows success only if it returns `success: true` | Showing success when Web3Forms refused, or composing the payload client-side | `dom`, `browser` |
+| C8b | Browser | Server returns no `forward` (honeypot, or log mode) | Submit | No Web3Forms request is made at all | Emailing a honeypot hit, or sending during local testing | `dom`, `route` |
 | D1 | Clinic visitor | Valid submission, delivery succeeds | Submit | Success state confirms the request was **received** | Echoing the submitted email/phone/clinic name back; promising acceptance, onboarding, partnership, or a response time | `dom`, `route` |
 | D2 | Clinic visitor | Valid submission, delivery fails (500/network) | Submit | An error state and the form still present with values intact | Any success state rendering after a failed submission | `dom` |
 | E1 | Any reader | Whole repo | Search acquisition surfaces | No "Register interest" / "Join as…" / role-selection CTA copy remains on acquisition surfaces; no `?role=` links | Retired acquisition copy surviving in metadata, OG tags, or nav | `source` |
@@ -58,12 +62,16 @@ substrate that establishes it, because evidence is scoped by where it ran.
 These are real obligations that local evidence cannot discharge. They are listed
 so nothing here is mistaken for having covered them:
 
-- **Production delivery.** `LEAD_DELIVERY_MODE=log` proves the chain, not that
-  a deployed environment delivers. Exercising the real Web3Forms channel, and
-  applying the migration plus schema permissions if Supabase is ever enabled,
-  are deployment-time verification. No test here makes a real network request:
-  `tests/setup.ts` blocks unstubbed `fetch`, which matters because the built-in
-  access key would otherwise post to the live inbox.
+- **Production delivery.** `LEAD_DELIVERY_MODE=log` exercises the whole chain
+  while sending nothing - which is exactly how a server-side Web3Forms call
+  shipped broken once: every local test passed because none of them ever
+  reached the provider. Local green does not establish that delivery works.
+  **Confirm any change to the delivery path against the real provider, in a
+  real browser**, before merging. Note that Web3Forms refuses headless
+  user-agents, so an automated check must present a realistic one or it will
+  report a false failure.
+- No test makes a real network request: `tests/setup.ts` blocks unstubbed
+  `fetch`, which matters because the form posts leads from the browser.
 - **Processor suitability.** Whether Web3Forms and Supabase are approved to
   handle business-contact PII, and what privacy notice must accompany that, is
   a decision outside this repository. The form carries an inline disclosure; a

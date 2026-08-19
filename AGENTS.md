@@ -50,7 +50,8 @@ the company.
 ## Submission path
 
 `ClinicInterestForm` → `POST /api/clinic-interest` → `clinicInterestSchema` →
-`buildClinicInterestLead` → `deliverClinicInterestLead`.
+`buildClinicInterestLead` → `deliverClinicInterestLead` (server-side storage)
+→ response `forward` → **browser** POSTs it to Web3Forms.
 
 Load-bearing properties — check these before changing anything here:
 
@@ -59,18 +60,32 @@ Load-bearing properties — check these before changing anything here:
 - **The lead is built from named fields.** A key added to the form cannot reach
   delivery without being added to `buildClinicInterestLead`, and unknown keys
   are stripped by the schema.
-- **A failure is never a success.** Every channel failing raises; the route
-  answers 502 and the form renders an error. Success renders only on an
-  explicit `ok: true`.
-- **Delivery always has a channel.** `leadDelivery.ts` carries a built-in
-  Web3Forms access key (public by that provider's design), so an unconfigured
-  deployment delivers rather than dropping leads. `WEB3FORMS_ACCESS_KEY`
-  overrides it. Keep the key in server-only code - not for secrecy, but so
-  submissions keep going through our validated endpoint.
+- **A failure is never a success — but only the right failure blocks it.**
+  Success renders only when Web3Forms accepts the browser's relay. Distinguish
+  three cases and do not collapse them:
+  - **Optional storage fails** (Supabase down, misconfigured, absent) → the
+    route still returns `forward`; the email still goes. Logged, not surfaced.
+  - **Web3Forms rejects, or the request fails** → the form shows an error and
+    keeps the typed values. This is the only failure that withholds success.
+  - **Explicit `LEAD_DELIVERY_MODE=log`** → nothing is forwarded and no email
+    is sent. The safe local exception, and the only one.
+- **Email delivery is a browser step, and must stay one.** Web3Forms rejects
+  server-to-server calls on the free plan (403 "Use our API in client side").
+  Never move that call back into the route - it fails in production while
+  passing every local test that uses `LEAD_DELIVERY_MODE=log`.
+- **The browser relays, it never composes.** The route returns `forward`, the
+  exact record it built; the form sends that. A client component must never
+  import `leadDelivery` or build a lead itself.
 - **Nothing is verified.** Email and phone normalization is formatting only.
   No copy may imply an address or number was checked.
-- **The browser never posts to a third party.** Never import `leadDelivery`
-  from a client component.
+- **Server-side storage is best-effort, and the code must mean it.**
+  `deliverClinicInterestLead` never throws; a Supabase failure is logged and the
+  route still returns `forward`. Making storage able to fail a submission
+  recreates the outage in a new place - an optional dependency taking down the
+  primary delivery path. Success is decided by Web3Forms accepting the relay.
+- **Log mode is decided by the environment, not by success.** `isLogOnlyMode()`
+  gates forwarding, so a failed log write can never fall through to emailing a
+  real lead during local testing.
 
 ## Leads
 

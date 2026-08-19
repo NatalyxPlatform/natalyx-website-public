@@ -18,31 +18,6 @@ import {
  */
 export const CLINIC_INTEREST_TABLE = "clinic_interest_leads";
 
-const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
-
-/**
- * Built-in Web3Forms access key, so a deployment delivers leads with no
- * environment configuration at all.
- *
- * This is not a secret. Web3Forms access keys are public by design - their own
- * documentation says "Don't worry this can be public" - because the key is
- * normally embedded in a client-side HTML form. It identifies the destination
- * inbox; it grants no account access.
- *
- * `WEB3FORMS_ACCESS_KEY` still takes precedence, so the destination can be
- * changed through environment configuration without a code change.
- *
- * It lives here, in server-only code, rather than in the form component. That
- * keeps it out of the browser bundle - not for secrecy, but because routing
- * submissions through our own endpoint is what lets us validate on the server,
- * enforce the honeypot, and rate-limit.
- */
-export const WEB3FORMS_FALLBACK_ACCESS_KEY =
-  "3bf87d87-e4b2-459a-aad2-549e24d5e1e2";
-
-export function web3formsAccessKey(env: Env = process.env): string {
-  return env.WEB3FORMS_ACCESS_KEY || WEB3FORMS_FALLBACK_ACCESS_KEY;
-}
 
 export type ClinicInterestLead = {
   clinic_name: string;
@@ -87,44 +62,35 @@ export function buildClinicInterestLead(
   };
 }
 
-export type DeliveryChannelName = "supabase" | "web3forms" | "log";
-
 /**
- * Defensive invariant. `resolveDeliveryChannels` cannot currently return an
- * empty list, because Web3Forms is always available via the built-in access
- * key. This guard exists so that if that fallback is ever made conditional,
- * the result is a loud failure rather than a lead accepted and dropped.
+ * Channels this server can actually reach.
+ *
+ * Web3Forms is deliberately absent: their free plan rejects server-to-server
+ * calls (403 "Use our API in client side"), so email delivery happens in the
+ * browser after this route validates. See src/lib/constants.ts.
  */
-export class LeadDeliveryConfigError extends Error {
-  constructor() {
-    super(
-      "No clinic-interest delivery channel resolved. Set SUPABASE_URL + " +
-        "SUPABASE_SERVICE_ROLE_KEY, or WEB3FORMS_ACCESS_KEY, or " +
-        "LEAD_DELIVERY_MODE=log for local development."
-    );
-    this.name = "LeadDeliveryConfigError";
-  }
-}
-
-export class LeadDeliveryError extends Error {
-  constructor(readonly failures: { channel: DeliveryChannelName; reason: string }[]) {
-    super(
-      `Every configured delivery channel failed: ${failures
-        .map((f) => `${f.channel} (${f.reason})`)
-        .join(", ")}`
-    );
-    this.name = "LeadDeliveryError";
-  }
-}
+export type DeliveryChannelName = "supabase" | "log";
 
 type Env = Record<string, string | undefined>;
 
 /**
- * `LEAD_DELIVERY_MODE=log` is an explicit local/preview escape hatch: it keeps
- * the whole submission path real while sending nothing to a third party. It is
- * never the default, so an unconfigured deployment fails loudly instead of
- * silently accepting leads it cannot deliver.
+ * Server-side storage channels. May legitimately be empty: email delivery is
+ * the browser's job now, so a deployment with no Supabase still works.
+ *
+ * `LEAD_DELIVERY_MODE=log` is an explicit local escape hatch. It both records
+ * the lead server-side and suppresses the browser's Web3Forms call, so the
+ * whole path can be exercised without sending anything to a third party.
  */
+/**
+ * True when this process must not cause any email to be sent - the browser is
+ * told to forward nothing. Deliberately derived from the environment, not from
+ * whether the log write succeeded: a failed log must never fall through to
+ * emailing a real lead during local testing.
+ */
+export function isLogOnlyMode(env: Env = process.env): boolean {
+  return env.LEAD_DELIVERY_MODE === "log";
+}
+
 export function resolveDeliveryChannels(env: Env = process.env): DeliveryChannelName[] {
   if (env.LEAD_DELIVERY_MODE === "log") {
     return ["log"];
@@ -134,9 +100,6 @@ export function resolveDeliveryChannels(env: Env = process.env): DeliveryChannel
   if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
     channels.push("supabase");
   }
-  // Always available: the access key falls back to a built-in value, so an
-  // unconfigured deployment still delivers rather than dropping leads.
-  channels.push("web3forms");
   return channels;
 }
 
@@ -166,29 +129,6 @@ async function deliverToSupabase(lead: ClinicInterestLead): Promise<void> {
   }
 }
 
-async function deliverToWeb3Forms(
-  lead: ClinicInterestLead,
-  accessKey: string
-): Promise<void> {
-  const response = await fetch(WEB3FORMS_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
-      access_key: accessKey,
-      subject: "New Natalyx clinic interest registration",
-      from_name: "Natalyx website",
-      ...lead,
-    }),
-  });
-
-  const payload = (await response
-    .json()
-    .catch(() => ({ success: false }))) as { success?: boolean; message?: string };
-
-  if (!response.ok || !payload.success) {
-    throw new Error(payload.message ?? `HTTP ${response.status}`);
-  }
-}
 
 /**
  * Logs enough to prove the pipeline ran and which fields it carried, without
@@ -210,18 +150,28 @@ function deliverToLog(lead: ClinicInterestLead): void {
   });
 }
 
+export type DeliveryOutcome = {
+  delivered: DeliveryChannelName[];
+  failures: { channel: DeliveryChannelName; reason: string }[];
+};
+
 /**
- * Delivers to every configured channel. Succeeds when at least one channel
- * accepts the lead; throws when none is configured or all of them fail, so the
- * route can never report success for a lead that went nowhere.
+ * Runs the configured server-side storage channels.
+ *
+ * Best-effort, and it means it: this never throws. Storage is supplementary to
+ * the email, so a broken Supabase must not stop the browser from delivering
+ * the lead to a human. Letting an optional dependency fail the whole
+ * submission is what caused the outage this design exists to prevent.
+ *
+ * Failures are returned for the caller to log, never swallowed silently.
  */
 export async function deliverClinicInterestLead(
   lead: ClinicInterestLead,
   env: Env = process.env
-): Promise<{ delivered: DeliveryChannelName[] }> {
+): Promise<DeliveryOutcome> {
   const channels = resolveDeliveryChannels(env);
   if (channels.length === 0) {
-    throw new LeadDeliveryConfigError();
+    return { delivered: [], failures: [] };
   }
 
   const delivered: DeliveryChannelName[] = [];
@@ -231,8 +181,6 @@ export async function deliverClinicInterestLead(
     try {
       if (channel === "supabase") {
         await deliverToSupabase(lead);
-      } else if (channel === "web3forms") {
-        await deliverToWeb3Forms(lead, web3formsAccessKey(env));
       } else {
         deliverToLog(lead);
       }
@@ -245,16 +193,5 @@ export async function deliverClinicInterestLead(
     }
   }
 
-  if (delivered.length === 0) {
-    throw new LeadDeliveryError(failures);
-  }
-
-  if (failures.length > 0) {
-    console.warn(
-      "[clinic-interest] partial delivery",
-      failures.map((f) => `${f.channel}: ${f.reason}`)
-    );
-  }
-
-  return { delivered };
+  return { delivered, failures };
 }
