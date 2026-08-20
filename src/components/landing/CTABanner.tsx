@@ -21,9 +21,7 @@ export function CTABanner() {
           </ScrollReveal>
           <ScrollReveal delay={90}>
             <p className="mx-auto max-w-[620px] leading-7 text-navy-light">
-              Book a demo. Natalyx is looking for 10 fertility clinics to join a
-              pilot program — register your clinic&apos;s interest and we will
-              get back to you shortly to set one up.
+              Book a demo.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={160}>
