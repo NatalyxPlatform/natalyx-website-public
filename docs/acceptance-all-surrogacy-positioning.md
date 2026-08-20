@@ -99,6 +99,7 @@ journey, never capacity, inventory or supply.
 | P22 | Any reader | Participant vocabulary | Read the copy | Intended parents and gestational carriers are named respectfully as people in a journey | Carriers described as capacity, supply, inventory, or a resource to allocate | repo-wide | `source` |
 | P23 | Clinic visitor | On `/clinic-interest` | Read the consent block | The inline data-use disclosure is unchanged: what is stored, why, and that processors handle it | The repositioning quietly dropping the disclosure | form | `dom`, `source` |
 | P24 | Any reader | Governing docs | Read `AGENTS.md` / `README.md` | Both describe the clinic-first, all-journeys position as the intended state | A doc still instructing future work to keep the BYOS wedge | `AGENTS.md`, `README.md` | `source` |
+| P28 | Clinic visitor | On `/clinic-interest` | Read the intro | The pilot is stated as recruiting - "looking for 10 fertility clinics to join a pilot program" - with an invitation to take part, a promised demo, and the record-of-interest and no-decision clauses intact | Any wording implying those 10 clinics already exist: "running a pilot with 10 clinics", "working with 10 clinics", "10 clinics have joined" | `src/app/clinic-interest/page.tsx` | `source`, `browser` |
 | P25 | Any visitor | 320 / 390 / 768 / 1440 px | Load `/` and `/clinic-interest` | New copy fits: no horizontal overflow, no console errors, keyboard reachable with visible focus | Layout regressions introduced by longer headlines | rendered site | `browser` |
 
 ## Team, contact and typography

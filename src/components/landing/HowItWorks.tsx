@@ -43,10 +43,6 @@ export function HowItWorks() {
               The administrative weight around a journey, not the clinical
               judgment inside it.
             </h2>
-            <p className="mx-auto max-w-[640px] text-base leading-7 text-navy-light">
-              Clinics and their providers stay authoritative. Natalyx organizes
-              the coordination that surrounds their decisions.
-            </p>
           </ScrollReveal>
         </div>
 

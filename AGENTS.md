@@ -37,9 +37,8 @@ journey, the care, or clinical/legal/eligibility decisions are automated. That
 line is what separates the product from a claim we cannot make.
 
 It covers the clinic's surrogacy population broadly, **however a carrier
-entered the journey**: already known to the intended parents, referred through
-an agency, referred by the clinic itself, or arriving by another path the
-clinic approves. No public surface
+entered the journey**: already known to the intended parents, or referred by
+the clinic itself. No public surface
 may narrow the product by journey origin — that qualifier is retired, and the
 vocabulary for it belongs only in the acceptance matrix that forbids it.
 
@@ -77,6 +76,17 @@ One typeface, site-wide. Headings differ from body copy by size, weight and
 colour - never by family. There is no `font-serif`; the token is gone, so the
 utility would resolve to nothing.
 
+## The pilot
+
+Natalyx is **looking for** 10 fertility clinics to join a pilot program. That
+is a call for clinics, not a roster of them: no clinic has signed up, and no
+surface may imply that any has. Recruiting language only - never the
+present-tense equivalents that turn the search into a result. The acceptance
+matrix (P28) quotes the exact wordings that are forbidden.
+
+The clinic-interest page carries the pilot copy. Registering stays a record of
+interest, not an application, and the follow-up promised is a demo.
+
 ## Boundaries
 
 - Do not copy app-private workflow details, internal architecture, or internal
@@ -86,7 +96,8 @@ utility would resolve to nothing.
 - Synthetic/marketing content only; no participant data, invite codes, or
   environment details.
 - Never claim PHI readiness, clinical validation, deployment, general
-  availability, integrations that do not exist, or existing partner clinics.
+  availability, integrations that do not exist, or existing partner clinics -
+  the pilot is being recruited, not reported.
 - Never claim Natalyx replaces clinic staff, medical judgment, attorneys,
   mental-health evaluators, or other providers. They stay authoritative.
 
