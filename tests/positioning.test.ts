@@ -67,20 +67,27 @@ const faqProse = () => prose("src/components/landing/FAQ.tsx");
  * slips through. ANCHORED_CLAIMS below covers the shapes worth catching
  * regardless, and both directions are asserted rather than assumed.
  */
+const NEGATION =
+  // "without" is deliberately absent: it reads as a denial but is just as often
+  // the claim itself ("runs without any coordinator involvement"), and treating
+  // it as a denial let that overpromise through.
+  /\b(not|never|no|nor|avoid|refrain|forbid\w*|cannot|retired)\b/i;
+
 function assertingSentences(text: string, pattern: RegExp): string[] {
-  return text
-    .split(/(?<=[.:;!?])\s+/)
-    .filter((sentence) => pattern.test(sentence))
-    .filter(
-      (sentence) =>
-        // "without" is deliberately absent: it reads as a denial but is just as
-        // often the claim itself ("runs without any coordinator involvement"),
-        // and treating it as a denial let that overpromise through. The
-        // prohibition cases are all carried by the markers that remain.
-        !/\b(not|never|no|nor|avoid|refrain|forbid\w*|cannot|retired)\b/i.test(
-          sentence
-        )
-    );
+  return text.split(/(?<=[.:;!?])\s+/).filter((sentence) => {
+    const hit = sentence.match(pattern);
+    if (!hit) return false;
+
+    // Look for the negation next to the match, not anywhere in the sentence.
+    // A whole-sentence scan let a real claim ride along with an unrelated
+    // negation earlier in the same sentence - "Four details, no patient
+    // information, coordination with zero staff required" was exempted by the
+    // "no" forty characters upstream. The window keeps the denials exempt
+    // ("\"integrated with your EHR\" is not accurate") without that hole.
+    const at = hit.index ?? 0;
+    const window = sentence.slice(Math.max(0, at - 40), at + hit[0].length + 20);
+    return !NEGATION.test(window);
+  });
 }
 
 /** Every surface a claim could be made on: rendered copy and the docs alike. */
@@ -207,15 +214,32 @@ describe("P3 — the problem section explains journey origin, not a niche", () =
 describe("P4 — the mission is automating the agency's relay, in-house", () => {
   const value = () => prose("src/components/landing/ValueCards.tsx");
 
-  it("names the manual relay as the thing being replaced", () => {
+  /**
+   * The mission card itself, not the whole file.
+   *
+   * Scoped deliberately: a file-wide scan for "in-house" passed while the
+   * mission paragraph had lost the point entirely, because a benefit card
+   * further down still happened to use the phrase. The thesis has to be in the
+   * paragraph that states the thesis.
+   */
+  const missionCard = () => {
     const text = value();
+    const start = text.indexOf('id="for-clinics-heading"');
+    const end = text.indexOf("<ul", start);
+    expect(start, "mission heading not found").toBeGreaterThan(-1);
+    expect(end, "mission card end not found").toBeGreaterThan(start);
+    return text.slice(start, end);
+  };
+
+  it("names the manual relay as the thing being replaced", () => {
+    const text = missionCard();
     expect(text).toMatch(/surrogacy agency/i);
     expect(text).toMatch(/manual relay/i);
     expect(text).toMatch(/automat/i);
   });
 
   it("says the point is running the journey in-house", () => {
-    const text = value();
+    const text = missionCard();
     expect(text).toMatch(/in-house/i);
     expect(text).toMatch(/referring patients out|refer(ring)? out/i);
     expect(text).toMatch(/overhead/i);
@@ -227,11 +251,22 @@ describe("P4 — the mission is automating the agency's relay, in-house", () => 
   });
 
   it("keeps the clinic in administrative control of what is automated", () => {
-    expect(value()).toMatch(/administrative control|coordinating cent(er|re)/i);
+    expect(missionCard()).toMatch(
+      /administrative control|coordinating cent(er|re)/i
+    );
   });
 
-  it("still keeps the relay's work distinct from clinical work", () => {
-    expect(value()).toMatch(/none of it is clinical work|not clinical work/i);
+  it("keeps the relay's work distinct from clinical work, somewhere", () => {
+    // Asserted across the landing copy rather than in the mission card: the
+    // card no longer says it, but the boundary is stated three times over -
+    // how-it-works ("not the clinical judgment inside it"), the problem
+    // section, and the FAQ's determinations answer. Pinning it to one
+    // paragraph would be pinning the guard to a draft, not the requirement.
+    const landing = landingProse();
+    expect(landing).toMatch(/not the clinical judgment/i);
+    expect(landing).toMatch(
+      /no clinical, legal, or eligibility|does not make clinical, legal/i
+    );
   });
 });
 
@@ -510,7 +545,7 @@ describe("P20 — no claim the repository cannot support", () => {
       "It is not a replacement for your EHR.",
       "We are not claiming a completed connection to any particular system today.",
       "Natalyx is designed to connect with existing clinic systems as integrations are enabled.",
-      "The existing agency manual workflow, fully automated and running within the clinic.",
+      "The existing agency manual workflow, fully automated within the clinic.",
       "Natalyx automates that relay and runs it inside the practice.",
       "Do not claim PHI readiness, clinical validation, or existing partner clinics.",
       "\"integrated with your EHR\" is not accurate, and Natalyx never replaces the EHR.",

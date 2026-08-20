@@ -34,7 +34,7 @@ export function Hero() {
               provider handoffs, outstanding records, appointments, and shared
               journey context — while the clinic and its providers maintain
               full administrative control. The existing agency manual workflow,
-              fully automated and running within the clinic.
+              fully automated within the clinic.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200} y="sm">

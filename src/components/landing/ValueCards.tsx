@@ -64,18 +64,17 @@ export function ValueCards() {
             <p className="mx-auto max-w-[720px] text-base leading-8 text-navy-light">
               What a surrogacy agency actually does, day to day, is run a
               manual relay between intended parents, the gestational carrier,
-              clinical staff, and a string of outside professionals — by phone,
-              email, and spreadsheet. It is slow, information gets lost between
-              hands, and almost none of it is clinical work.
+              clinical staff, and a string of outside professionals. This gets
+              done via phone, email, and spreadsheet, leading to inefficient
+              journey management and information lost between handoffs.
             </p>
             <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-navy-light">
-              Natalyx automates that relay and runs it inside the practice. A
-              clinic can take the surrogacy journey in-house instead of
-              referring patients out — keeping the patients who already trust
-              it, and the revenue that leaves with them — without standing up
-              an agency&apos;s worth of administrative overhead to do it. The
-              clinic stays the coordinating center throughout, and keeps full
-              administrative control of the journey.
+              Natalyx automates that relay and runs it inside the practice, with
+              nearly no administrative overhead. A clinic can take the surrogacy
+              journey in-house instead of referring patients out — keeping the
+              patients who already trust it, and the revenue that leaves with
+              them. The clinic stays the coordinating center throughout, and
+              keeps full administrative control of the journey.
             </p>
           </div>
         </ScrollReveal>
