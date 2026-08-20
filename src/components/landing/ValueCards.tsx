@@ -59,7 +59,8 @@ export function ValueCards() {
               id="for-clinics-heading"
               className="mx-auto mb-3 max-w-[620px] text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
-              The agency&apos;s work, automated and run inside the clinic.
+              The existing agency manual workflow, fully automated and running
+              within the clinic.
             </h2>
             <p className="mx-auto max-w-[720px] text-base leading-8 text-navy-light">
               What a surrogacy agency actually does, day to day, is run a
@@ -73,10 +74,9 @@ export function ValueCards() {
               nearly no administrative overhead. The journey stays coordinated
               through the clinic&apos;s own workflow rather than being handed to
               an intermediary — keeping the patients who already trust it, and
-              the revenue that leaves with them. Attorneys, evaluators, doulas,
-              agencies and other outside providers still take part; what changes
-              is who the journey runs through. The clinic stays the coordinating
-              center throughout, and keeps full administrative control of it.
+              the revenue that leaves with them. The clinic stays the
+              coordinating center throughout, and keeps full administrative
+              control.
             </p>
           </div>
         </ScrollReveal>

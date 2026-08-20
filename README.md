@@ -24,8 +24,7 @@ product. It is designed to fit into clinic operations and to connect with
 existing clinic systems as integrations are enabled.
 
 Scope is the clinic's whole surrogacy population, **however a carrier entered
-the journey** - known to the intended parents, agency-referred, clinic-referred
-or another clinic-approved path.
+the journey** - known to the intended parents, or clinic-referred.
 
 Natalyx supports clinic-directed carrier discovery and referral workflows. It
 is not a direct-to-consumer marketplace: clinics remain responsible for
@@ -58,6 +57,10 @@ copy must mean, and `tests/positioning.test.ts` enforces it.
 - Do not claim PHI readiness, clinical validation, deployment, general
   availability, integrations that do not exist, or existing partner clinics.
   Forward-looking capability is written as *built to* / *designed to*.
+- The pilot is being **recruited**: Natalyx is looking for 10 fertility clinics
+  to join it. No clinic has signed up, so no surface may use the present-tense
+  equivalents that turn the search into a result. `docs/acceptance-all-surrogacy-positioning.md`
+  (P28) quotes the exact wordings that are forbidden.
 - Public forms stay lead-capture oriented. Never request PHI, medical facts,
   legal documents, financial records, or case data from this site.
 - Server-side credentials belong only in server runtime configuration. Never

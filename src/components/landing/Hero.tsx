@@ -33,8 +33,7 @@ export function Hero() {
               Natalyx helps fertility clinics organize patient preparation,
               provider handoffs, outstanding records, appointments, and shared
               journey context — while the clinic and its providers maintain
-              full administrative control. The existing agency manual workflow,
-              fully automated within the clinic.
+              full administrative control. No more agency referrals.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200} y="sm">

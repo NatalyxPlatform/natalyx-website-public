@@ -21,12 +21,11 @@ export default function ClinicInterestPage() {
               Register your clinic&apos;s interest.
             </h1>
             <p className="leading-relaxed text-navy-light">
-              Natalyx is the operational layer for the surrogacy journeys your
-              clinic already runs. It is not generally available yet — tell us
-              how to reach your clinic and we will get in touch as we introduce
-              it to new practices. This is a record of interest, not an
-              application, and nothing here is a clinical, legal, or
-              eligibility decision.
+              Natalyx is looking for 10 fertility clinics to join a pilot
+              program. If your clinic would like to take part, register your
+              interest below and we will get back to you shortly to demo the
+              product. This is a record of interest, not an application, and
+              nothing here is a clinical, legal, or eligibility decision.
             </p>
           </div>
 

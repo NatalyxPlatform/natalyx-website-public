@@ -15,15 +15,15 @@ export function CTABanner() {
               id="cta-heading"
               className="mb-4 text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.35rem]"
             >
-              See what running surrogacy through your own workflow would look
-              like.
+              Book a demo.
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={90}>
             <p className="mx-auto max-w-[620px] leading-7 text-navy-light">
-              Register your clinic and we will get in touch as Natalyx is
-              introduced to new practices. Four details, no patient information,
-              no commitment.
+              Natalyx is looking for 10 fertility clinics to join a pilot
+              program. Register your clinic&apos;s interest and we will get back
+              to you shortly to set up a demo — four details, no patient
+              information, no commitment.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={160}>
