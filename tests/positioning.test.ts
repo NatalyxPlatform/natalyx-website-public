@@ -300,25 +300,65 @@ describe("P5 — how-it-works keeps the five coordination areas", () => {
   });
 });
 
-describe("P6, P7, P8 — the FAQ answers scope, matching and clinic systems", () => {
-  const faq = () => prose("src/components/landing/FAQ.tsx");
-
-  it("answers which journeys are supported with all of them", () => {
-    const text = faq();
-    expect(text).toMatch(/[Ww]hich surrogacy journeys/);
-    expect(text).toMatch(/all of the ones your clinic runs/i);
+describe("P6 — breadth is stated, wherever it is stated", () => {
+  /**
+   * The FAQ used to answer "which surrogacy journeys does Natalyx support?".
+   * That entry was removed, so the breadth claim is asserted where it actually
+   * lives now. It has to be somewhere: without it the site says nothing about
+   * whether a journey's origin matters, which is the whole point of the
+   * repositioning.
+   */
+  it("the hero commits to every journey", () => {
+    expect(prose("src/components/landing/Hero.tsx")).toMatch(
+      /every surrogacy journey/i
+    );
   });
+
+  it("the problem section says the origin does not change the work", () => {
+    const why = prose("src/components/landing/WhyNatalyx.tsx");
+    expect(why).toMatch(/whether the carrier is/i);
+    expect(why).toMatch(/already know/i);
+    expect(why).toMatch(/agency/i);
+    expect(why).toMatch(/clinic approves/i);
+  });
+
+  it("the metadata carries it for readers who never reach the page", () => {
+    expect(SITE_DESCRIPTION).toMatch(/however the carrier entered/i);
+  });
+});
+
+describe("P7, P8 — the FAQ's remaining answers", () => {
+  const faq = () => prose("src/components/landing/FAQ.tsx");
 
   it("no longer defines the product by one journey type", () => {
     expect(faq()).not.toMatch(/What is a known/i);
     expect(faq()).not.toMatch(/only for known/i);
   });
 
-  it("states plainly that Natalyx does not match or recruit carriers", () => {
-    const text = faq();
-    expect(text).toMatch(/does not (source|match|recruit)/i);
-    expect(text).toMatch(/\bmatch\b/i);
-    expect(text).toMatch(/not a consumer[\s\S]{0,30}marketplace/i);
+  /**
+   * The FAQ's explicit "Natalyx does not source, screen, rank or match
+   * carriers, and is not a consumer marketplace" answer was removed, so there
+   * is no presence guard for it any more - asserting copy that does not exist
+   * would just fail.
+   *
+   * What still holds is the half that matters most: the site cannot *claim*
+   * matching. P10 forbids positioning Natalyx as a marketplace, matching
+   * service or agency, and forbids sourcing/recruiting/ranking language, on
+   * every rendered surface and in the governing docs. Those guards are
+   * mutation-tested. The difference is that the site no longer volunteers the
+   * distinction to a reader who wonders - see the matrix note on P7.
+   */
+  it("still cannot claim what the removed answer used to deny", () => {
+    expect(
+      claimOffenders(
+        /\bwe (match|source|recruit|screen|rank|vet)\b[^.]{0,40}\b(surrogates?|carriers?)\b/i
+      )
+    ).toEqual([]);
+    expect(
+      claimOffenders(
+        /\bNatalyx (is|becomes|will be) an? [^.]{0,40}\b(marketplace|matching (service|platform)|agency)\b/i
+      )
+    ).toEqual([]);
   });
 
   it("describes clinic systems as forward-looking only", () => {

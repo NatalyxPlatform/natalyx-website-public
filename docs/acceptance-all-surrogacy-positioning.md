@@ -63,8 +63,8 @@ a journey, never capacity, inventory or supply.
 | P4 | Clinic visitor | On `/` | Read the mission section | The agency's manual relay is named as the thing being automated; the point is stated as running the journey in-house instead of referring out, with less overhead; the clinic keeps administrative control; relay work stays distinct from clinical work | Any wedge framing; positioning the product as somewhere for the clinic to go and work ("another portal to run") | `src/components/landing/ValueCards.tsx` | `source`, `browser` |
 | P4b | Any reader | Landing copy | Read the clinic-systems claim | Forward-looking wording appears somewhere in the landing copy (it lives in the FAQ, not the mission card) | Requiring one named component to carry it, which pins the guard to a draft rather than the requirement | `src/components/landing/**` | `source` |
 | P5 | Clinic visitor | On `/` | Read how-it-works | The five coordination areas stay visible: shared journey context, participant preparation, provider handoffs, records and appointments, clinic-branded participant contact | A step implying Natalyx makes clinical, legal or eligibility decisions | `src/components/landing/HowItWorks.tsx` | `source`, `browser` |
-| P6 | Clinic visitor | On `/` | Open the FAQ | A question answers *which* journeys are supported, with "all of the ones your clinic runs" | A "what is a known-surrogate journey?" entry framing the product's limit | `src/components/landing/FAQ.tsx` | `source`, `browser` |
-| P7 | Clinic visitor | On `/` | Open the FAQ | An explicit answer that Natalyx does not source, screen, rank or match carriers and is not a consumer marketplace | Silence on matching, leaving the widened scope ambiguous | `src/components/landing/FAQ.tsx` | `source`, `browser` |
+| P6 | Clinic visitor | On `/` | Look for the breadth claim | The scope claim appears on the hero ("every surrogacy journey"), in the problem section (known / agency-referred / another clinic-approved path) and in the metadata ("however the carrier entered") | The site saying nothing about whether a journey's origin changes the answer | `Hero.tsx`, `WhyNatalyx.tsx`, `positioning.ts` | `source`, `browser` |
+| P7 | Any reader | Whole repo | Search for matching claims | Natalyx is never positioned as sourcing, screening, ranking or matching carriers, and never as a marketplace, matching service or agency | Any affirmative matching or sourcing claim | repo-wide | `source` |
 | P8 | Clinic visitor | On `/` | Open the FAQ | An answer on clinic systems using forward-looking wording only, plus an explicit statement that Natalyx does not replace the EHR | "fully integrated with your EHR", or any completed/universal integration claim | `src/components/landing/FAQ.tsx` | `source`, `browser` |
 | P9 | Any reader | Whole repo | Search for wedge vocabulary | Zero occurrences of `BYOS`, `bring your own surrogate`, `known surrogate`, `known carrier`, `already found your surrogate` in `src/**`, `README.md`, `AGENTS.md` and the docs set | The limitation surviving in a comment, a doc, or a collapsed/hidden element | repo-wide | `source` |
 | P10 | Any reader | Whole repo | Search for marketplace vocabulary | No sentence positions Natalyx *as* a marketplace, matching service or agency; negations ("is not a marketplace") are permitted and expected | An affirmative marketplace/matching/agency identity claim | repo-wide | `source` |
@@ -106,6 +106,22 @@ Contact details live in the founder cards themselves; the standalone contact
 section was merged into them. The instruction to keep patient, medical, legal
 and case information out of those channels moved with them — the same boundary
 the interest form states, applied to the direct channels the cards open.
+
+### Change note: P7 no longer requires an explicit denial
+
+The FAQ carried an answer stating that Natalyx does not source, screen, rank or
+match carriers and is not a consumer marketplace. It was removed at the
+author's instruction, along with the "which surrogacy journeys" and "do we stop
+referring out" entries.
+
+What survives is the enforceable half: no surface may *claim* matching, and
+those guards are mutation-tested. What is gone is the site volunteering the
+distinction. That matters more here than it usually would, because the source
+pitch deck describes the product as "an automated surrogacy agency" and lists
+"Find surrogates" as a product step. A reader arriving with that framing now
+has nothing on the page that separates automating an agency's coordination from
+performing an agency's matching. Recorded here rather than argued: it is a
+product decision, not a defect, but it is the one place the site drew that line.
 
 ## Rows discharged by tests that already exist
 

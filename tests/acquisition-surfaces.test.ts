@@ -319,15 +319,16 @@ describe("the form discloses what happens to the details", () => {
 });
 
 describe("participant education is preserved where it explains the journey", () => {
-  it("still explains the journey and who takes part in it", () => {
+  it("still explains who takes part in the journey", () => {
     // The FAQ used to define one journey type, because the product was scoped
-    // to it. The scope is now every journey the clinic runs, so what the FAQ
-    // owes a clinic reader is who is involved and which journeys are covered -
-    // not a definition of the retired qualifier.
+    // to it. The scope is now every journey the clinic runs, and the breadth
+    // claim itself is asserted on the hero, the problem section and the
+    // metadata (positioning P6). What the FAQ still owes a clinic reader is
+    // who is involved - participants stay named here rather than being
+    // stripped out as the copy narrowed to the buyer.
     const faq = prose("src/components/landing/FAQ.tsx");
     expect(faq).toMatch(/intended parents/i);
     expect(faq).toMatch(/gestational carrier/i);
-    expect(faq).toMatch(/all of the ones your clinic runs/i);
   });
 
   it("still names the participants in the coordination copy", () => {
