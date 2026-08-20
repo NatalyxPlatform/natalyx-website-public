@@ -49,8 +49,7 @@ export function Hero() {
           </ScrollReveal>
           <ScrollReveal delay={250} y="sm">
             <p className="mt-3 text-sm leading-6 text-navy-light/70 sm:max-w-[560px]">
-              Four details, no patient information. Natalyx is not generally
-              available yet.
+              Book a demo. Four details, no patient information.
             </p>
           </ScrollReveal>
         </div>
