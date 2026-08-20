@@ -8,9 +8,9 @@ const faqs = [
       "Fertility clinics and the staff who coordinate surrogacy journeys inside them. Intended parents, gestational carriers, and outside professionals take part in a journey, but the clinic is the customer and the practice Natalyx is built around.",
   },
   {
-    question: "What is a known-surrogate journey?",
+    question: "Does Natalyx work with the systems our clinic already runs?",
     answer:
-      "One where the intended parents already have a gestational carrier in mind, often a friend or family member, rather than being matched through an agency. There is no agency in the middle, so the coordination between the intended parents, the carrier, the clinic, and outside professionals tends to land on the clinic.",
+      "That is the intent. Natalyx is designed to fit into clinic operations rather than replace them, and to connect with existing clinic systems as integrations are enabled. It is not a replacement for your EHR. We are not claiming a completed connection to any particular system today.",
   },
   {
     question: "Is Natalyx available now?",
@@ -25,12 +25,7 @@ const faqs = [
   {
     question: "Does this replace our coordinators?",
     answer:
-      "No. It is built to reduce the repetitive parts of their work — chasing records, re-explaining the same steps, tracking what is still outstanding — so their time goes to the parts that need a person.",
-  },
-  {
-    question: "Is Natalyx only for known-surrogate journeys?",
-    answer:
-      "That is where we are proving the product first, because the coordination burden is most concentrated there. The underlying problem of shared journey context and operational handoffs runs through assisted reproduction more broadly, and the platform is designed with that in mind.",
+      "No. What gets automated is the relay itself — chasing records, re-explaining the same steps, tracking what is still outstanding — not the people. Coordinators keep the judgment calls and the conversations, and stop spending their day on the parts a system can carry.",
   },
   {
     question: "What information does the interest form ask for?",
@@ -50,7 +45,7 @@ export function FAQ() {
             </p>
             <h2
               id="faq-heading"
-              className="font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
+              className="text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
               Questions before you register?
             </h2>

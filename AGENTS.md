@@ -5,17 +5,77 @@ Public **Next.js marketing site**. Not app runtime; **no PHI**, ever.
 ## Audience
 
 **Fertility clinics.** The site sells clinic-first operational infrastructure
-for coordinating known-surrogate journeys, and the only interest flow is a
-clinic-interest flow. Participant acquisition (intended parent / gestational
-carrier / donor registration, role selection, waitlists) is retired — do not
-reintroduce it.
+for running surrogacy journeys, and the only interest flow is a clinic-interest
+flow. Participant acquisition (intended parent / gestational carrier / donor
+registration, role selection, waitlists) is retired — do not reintroduce it.
 
 Intended parents and gestational carriers are still *described*, because a
 clinic needs the journey explained. That is education, not acquisition. Do not
-delete participant vocabulary from explanatory copy.
+delete participant vocabulary from explanatory copy, and do not describe
+carriers as capacity, supply or inventory.
 
-Known-surrogate (BYOS) surrogacy is the wedge and proof case, not the limit of
-the company.
+## Position
+
+What a surrogacy agency does day to day is run a **manual relay** between the
+intended parents, the carrier, clinic staff and outside professionals. Natalyx
+automates that relay and runs it inside the clinic, so a practice can take the
+journey in-house instead of referring patients out — keeping the patients who
+trust it and the revenue that leaves with them, without an agency's overhead.
+
+The clinic is the coordinating center and keeps full administrative control.
+Natalyx is an extension of the practice, not a parallel service participants
+are handed off into.
+
+"In-house" means the **coordination** runs through the clinic's workflow. It
+does not mean every service happens inside the clinic, and it does not mean no
+outside referral occurs: attorneys, evaluators, doulas, agencies and other
+outside providers still take part. Never write copy claiming otherwise.
+
+**What is automated is the relay, never the care.** Copy may say the agency's
+manual workflow is fully automated — it names its object. It may never say the
+journey, the care, or clinical/legal/eligibility decisions are automated. That
+line is what separates the product from a claim we cannot make.
+
+It covers the clinic's surrogacy population broadly, **however a carrier
+entered the journey**: already known to the intended parents, referred through
+an agency, referred by the clinic itself, or arriving by another path the
+clinic approves. No public surface
+may narrow the product by journey origin — that qualifier is retired, and the
+vocabulary for it belongs only in the acceptance matrix that forbids it.
+
+Natalyx supports clinic-directed carrier discovery and referral workflows. It
+is not a direct-to-consumer marketplace: clinics remain responsible for
+screening, clinical eligibility and final decisions, and Natalyx does not
+automatically rank or select carriers.
+
+Do not restate this as a blanket denial that Natalyx will ever help source or
+find carriers - that conflicts with the clinic-led direction. Equally, do not
+write copy claiming automated matching exists today. Neither pole is accurate;
+the boundary above is.
+
+Capability that does not exist yet is stated as intent — *built to*, *designed
+to*, *helps clinics*. "Designed to fit into clinic operations" and "built to
+connect with clinic systems as integrations are enabled" are accurate;
+"integrated with your EHR" is not, and Natalyx never replaces the EHR.
+
+`docs/acceptance-all-surrogacy-positioning.md` is the authority for what the
+copy must mean; `tests/positioning.test.ts` enforces it.
+
+## Team, contact and type
+
+The team section publishes facts about real people, quoted from the clinic
+pitch deck: name, title, education, phone, email, all on one founder card. Only the two founders
+appear; the rest of the deck's team slide stays off the site, and no commercial
+figure from the deck (revenue per case, pricing) reaches a public surface. Add
+no credential, employer or advisory relationship the deck does not state.
+
+The founder headshots are served straight from `public/`, deliberately
+`unoptimized`: `/_next/image` is a runtime route, and where it is unavailable
+every avatar fails to its alt text while the page around it renders fine.
+
+One typeface, site-wide. Headings differ from body copy by size, weight and
+colour - never by family. There is no `font-serif`; the token is gone, so the
+utility would resolve to nothing.
 
 ## Boundaries
 
@@ -35,17 +95,20 @@ the company.
 | Path | Owns |
 | --- | --- |
 | `src/app/page.tsx` | Landing composition |
-| `src/app/layout.tsx` | Shell, site metadata, OG/Twitter |
+| `src/app/layout.tsx` | Shell; composes metadata + JSON-LD from `positioning` |
+| `src/lib/positioning.ts` | The site's title/description/social/structured data, defined once |
 | `src/app/clinic-interest/` | The one interest page |
 | `src/app/api/clinic-interest/route.ts` | Submission endpoint |
-| `src/components/landing/` | Landing sections |
+| `src/components/landing/` | Landing sections, incl. Team (with founder contact details) |
+| `public/team/` | Founder headshots, cropped from the clinic pitch deck |
 | `src/components/clinic-interest/` | Form + success state |
 | `src/components/ui/` | Design primitives |
 | `src/lib/validation.ts` | The single zod schema (client **and** server) |
 | `src/lib/leadDelivery.ts` | Lead record + delivery channels |
 | `src/lib/rateLimit.ts` | Best-effort endpoint throttle |
 | `supabase/migrations/` | Lead-capture schema history |
-| `docs/acceptance-clinic-interest.md` | Acceptance matrix the tests answer to |
+| `docs/acceptance-clinic-interest.md` | Acceptance matrix for the submission flow |
+| `docs/acceptance-all-surrogacy-positioning.md` | Acceptance matrix for what the copy means |
 
 ## Submission path
 

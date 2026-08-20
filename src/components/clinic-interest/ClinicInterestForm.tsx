@@ -186,7 +186,7 @@ export function ClinicInterestForm() {
       )}
 
       <fieldset className="mb-8">
-        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold font-serif text-navy">
+        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold text-navy">
           Your clinic
         </legend>
         <Input
@@ -201,7 +201,7 @@ export function ClinicInterestForm() {
       </fieldset>
 
       <fieldset className="mb-8">
-        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold font-serif text-navy">
+        <legend className="mb-6 w-full border-b border-line pb-3 text-base font-semibold text-navy">
           Who we should speak to
         </legend>
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">

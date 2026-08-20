@@ -2,20 +2,20 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 const benefits = [
   {
-    title: "One coordinated journey and case context",
-    body: "Participants, providers, and clinic staff work from the same picture of a journey, instead of rebuilding it from inboxes, spreadsheets, and phone calls.",
+    title: "The relay runs itself",
+    body: "Preparation steps, reminders, and status chasing that an agency works through by hand are automated, so clinicians can spend their time on medical treatment.",
   },
   {
-    title: "Less repetitive follow-up",
-    body: "Preparation steps, reminders, and status chasing sit with Natalyx, so coordinators spend less time asking the same questions twice.",
+    title: "Coordination stays with the clinic",
+    body: "Outside providers still take part in the journey. What changes is that the practice keeps coordinating it, at the moment patients most need continuity, rather than handing them to an intermediary who does.",
   },
   {
-    title: "Organized operational handoffs",
-    body: "Introductions between the clinic, participants, and outside professionals carry the context they need, so less is re-explained at each step.",
+    title: "Handoffs carry their context",
+    body: "Introductions between the clinic, participants, and outside professionals arrive with what the next pair of hands needs, so less is re-explained and less is lost between them.",
   },
   {
-    title: "Clearer outstanding work",
-    body: "Missing records, unscheduled appointments, and unfinished preparation are visible as a shared list rather than a memory exercise.",
+    title: "Nothing outstanding gets forgotten",
+    body: "Missing records, unscheduled appointments, and unfinished preparation are tracked as shared work rather than living in one coordinator's memory.",
   },
 ];
 
@@ -57,21 +57,26 @@ export function ValueCards() {
             </p>
             <h2
               id="for-clinics-heading"
-              className="mx-auto mb-3 max-w-[620px] font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
+              className="mx-auto mb-3 max-w-[620px] text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
-              Infrastructure for the clinic, not another portal to run.
+              The agency&apos;s work, automated and run inside the clinic.
             </h2>
             <p className="mx-auto max-w-[720px] text-base leading-8 text-navy-light">
-              A known-surrogate journey touches intended parents, a gestational
-              carrier, clinical staff, and a set of outside professionals. Most
-              of the coordination lands on the clinic, and very little of it is
-              clinical work.
+              What a surrogacy agency actually does, day to day, is run a
+              manual relay between intended parents, the gestational carrier,
+              clinical staff, and a string of outside professionals. This gets
+              done via phone, email, and spreadsheet, leading to inefficient
+              journey management and information lost between handoffs.
             </p>
             <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-navy-light">
-              Natalyx is the operational layer underneath that work.
-              Known-surrogate gestational surrogacy is where we are proving it
-              first; the same coordination problem runs through assisted
-              reproduction more broadly.
+              Natalyx automates that relay and runs it inside the practice, with
+              nearly no administrative overhead. The journey stays coordinated
+              through the clinic&apos;s own workflow rather than being handed to
+              an intermediary — keeping the patients who already trust it, and
+              the revenue that leaves with them. Attorneys, evaluators, doulas,
+              agencies and other outside providers still take part; what changes
+              is who the journey runs through. The clinic stays the coordinating
+              center throughout, and keeps full administrative control of it.
             </p>
           </div>
         </ScrollReveal>
@@ -102,7 +107,7 @@ export function ValueCards() {
                         <path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z" />
                       </svg>
                     </div>
-                    <h3 className="relative z-10 mb-3 font-serif text-xl font-semibold leading-7 text-navy">
+                    <h3 className="relative z-10 mb-3 text-xl font-semibold leading-7 text-navy">
                       {benefit.title}
                     </h3>
                     <p className="relative z-10 text-sm leading-7 text-navy-light">

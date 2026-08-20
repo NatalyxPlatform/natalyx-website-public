@@ -2,22 +2,30 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+  SOCIAL_DESCRIPTION,
+  buildStructuredData,
+} from "@/lib/positioning";
 
+/**
+ * Every string here comes from `@/lib/positioning`. The page description, the
+ * OG card, the Twitter card and the JSON-LD graph must describe the same
+ * product the page shows; defining any of them inline is how they drift apart.
+ */
 export const metadata: Metadata = {
-  title: "Natalyx — Clinic-first coordination for surrogacy journeys",
-  description:
-    "Natalyx is building the operational layer for fertility clinics coordinating known-surrogate journeys: participant preparation, provider handoffs, outstanding records, appointments, and shared journey context. The clinic and its providers stay authoritative.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://natalyx.health"
-  ),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: "/stork_icon.svg",
     apple: "/stork_icon.png",
   },
   openGraph: {
-    title: "Natalyx — Clinic-first coordination for surrogacy journeys",
-    description:
-      "Coordinate known-surrogate journeys without adding another operational burden to your clinic. Register your clinic's interest in Natalyx.",
+    title: SITE_TITLE,
+    description: SOCIAL_DESCRIPTION,
     type: "website",
     url: "/",
   },
@@ -26,12 +34,22 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Natalyx — Clinic-first coordination for surrogacy journeys",
-    description:
-      "Coordinate known-surrogate journeys without adding another operational burden to your clinic. Register your clinic's interest in Natalyx.",
+    title: SITE_TITLE,
+    description: SOCIAL_DESCRIPTION,
   },
   robots: { index: true, follow: true },
 };
+
+/**
+ * `<` is escaped so a future description containing markup could not close
+ * this script tag. Everything here is static and repository-authored - no
+ * request value reaches it - but the escape costs nothing and removes the
+ * question.
+ */
+const structuredData = JSON.stringify(buildStructuredData(SITE_URL)).replace(
+  /</g,
+  "\\u003c"
+);
 
 export default function RootLayout({
   children,
@@ -43,9 +61,15 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* One family for the whole site: headings and body copy differ by
+            size, weight and colour, never by typeface. */}
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: structuredData }}
         />
       </head>
       <body className="font-sans">

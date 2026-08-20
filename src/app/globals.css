@@ -31,8 +31,10 @@
   --color-blue: #6ba7c7;
   --color-blue-soft: #d7e8ef;
 
+  /* One typeface for the whole site. Headings and body copy differ by size,
+     weight and colour - never by family. A second family here is what let
+     `font-serif` spread across the headings it was removed from. */
   --font-sans: "DM Sans", system-ui, sans-serif;
-  --font-serif: "Fraunces", Georgia, serif;
 
   --max-width-content: 1200px;
 }
