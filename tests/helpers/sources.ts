@@ -122,7 +122,6 @@ export const LANDING_SECTIONS = [
 export const PUBLIC_PROSE_SURFACES = [
   ...LANDING_SECTIONS,
   "src/components/landing/Team.tsx",
-  "src/components/landing/Contact.tsx",
   "src/components/layout/Header.tsx",
   "src/components/layout/Footer.tsx",
   "src/app/layout.tsx",

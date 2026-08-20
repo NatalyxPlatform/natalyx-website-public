@@ -14,7 +14,6 @@ import { findInProse, prose, read } from "./helpers/sources";
  */
 
 const TEAM = "src/components/landing/Team.tsx";
-const CONTACT = "src/components/landing/Contact.tsx";
 
 const FOUNDERS = [
   {
@@ -80,19 +79,36 @@ describe("T2 — each founder card carries a real photo", () => {
     expect(team).not.toMatch(/alt=""/);
     expect(team).toMatch(/alt=\{`\$\{founder\.name\}, \$\{founder\.title\}`\}/);
   });
+
+  it("serves the photos without depending on the image optimizer", () => {
+    // These broke in exactly this way: the optimizer route is a runtime
+    // dependency, and where it is absent - a static export, or a host that
+    // does not provide it - /_next/image 404s and every avatar falls back to
+    // its alt text while the rest of the page renders perfectly. At 88px the
+    // optimizer saves a couple of kilobytes; it is not worth that failure.
+    expect(read(TEAM)).toMatch(/\bunoptimized\b/);
+  });
+
+  it.each(FOUNDERS)("$name's file is small enough to serve raw", (founder) => {
+    // Without the optimizer the browser downloads this file as-is, so the
+    // source has to be sized for the card rather than for an archive.
+    expect(statSync(join(process.cwd(), founder.photo)).size).toBeLessThan(
+      60 * 1024
+    );
+  });
 });
 
-describe("T3 — the contact section publishes the deck's contact details", () => {
+describe("T3 — each founder card carries the deck's contact details", () => {
   it.each(FOUNDERS)("shows $name's phone and email", (founder) => {
-    const contact = prose(CONTACT);
-    expect(contact).toContain(founder.name);
-    expect(contact).toContain(founder.phone);
-    expect(contact).toContain(founder.email);
+    const team = prose(TEAM);
+    expect(team).toContain(founder.name);
+    expect(team).toContain(founder.phone);
+    expect(team).toContain(founder.email);
   });
 
   it.each(FOUNDERS)("$name's tel: link matches the number shown", (founder) => {
-    const contact = read(CONTACT);
-    expect(contact).toContain(founder.tel);
+    const team = read(TEAM);
+    expect(team).toContain(founder.tel);
     // A tel: link that dials a different number from the one displayed is a
     // silent wrong-number bug that no visual check would catch.
     expect(founder.tel.replace(/\D/g, "")).toBe(
@@ -100,8 +116,16 @@ describe("T3 — the contact section publishes the deck's contact details", () =
     );
   });
 
+  it("makes both reachable as links, not as plain text", () => {
+    const team = read(TEAM);
+    expect(team).toMatch(/href=\{`mailto:\$\{founder\.email\}`\}/);
+    expect(team).toMatch(/href=\{`tel:\$\{founder\.tel\}`\}/);
+  });
+
   it("tells senders to keep patient and case information out", () => {
-    expect(prose(CONTACT)).toMatch(
+    // Carried over from the standalone contact section it replaced: opening a
+    // direct channel without this line is what invites case detail by email.
+    expect(prose(TEAM)).toMatch(
       /keep patient, medical, legal, and case information out/i
     );
   });
@@ -118,18 +142,23 @@ describe("T4 — no commercial figures reach the public site", () => {
   });
 });
 
-describe("T5 — both sections are composed into the page", () => {
-  it("renders them in the landing composition", () => {
-    const page = read("src/app/page.tsx");
-    expect(page).toMatch(/<Team \/>/);
-    expect(page).toMatch(/<Contact \/>/);
+describe("T5 — the team section is composed into the page", () => {
+  it("renders in the landing composition", () => {
+    expect(read("src/app/page.tsx")).toMatch(/<Team \/>/);
   });
 
-  it("gives each an addressable section id and heading", () => {
+  it("has an addressable section id and heading", () => {
     expect(read(TEAM)).toMatch(/id="team"/);
     expect(read(TEAM)).toMatch(/aria-labelledby="team-heading"/);
-    expect(read(CONTACT)).toMatch(/id="contact"/);
-    expect(read(CONTACT)).toMatch(/aria-labelledby="contact-heading"/);
+  });
+
+  it("leaves no dangling reference to the removed contact section", () => {
+    // The section merged into the founder cards. A footer link to #contact
+    // would now scroll nowhere, which no unit test would otherwise notice.
+    expect(existsSync(join(process.cwd(), "src/components/landing/Contact.tsx")))
+      .toBe(false);
+    expect(read("src/components/layout/Footer.tsx")).not.toMatch(/#contact/);
+    expect(read("src/app/page.tsx")).not.toMatch(/Contact/);
   });
 });
 

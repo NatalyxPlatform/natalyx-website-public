@@ -95,16 +95,17 @@ deliberately left off. Guarded by `tests/team-and-contact.test.ts` and
 | # | Actor | Starting state | Action | Observable (must) | Forbidden (must not) | Surface | Substrate |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | T1 | Clinic visitor | On `/` | Read the team section | Exactly two cards — Allen Cioaca (Founder/CEO) and Luke Rhodes (Co-Founder/CTO) — each with the education line quoted verbatim from the deck | Any other person from the deck's team slide appearing anywhere on the site | `src/components/landing/Team.tsx` | `source`, `browser` |
-| T2 | Clinic visitor | On `/` | Look at a card | A committed headshot from the deck, rendered circular, with a descriptive `alt` naming the person and title | A placeholder, an initials monogram, an empty `alt`, or a photo attributed to the wrong person | `public/team/`, `Team.tsx` | `source`, `browser` |
-| T3 | Clinic visitor | On `/` | Read the contact section | Both founders' phone and email exactly as the deck writes them; each `tel:` dials the number displayed | A `tel:` href whose digits differ from the visible number | `src/components/landing/Contact.tsx` | `source`, `browser` |
+| T2 | Clinic visitor | On `/` | Look at a card | A committed headshot from the deck, rendered circular, with a descriptive `alt` naming the person and title, served **without** the image optimizer and sized to be served raw | A placeholder, an initials monogram, an empty `alt`, a photo attributed to the wrong person, or a `/_next/image` dependency that fails to alt text wherever that route is unavailable | `public/team/`, `Team.tsx` | `source`, `browser` |
+| T3 | Clinic visitor | On `/` | Read a founder card | Both founders' phone and email exactly as the deck writes them, as `mailto:`/`tel:` links, with each `tel:` dialling the number displayed, and the keep-case-information-out line beside them | A `tel:` href whose digits differ from the visible number; contact details as unlinked text; the disclosure lost when the standalone section merged in | `src/components/landing/Team.tsx` | `source`, `browser` |
 | T4 | Any reader | Whole repo | Search for commercial figures | No revenue-per-case figure, currency amount, price point or pricing section anywhere | The deck's `~$40K/case` reaching a public surface | repo-wide | `source` |
-| T5 | Clinic visitor | Any width | Reach the sections | Both are composed into `/`, carry `id="team"` / `id="contact"`, are linked from the footer, and each anchor resolves to a real section | A footer link to an anchor that does not exist | `page.tsx`, `Footer.tsx` | `source`, `browser` |
+| T5 | Clinic visitor | Any width | Reach the section | Team is composed into `/`, carries `id="team"`, is linked from the footer, and every footer anchor resolves to a real section | A footer link to `#contact` surviving the merge and scrolling nowhere | `page.tsx`, `Footer.tsx` | `source`, `browser` |
 | T6 | Any reader | Team copy | Read the claims | Only what the deck states | Added employers, advisory relationships, or clinical credentials (`Dr.`, `MD`, `PhD`, "physician") the deck does not give | `Team.tsx` | `source` |
 | T7 | Any visitor | Any page | Read headings and body copy | One typeface site-wide; headings differ from body copy by size, weight and colour only | A second font family in the theme, a `font-serif` utility, or a heading with no size/weight distinction | `globals.css`, all components | `source`, `browser` |
 
-The contact section carries an explicit instruction to keep patient, medical,
-legal and case information out of those channels — the same boundary the
-interest form states, applied to the direct channels this section opens.
+Contact details live in the founder cards themselves; the standalone contact
+section was merged into them. The instruction to keep patient, medical, legal
+and case information out of those channels moved with them — the same boundary
+the interest form states, applied to the direct channels the cards open.
 
 ## Rows discharged by tests that already exist
 

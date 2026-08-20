@@ -51,11 +51,15 @@ copy must mean; `tests/positioning.test.ts` enforces it.
 
 ## Team, contact and type
 
-The team and contact sections publish facts about real people, quoted from the
-clinic pitch deck: name, title, education, phone, email. Only the two founders
+The team section publishes facts about real people, quoted from the clinic
+pitch deck: name, title, education, phone, email, all on one founder card. Only the two founders
 appear; the rest of the deck's team slide stays off the site, and no commercial
 figure from the deck (revenue per case, pricing) reaches a public surface. Add
 no credential, employer or advisory relationship the deck does not state.
+
+The founder headshots are served straight from `public/`, deliberately
+`unoptimized`: `/_next/image` is a runtime route, and where it is unavailable
+every avatar fails to its alt text while the page around it renders fine.
 
 One typeface, site-wide. Headings differ from body copy by size, weight and
 colour - never by family. There is no `font-serif`; the token is gone, so the
@@ -83,7 +87,7 @@ utility would resolve to nothing.
 | `src/lib/positioning.ts` | The site's title/description/social/structured data, defined once |
 | `src/app/clinic-interest/` | The one interest page |
 | `src/app/api/clinic-interest/route.ts` | Submission endpoint |
-| `src/components/landing/` | Landing sections, incl. Team + Contact |
+| `src/components/landing/` | Landing sections, incl. Team (with founder contact details) |
 | `public/team/` | Founder headshots, cropped from the clinic pitch deck |
 | `src/components/clinic-interest/` | Form + success state |
 | `src/components/ui/` | Design primitives |

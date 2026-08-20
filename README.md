@@ -144,9 +144,10 @@ public key - nothing can, and nothing could before.
   and JSON-LD, defined once so metadata cannot describe a different product
   from the one the page shows.
 - `src/components/landing` owns public landing-page sections, including the
-  team and contact sections. Their content is quoted from the clinic pitch
-  deck - two founders only, no commercial figures, no added credentials - and
-  `public/team` holds the headshots cropped from that deck.
+  team section and the founder contact details inside it. That content is
+  quoted from the clinic pitch deck - two founders only, no commercial figures,
+  no added credentials - and `public/team` holds the headshots cropped from
+  that deck, served unoptimized so they do not depend on `/_next/image`.
 - `src/app/clinic-interest` and `src/components/clinic-interest` own the
   clinic-interest flow.
 - `src/lib` owns validation, lead delivery, and rate limiting.

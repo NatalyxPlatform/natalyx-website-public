@@ -68,14 +68,6 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
-                      href="/#contact"
-                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
-                    >
-                      Contact
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
                       href={CLINIC_INTEREST_PATH}
                       className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >

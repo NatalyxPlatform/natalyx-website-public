@@ -184,7 +184,6 @@ describe("acquisition copy speaks to clinics", () => {
     }
 
     expect([...anchors].sort()).toEqual([
-      "contact",
       "faq",
       "for-clinics",
       "how-it-works",
