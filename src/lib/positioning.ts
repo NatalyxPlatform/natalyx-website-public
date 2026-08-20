@@ -38,25 +38,26 @@ export const SITE_TITLE =
   "Natalyx — Clinic-led coordination for every surrogacy journey";
 
 export const SITE_DESCRIPTION =
-  "Natalyx is building the operational layer for fertility clinics running " +
-  "surrogacy journeys: participant preparation, appointments, records, " +
-  "provider handoffs and shared journey context, however the carrier entered " +
-  "the journey. The clinic stays the coordinating center, and its providers " +
-  "stay authoritative.";
+  "Natalyx automates the manual relay a surrogacy agency runs by hand — " +
+  "patient preparation, appointments, records, provider handoffs and shared " +
+  "journey context — so fertility clinics can run surrogacy journeys " +
+  "in-house, however the carrier entered the journey. The clinic stays the " +
+  "coordinating center, and the clinic and its providers keep full " +
+  "administrative control.";
 
 /** Shorter, for cards where only the first two lines survive the crop. */
 export const SOCIAL_DESCRIPTION =
-  "Run every surrogacy journey through one clinic-led workflow. Natalyx is " +
-  "building the operational layer around the clinic — carriers, intended " +
-  "parents, appointments, records and provider handoffs. Register your " +
-  "clinic's interest.";
+  "Run every surrogacy journey through one clinic-led workflow. Natalyx " +
+  "automates the agency's manual coordination and runs it inside the clinic, " +
+  "so journeys stay with the practice the patient already trusts. Register " +
+  "your clinic's interest.";
 
 export const CLINIC_INTEREST_TITLE = "Register your clinic's interest — Natalyx";
 
 export const CLINIC_INTEREST_DESCRIPTION =
-  "Tell Natalyx about your clinic. Natalyx is building the clinic-led " +
-  "coordination layer for surrogacy journeys: four details, no patient " +
-  "information.";
+  "Tell Natalyx about your clinic. Natalyx automates the agency's manual " +
+  "coordination and runs surrogacy journeys inside the clinic: four details, " +
+  "no patient information.";
 
 /**
  * Structured data for the landing page.

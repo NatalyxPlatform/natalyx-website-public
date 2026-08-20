@@ -73,7 +73,11 @@ function assertingSentences(text: string, pattern: RegExp): string[] {
     .filter((sentence) => pattern.test(sentence))
     .filter(
       (sentence) =>
-        !/\b(not|never|no|nor|without|avoid|refrain|forbid\w*|cannot|retired)\b/i.test(
+        // "without" is deliberately absent: it reads as a denial but is just as
+        // often the claim itself ("runs without any coordinator involvement"),
+        // and treating it as a denial let that overpromise through. The
+        // prohibition cases are all carried by the markers that remain.
+        !/\b(not|never|no|nor|avoid|refrain|forbid\w*|cannot|retired)\b/i.test(
           sentence
         )
     );
@@ -143,19 +147,30 @@ describe("P1, P2 — the hero commits to every surrogacy journey", () => {
     expect(hero()).toMatch(/For fertility clinics/i);
   });
 
-  it("describes the operational layer, not a search for a carrier", () => {
+  it("names the operational work, not a search for a carrier", () => {
     const text = hero();
-    expect(text).toMatch(/operational layer/i);
-    // The four coordination areas the matrix requires the hero to name.
+    // The coordination areas the matrix requires the hero to name. Participant
+    // vocabulary is asserted across the landing copy (P11) rather than here:
+    // requiring it in the hero pinned the guard to one draft's phrasing, and
+    // the hero's job is to say what the product does.
     for (const area of [
-      /carriers?/i,
-      /intended parents/i,
-      /appointments/i,
-      /records/i,
+      /preparation/i,
       /handoffs/i,
+      /records/i,
+      /appointments/i,
+      /journey context/i,
     ]) {
       expect(text, String(area)).toMatch(area);
     }
+  });
+
+  it("says the clinic keeps control, and what is being automated", () => {
+    const text = hero();
+    expect(text).toMatch(/full administrative control/i);
+    // The claim is scoped to the agency's manual workflow. Unscoped automation
+    // is forbidden by P20; this is the presence half of that pair.
+    expect(text).toMatch(/agency manual workflow/i);
+    expect(text).toMatch(/automat/i);
   });
 
   it("still says the product is not generally available", () => {
@@ -189,21 +204,44 @@ describe("P3 — the problem section explains journey origin, not a niche", () =
   });
 });
 
-describe("P4 — the mission section is origin-agnostic", () => {
+describe("P4 — the mission is automating the agency's relay, in-house", () => {
   const value = () => prose("src/components/landing/ValueCards.tsx");
 
-  it("describes a surrogacy journey generically", () => {
-    expect(value()).toMatch(/a surrogacy journey/i);
+  it("names the manual relay as the thing being replaced", () => {
+    const text = value();
+    expect(text).toMatch(/surrogacy agency/i);
+    expect(text).toMatch(/manual relay/i);
+    expect(text).toMatch(/automat/i);
   });
 
-  it("positions Natalyx underneath the clinic's own workflow", () => {
-    expect(value()).toMatch(/operational layer/i);
-    expect(value()).toMatch(/clinic/i);
+  it("says the point is running the journey in-house", () => {
+    const text = value();
+    expect(text).toMatch(/in-house/i);
+    expect(text).toMatch(/referring patients out|refer(ring)? out/i);
+    expect(text).toMatch(/overhead/i);
   });
 
-  it("says integration with existing systems is intent, not fact", () => {
-    expect(value()).toMatch(
-      /(designed|built) to[\s\S]{0,120}(connect|fit)[\s\S]{0,80}systems/i
+  it("is not an offer to build the clinic somewhere to work", () => {
+    // The mission is automating the agency's job, not shipping a workspace.
+    expect(value()).not.toMatch(/another portal to run/i);
+  });
+
+  it("keeps the clinic in administrative control of what is automated", () => {
+    expect(value()).toMatch(/administrative control|coordinating cent(er|re)/i);
+  });
+
+  it("still keeps the relay's work distinct from clinical work", () => {
+    expect(value()).toMatch(/none of it is clinical work|not clinical work/i);
+  });
+});
+
+describe("P4b — integration is stated as intent, wherever it is stated", () => {
+  it("the FAQ carries the forward-looking system wording", () => {
+    // This sentence moved out of the mission card and into the FAQ. The
+    // requirement is that the site says it, not that one component does.
+    const landing = landingProse();
+    expect(landing).toMatch(
+      /(designed|built) to[\s\S]{0,160}(connect|fit)[\s\S]{0,120}(systems|clinic operations)/i
     );
   });
 });
@@ -426,9 +464,26 @@ const UNSUPPORTED_CLAIMS: [string, RegExp][] = [
     "EHR replacement",
     /\breplaces?\s+(your|the)\s+(EMR|EHR|electronic health record)/i,
   ],
+  // Automating the agency's manual relay IS the product, so the guard cannot
+  // ban the word. What it forbids is the overpromise: automation with no human
+  // left in it, or automation reaching past the relay into the care itself.
+  // "The existing agency manual workflow, fully automated" names its object and
+  // passes; "the journey, fully automated" does not.
   [
-    "guaranteed automation",
-    /\b(fully automat|automatically handles|zero (manual )?work)/i,
+    "automation with nobody left in it",
+    /\b(zero|no)\s+(manual\s+)?(work|effort|admin|staff|coordinators?)\s*(required|needed|at all)?\b(?![^.]*\bclinic (stays|keeps)\b)/i,
+  ],
+  [
+    "automating past the relay into the care",
+    /\b(fully |completely )?automat\w+\s+(the\s+)?(clinical|care|journey|treatment|medical|decisions?|eligibility)\b/i,
+  ],
+  [
+    "automation without people",
+    /\bwithout (any )?(staff|human|clinician|coordinator)\w*\s+(involvement|input|oversight)/i,
+  ],
+  [
+    "hands-off guarantee",
+    /\b(hands[- ]free|set it and forget it|runs itself with no)\b/i,
   ],
   [
     "clinical decision-making",
@@ -455,6 +510,8 @@ describe("P20 — no claim the repository cannot support", () => {
       "It is not a replacement for your EHR.",
       "We are not claiming a completed connection to any particular system today.",
       "Natalyx is designed to connect with existing clinic systems as integrations are enabled.",
+      "The existing agency manual workflow, fully automated and running within the clinic.",
+      "Natalyx automates that relay and runs it inside the practice.",
       "Do not claim PHI readiness, clinical validation, or existing partner clinics.",
       "\"integrated with your EHR\" is not accurate, and Natalyx never replaces the EHR.",
       "Natalyx is not generally available yet.",
@@ -477,7 +534,10 @@ describe("P20 — no claim the repository cannot support", () => {
       ["universal EHR integration", "Natalyx integrates with your EHR out of the box."],
       ["an integration verb beside EMR/EHR", "Live integration with every major EHR."],
       ["EHR replacement", "Natalyx replaces your EHR."],
-      ["guaranteed automation", "Coordination is fully automated end to end."],
+      ["automation with nobody left in it", "Surrogacy coordination with zero staff required."],
+      ["automating past the relay into the care", "Natalyx fully automates the clinical journey."],
+      ["automation without people", "It runs without any coordinator involvement."],
+      ["hands-off guarantee", "Completely hands-free surrogacy management."],
       ["clinical decision-making", "Natalyx determines eligibility for every carrier."],
       ["PHI readiness", "The platform is PHI-ready today."],
       ["HIPAA compliance", "Natalyx is HIPAA-compliant."],

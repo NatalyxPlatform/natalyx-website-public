@@ -6,11 +6,16 @@ This repo owns the marketing and interest-capture surface only.
 
 ## Positioning
 
-The audience is **fertility clinics**. Natalyx is presented as clinic-first
-operational infrastructure for running surrogacy journeys: one coordinated
-journey and case context, less repetitive participant and provider follow-up,
-organized operational handoffs, clearer outstanding work, and clinic-branded
-coordination where appropriate.
+The audience is **fertility clinics**. What a surrogacy agency does day to day
+is run a manual relay between the intended parents, the carrier, clinic staff
+and outside professionals. Natalyx is presented as that relay, automated and
+running inside the clinic: patient preparation, provider handoffs, outstanding
+records, appointments and shared journey context, so a practice can run
+surrogacy journeys in-house instead of referring patients out.
+
+What is automated is the relay, never the care. Copy may say the agency's
+manual workflow is fully automated; it may never say the journey, the care, or
+clinical, legal or eligibility decisions are.
 
 The clinic remains the coordinating center. Natalyx is an extension of the
 clinic's operation, not a parallel service — participants and providers stay

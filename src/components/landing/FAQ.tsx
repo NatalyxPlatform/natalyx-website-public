@@ -10,12 +10,17 @@ const faqs = [
   {
     question: "Which surrogacy journeys does Natalyx support?",
     answer:
-      "All of the ones your clinic runs. The operational work — preparation, appointments, records, handoffs, and follow-through — is much the same whether the intended parents arrived with a carrier they already know, were referred through an agency, or came by another path your clinic approves. Natalyx coordinates from the point the journey becomes the clinic's to run.",
+      "All of the ones your clinic runs. The relay Natalyx automates — preparation, appointments, records, handoffs, and follow-through — is much the same whether the intended parents arrived with a carrier they already know, were referred through an agency, or came by another path your clinic approves. Natalyx takes over from the point the journey becomes the clinic's to run.",
   },
   {
     question: "Does Natalyx match, recruit, or supply gestational carriers?",
     answer:
       "No. Natalyx does not source, screen, rank, or match carriers, and it is not a consumer surrogacy marketplace. How a carrier comes to be part of a journey is decided outside Natalyx — by the intended parents, the clinic, and whichever professionals they involve.",
+  },
+  {
+    question: "Does this mean we stop referring patients to an agency?",
+    answer:
+      "That is what it is built to make possible. The reason referring out has been the practical choice is that running the coordination in-house meant absorbing the manual relay an agency works through by hand. Automating that relay is what makes keeping the journey in the practice realistic — the decision to do so, and when, stays entirely the clinic's.",
   },
   {
     question: "Does Natalyx work with the systems our clinic already runs?",
@@ -35,7 +40,7 @@ const faqs = [
   {
     question: "Does this replace our coordinators?",
     answer:
-      "No. It is built to reduce the repetitive parts of their work — chasing records, re-explaining the same steps, tracking what is still outstanding — so their time goes to the parts that need a person.",
+      "No. What gets automated is the relay itself — chasing records, re-explaining the same steps, tracking what is still outstanding — not the people. Coordinators keep the judgment calls and the conversations, and stop spending their day on the parts a system can carry.",
   },
   {
     question: "What information does the interest form ask for?",

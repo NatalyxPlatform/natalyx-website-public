@@ -16,10 +16,23 @@ Same keys as `acceptance-clinic-interest.md`: `unit`, `route`, `dom`, `source`,
 
 ## The position being asserted
 
-Natalyx gives fertility clinics an operational layer for running surrogacy
-journeys through the clinic's own workflow. The clinic remains the coordinating
-center. Participants and providers experience a clinic-led journey rather than
-being sent into a separate consumer marketplace.
+What a surrogacy agency does, day to day, is run a manual relay between the
+intended parents, the carrier, clinic staff and a string of outside
+professionals. Natalyx automates that relay and runs it inside the fertility
+clinic, so a practice can take the surrogacy journey in-house instead of
+referring patients out - keeping the patients who already trust it, and the
+revenue that leaves with them, without an agency's worth of overhead.
+
+The clinic remains the coordinating center and keeps full administrative
+control. Participants and providers experience a clinic-led journey rather than
+being handed to an intermediary.
+
+**What is automated is the relay, never the care.** The distinction is
+load-bearing: automating an agency's manual coordination is the product;
+automating clinical, legal or eligibility judgment is a claim this repository
+must never make. Copy may say the agency workflow is fully automated, because
+it names its object. It may not say the journey, the care, or the decisions
+are.
 
 Three claims sit underneath that, and every row below defends one of them:
 
@@ -45,9 +58,10 @@ a journey, never capacity, inventory or supply.
 | # | Actor | Starting state | Action | Observable (must) | Forbidden (must not) | Surface | Substrate |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | P1 | Clinic visitor | On `/` | Read the hero | The headline commits to running *every* surrogacy journey through one clinic-led workflow | A headline scoped to known-surrogate / BYOS / bring-your-own cases | `src/components/landing/Hero.tsx` | `source`, `browser` |
-| P2 | Clinic visitor | On `/` | Read the hero support copy | Natalyx is described as an operational layer coordinating carriers, intended parents, appointments, records and provider handoffs | Framing the offer as finding, matching or vetting a carrier | `src/components/landing/Hero.tsx` | `source`, `browser` |
+| P2 | Clinic visitor | On `/` | Read the hero support copy | The coordination areas are named - preparation, handoffs, records, appointments, shared journey context - with the clinic keeping full administrative control, and the automation claim scoped to the agency's manual workflow | Framing the offer as finding, matching or vetting a carrier; automation stated without naming what is automated | `src/components/landing/Hero.tsx` | `source`, `browser` |
 | P3 | Clinic visitor | On `/` | Read the problem section | The journey-origin explanation appears: known to the intended parents, agency-referred, or another clinic-approved path — all land as the clinic's operational work | "there is no agency in the middle" as the *reason* Natalyx exists | `src/components/landing/WhyNatalyx.tsx` | `source`, `browser` |
-| P4 | Clinic visitor | On `/` | Read the mission/value section | The journey is described generically ("a surrogacy journey"), and Natalyx is positioned as the layer underneath the clinic's own workflow | "Known-surrogate gestational surrogacy is where we are proving it first" or any wedge framing | `src/components/landing/ValueCards.tsx` | `source`, `browser` |
+| P4 | Clinic visitor | On `/` | Read the mission section | The agency's manual relay is named as the thing being automated; the point is stated as running the journey in-house instead of referring out, with less overhead; the clinic keeps administrative control; relay work stays distinct from clinical work | Any wedge framing; positioning the product as somewhere for the clinic to go and work ("another portal to run") | `src/components/landing/ValueCards.tsx` | `source`, `browser` |
+| P4b | Any reader | Landing copy | Read the clinic-systems claim | Forward-looking wording appears somewhere in the landing copy (it lives in the FAQ, not the mission card) | Requiring one named component to carry it, which pins the guard to a draft rather than the requirement | `src/components/landing/**` | `source` |
 | P5 | Clinic visitor | On `/` | Read how-it-works | The five coordination areas stay visible: shared journey context, participant preparation, provider handoffs, records and appointments, clinic-branded participant contact | A step implying Natalyx makes clinical, legal or eligibility decisions | `src/components/landing/HowItWorks.tsx` | `source`, `browser` |
 | P6 | Clinic visitor | On `/` | Open the FAQ | A question answers *which* journeys are supported, with "all of the ones your clinic runs" | A "what is a known-surrogate journey?" entry framing the product's limit | `src/components/landing/FAQ.tsx` | `source`, `browser` |
 | P7 | Clinic visitor | On `/` | Open the FAQ | An explicit answer that Natalyx does not source, screen, rank or match carriers and is not a consumer marketplace | Silence on matching, leaving the widened scope ambiguous | `src/components/landing/FAQ.tsx` | `source`, `browser` |

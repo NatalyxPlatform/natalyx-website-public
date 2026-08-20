@@ -16,9 +16,20 @@ carriers as capacity, supply or inventory.
 
 ## Position
 
-The clinic is the coordinating center. Natalyx is an operational layer the
-clinic runs its journeys through — an extension of the practice, not a parallel
-service participants are sent off into.
+What a surrogacy agency does day to day is run a **manual relay** between the
+intended parents, the carrier, clinic staff and outside professionals. Natalyx
+automates that relay and runs it inside the clinic, so a practice can take the
+journey in-house instead of referring patients out — keeping the patients who
+trust it and the revenue that leaves with them, without an agency's overhead.
+
+The clinic is the coordinating center and keeps full administrative control.
+Natalyx is an extension of the practice, not a parallel service participants
+are handed off into.
+
+**What is automated is the relay, never the care.** Copy may say the agency's
+manual workflow is fully automated — it names its object. It may never say the
+journey, the care, or clinical/legal/eligibility decisions are automated. That
+line is what separates the product from a claim we cannot make.
 
 It covers the clinic's surrogacy population broadly, **however a carrier
 entered the journey**: already known to the intended parents, referred through

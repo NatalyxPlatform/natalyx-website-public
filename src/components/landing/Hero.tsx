@@ -30,11 +30,11 @@ export function Hero() {
           </ScrollReveal>
           <ScrollReveal delay={130} y="sm">
             <p className="mb-8 max-w-[620px] text-base leading-8 text-navy-light md:text-lg">
-              Natalyx gives fertility clinics an operational layer for
-              coordinating carriers, intended parents, appointments, records,
-              and provider handoffs — however the journey began. The clinic
-              stays the coordinating center, and its providers remain
-              authoritative throughout.
+              Natalyx helps fertility clinics organize patient preparation,
+              provider handoffs, outstanding records, appointments, and shared
+              journey context — while the clinic and its providers maintain
+              full administrative control. The existing agency manual workflow,
+              fully automated and running within the clinic.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={200} y="sm">

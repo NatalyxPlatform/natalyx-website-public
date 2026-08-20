@@ -2,20 +2,20 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 const benefits = [
   {
-    title: "One coordinated journey and case context",
-    body: "Participants, providers, and clinic staff work from the same picture of a journey — every journey the clinic runs, however the carrier joined it — instead of rebuilding it from inboxes, spreadsheets, and disconnected portals.",
+    title: "The relay runs itself",
+    body: "Preparation steps, reminders, and status chasing that an agency works through by hand are automated, so coordinators spend their time on the parts that need a person.",
   },
   {
-    title: "Less repetitive follow-up",
-    body: "Preparation steps, reminders, and status chasing sit with Natalyx, so coordinators spend less time asking the same questions twice.",
+    title: "Journeys stay in-house",
+    body: "A practice can run the surrogacy journey itself rather than referring patients out at the moment they most need continuity — and keep the revenue that referral takes with it.",
   },
   {
-    title: "Organized operational handoffs",
-    body: "Introductions between the clinic, participants, and outside professionals carry the context they need, so less is re-explained at each step.",
+    title: "Handoffs carry their context",
+    body: "Introductions between the clinic, participants, and outside professionals arrive with what the next pair of hands needs, so less is re-explained and less is lost between them.",
   },
   {
-    title: "Clearer outstanding work",
-    body: "Missing records, unscheduled appointments, and unfinished preparation are visible as a shared list rather than a memory exercise.",
+    title: "Nothing outstanding gets forgotten",
+    body: "Missing records, unscheduled appointments, and unfinished preparation are tracked as shared work rather than living in one coordinator's memory.",
   },
 ];
 
@@ -59,19 +59,23 @@ export function ValueCards() {
               id="for-clinics-heading"
               className="mx-auto mb-3 max-w-[620px] text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
-              Infrastructure for the clinic, not another portal to run.
+              The agency&apos;s work, automated and run inside the clinic.
             </h2>
             <p className="mx-auto max-w-[720px] text-base leading-8 text-navy-light">
-              A surrogacy journey touches intended parents, a gestational
-              carrier, clinical staff, and a set of outside professionals. Most
-              of the coordination lands on the clinic, and very little of it is
-              clinical work.
+              What a surrogacy agency actually does, day to day, is run a
+              manual relay between intended parents, the gestational carrier,
+              clinical staff, and a string of outside professionals — by phone,
+              email, and spreadsheet. It is slow, information gets lost between
+              hands, and almost none of it is clinical work.
             </p>
             <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-navy-light">
-              Natalyx is the operational layer underneath that work — built to
-              run inside the clinic&apos;s own workflow rather than beside it,
-              and designed to connect with the systems the practice already
-              uses as those integrations are enabled.
+              Natalyx automates that relay and runs it inside the practice. A
+              clinic can take the surrogacy journey in-house instead of
+              referring patients out — keeping the patients who already trust
+              it, and the revenue that leaves with them — without standing up
+              an agency&apos;s worth of administrative overhead to do it. The
+              clinic stays the coordinating center throughout, and keeps full
+              administrative control of the journey.
             </p>
           </div>
         </ScrollReveal>
