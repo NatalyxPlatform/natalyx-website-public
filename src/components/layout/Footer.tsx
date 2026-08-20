@@ -20,7 +20,9 @@ export function Footer() {
                 />
               </Link>
               <p className="max-w-sm text-sm leading-7 text-navy-light">
-                Natalyx - operational infrastructure for fertility clinics coordinating surrogacy journeys.
+                Natalyx - operational infrastructure for fertility clinics
+                running surrogacy journeys through their own clinic-led
+                workflow.
               </p>
             </div>
           </ScrollReveal>
@@ -50,10 +52,26 @@ export function Footer() {
                   </li>
                   <li>
                     <Link
+                      href="/#team"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
+                    >
+                      Team
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href="/#faq"
                       className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
                     >
                       FAQ
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/#contact"
+                      className="text-sm text-navy-light hover:text-accent-deep transition-colors duration-150"
+                    >
+                      Contact
                     </Link>
                   </li>
                   <li>

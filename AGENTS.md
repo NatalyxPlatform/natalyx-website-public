@@ -5,17 +5,50 @@ Public **Next.js marketing site**. Not app runtime; **no PHI**, ever.
 ## Audience
 
 **Fertility clinics.** The site sells clinic-first operational infrastructure
-for coordinating known-surrogate journeys, and the only interest flow is a
-clinic-interest flow. Participant acquisition (intended parent / gestational
-carrier / donor registration, role selection, waitlists) is retired — do not
-reintroduce it.
+for running surrogacy journeys, and the only interest flow is a clinic-interest
+flow. Participant acquisition (intended parent / gestational carrier / donor
+registration, role selection, waitlists) is retired — do not reintroduce it.
 
 Intended parents and gestational carriers are still *described*, because a
 clinic needs the journey explained. That is education, not acquisition. Do not
-delete participant vocabulary from explanatory copy.
+delete participant vocabulary from explanatory copy, and do not describe
+carriers as capacity, supply or inventory.
 
-Known-surrogate (BYOS) surrogacy is the wedge and proof case, not the limit of
-the company.
+## Position
+
+The clinic is the coordinating center. Natalyx is an operational layer the
+clinic runs its journeys through — an extension of the practice, not a parallel
+service participants are sent off into.
+
+It covers the clinic's surrogacy population broadly, **however a carrier
+entered the journey**: already known to the intended parents, referred through
+an agency, or arriving by another path the clinic approves. No public surface
+may narrow the product by journey origin — that qualifier is retired, and the
+vocabulary for it belongs only in the acceptance matrix that forbids it.
+
+That breadth is about scope, never about supply. Natalyx does not source,
+screen, rank, match, recruit or supply carriers, and is not a consumer
+marketplace. Never present it as one.
+
+Capability that does not exist yet is stated as intent — *built to*, *designed
+to*, *helps clinics*. "Designed to fit into clinic operations" and "built to
+connect with clinic systems as integrations are enabled" are accurate;
+"integrated with your EHR" is not, and Natalyx never replaces the EHR.
+
+`docs/acceptance-all-surrogacy-positioning.md` is the authority for what the
+copy must mean; `tests/positioning.test.ts` enforces it.
+
+## Team, contact and type
+
+The team and contact sections publish facts about real people, quoted from the
+clinic pitch deck: name, title, education, phone, email. Only the two founders
+appear; the rest of the deck's team slide stays off the site, and no commercial
+figure from the deck (revenue per case, pricing) reaches a public surface. Add
+no credential, employer or advisory relationship the deck does not state.
+
+One typeface, site-wide. Headings differ from body copy by size, weight and
+colour - never by family. There is no `font-serif`; the token is gone, so the
+utility would resolve to nothing.
 
 ## Boundaries
 
@@ -35,17 +68,20 @@ the company.
 | Path | Owns |
 | --- | --- |
 | `src/app/page.tsx` | Landing composition |
-| `src/app/layout.tsx` | Shell, site metadata, OG/Twitter |
+| `src/app/layout.tsx` | Shell; composes metadata + JSON-LD from `positioning` |
+| `src/lib/positioning.ts` | The site's title/description/social/structured data, defined once |
 | `src/app/clinic-interest/` | The one interest page |
 | `src/app/api/clinic-interest/route.ts` | Submission endpoint |
-| `src/components/landing/` | Landing sections |
+| `src/components/landing/` | Landing sections, incl. Team + Contact |
+| `public/team/` | Founder headshots, cropped from the clinic pitch deck |
 | `src/components/clinic-interest/` | Form + success state |
 | `src/components/ui/` | Design primitives |
 | `src/lib/validation.ts` | The single zod schema (client **and** server) |
 | `src/lib/leadDelivery.ts` | Lead record + delivery channels |
 | `src/lib/rateLimit.ts` | Best-effort endpoint throttle |
 | `supabase/migrations/` | Lead-capture schema history |
-| `docs/acceptance-clinic-interest.md` | Acceptance matrix the tests answer to |
+| `docs/acceptance-clinic-interest.md` | Acceptance matrix for the submission flow |
+| `docs/acceptance-all-surrogacy-positioning.md` | Acceptance matrix for what the copy means |
 
 ## Submission path
 

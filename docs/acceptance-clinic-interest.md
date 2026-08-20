@@ -1,8 +1,13 @@
 # Acceptance matrix — clinic-interest B2B repositioning
 
-Written before implementation. This matrix is the authority: implementation and
-tests are judged against it, not the other way round. Every row names the
-substrate that establishes it, because evidence is scoped by where it ran.
+Written before implementation. This matrix is the authority for **how the
+clinic-interest submission behaves**: implementation and tests are judged
+against it, not the other way round. What the public copy must *mean* is
+governed by `acceptance-all-surrogacy-positioning.md`; where the two touch the
+same surface, this document owns the mechanism and that one owns the message.
+
+Every row names the substrate that establishes it, because evidence is scoped
+by where it ran.
 
 ## Substrates
 

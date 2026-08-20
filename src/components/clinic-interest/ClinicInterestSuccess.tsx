@@ -14,7 +14,7 @@ export function ClinicInterestSuccess() {
         <img src="/natalyx_combined_icon.png" alt="" className="h-24 w-auto" />
       </div>
 
-      <h2 className="mb-4 font-serif text-3xl font-medium text-navy">
+      <h2 className="mb-4 text-3xl font-medium text-navy">
         We have your clinic&apos;s interest.
       </h2>
       <p className="mx-auto mb-8 max-w-md leading-relaxed text-navy-light">

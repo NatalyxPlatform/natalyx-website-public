@@ -8,21 +8,29 @@ export function WhyNatalyx() {
           <ScrollReveal>
             <h2
               id="why-natalyx-heading"
-              className="mb-5 font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.2rem]"
+              className="mb-5 text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.2rem]"
             >
-              The coordination cost of a known-surrogate journey lands on the
-              clinic.
+              The coordination cost of a surrogacy journey lands on the clinic.
             </h2>
             <p className="mx-auto max-w-[700px] text-base leading-8 text-navy-light">
-              When intended parents arrive with a carrier they already know,
-              there is no agency in the middle. The clinic absorbs the
-              scheduling, the record chasing, the repeated explanations, and the
-              handoffs to counsel, counselors, and other professionals — work
-              that rarely fits the systems a practice already runs.
+              Whether the carrier is someone the intended parents already know,
+              someone referred through an agency, or someone who arrives by
+              another path the clinic approves, the operational journey is
+              still the clinic&apos;s to run. The scheduling, the record
+              chasing, the repeated explanations, and the handoffs to counsel,
+              counselors, and other professionals rarely fit the systems a
+              practice already has.
             </p>
             <p className="mx-auto mt-5 max-w-[700px] text-base leading-8 text-navy-light">
               Natalyx is built to carry that operational load without taking any
               professional authority away from the people who hold it.
+            </p>
+            <p className="mx-auto mt-5 max-w-[700px] text-base leading-8 text-navy-light">
+              It is designed to work as an extension of your clinic&apos;s
+              operation rather than beside it. The clinic stays the
+              coordinating center: participants and providers stay inside a
+              clinic-led journey instead of being sent off into a separate
+              service.
             </p>
           </ScrollReveal>
         </div>

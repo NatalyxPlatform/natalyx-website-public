@@ -3,7 +3,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 const benefits = [
   {
     title: "One coordinated journey and case context",
-    body: "Participants, providers, and clinic staff work from the same picture of a journey, instead of rebuilding it from inboxes, spreadsheets, and phone calls.",
+    body: "Participants, providers, and clinic staff work from the same picture of a journey — every journey the clinic runs, however the carrier joined it — instead of rebuilding it from inboxes, spreadsheets, and disconnected portals.",
   },
   {
     title: "Less repetitive follow-up",
@@ -57,21 +57,21 @@ export function ValueCards() {
             </p>
             <h2
               id="for-clinics-heading"
-              className="mx-auto mb-3 max-w-[620px] font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
+              className="mx-auto mb-3 max-w-[620px] text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
               Infrastructure for the clinic, not another portal to run.
             </h2>
             <p className="mx-auto max-w-[720px] text-base leading-8 text-navy-light">
-              A known-surrogate journey touches intended parents, a gestational
+              A surrogacy journey touches intended parents, a gestational
               carrier, clinical staff, and a set of outside professionals. Most
               of the coordination lands on the clinic, and very little of it is
               clinical work.
             </p>
             <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-navy-light">
-              Natalyx is the operational layer underneath that work.
-              Known-surrogate gestational surrogacy is where we are proving it
-              first; the same coordination problem runs through assisted
-              reproduction more broadly.
+              Natalyx is the operational layer underneath that work — built to
+              run inside the clinic&apos;s own workflow rather than beside it,
+              and designed to connect with the systems the practice already
+              uses as those integrations are enabled.
             </p>
           </div>
         </ScrollReveal>
@@ -102,7 +102,7 @@ export function ValueCards() {
                         <path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z" />
                       </svg>
                     </div>
-                    <h3 className="relative z-10 mb-3 font-serif text-xl font-semibold leading-7 text-navy">
+                    <h3 className="relative z-10 mb-3 text-xl font-semibold leading-7 text-navy">
                       {benefit.title}
                     </h3>
                     <p className="relative z-10 text-sm leading-7 text-navy-light">

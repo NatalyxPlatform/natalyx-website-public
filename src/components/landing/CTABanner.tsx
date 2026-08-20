@@ -13,7 +13,7 @@ export function CTABanner() {
           <ScrollReveal>
             <h2
               id="cta-heading"
-              className="mb-4 font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.35rem]"
+              className="mb-4 text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.35rem]"
             >
               See whether this fits how your clinic already works.
             </h2>

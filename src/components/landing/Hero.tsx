@@ -21,18 +21,19 @@ export function Hero() {
             </p>
           </ScrollReveal>
           <ScrollReveal delay={70} y="sm">
-            <h1 className="mb-5 max-w-[780px] font-serif text-[2.35rem] font-medium leading-[1.12] tracking-tight text-navy sm:text-5xl lg:text-[3.35rem]">
-              Coordinate known-surrogate journeys without{" "}
+            <h1 className="mb-5 max-w-[780px] text-[2.35rem] font-medium leading-[1.12] tracking-tight text-navy sm:text-5xl lg:text-[3.35rem]">
+              Run every surrogacy journey through one{" "}
               <span className="relative inline-block italic text-brand-orange after:absolute after:bottom-[-2px] after:left-0 after:right-0 after:z-[-1] after:h-2 after:rounded-full after:bg-brand-orange/15">
-                another operational burden
+                clinic-led workflow
               </span>
             </h1>
           </ScrollReveal>
           <ScrollReveal delay={130} y="sm">
             <p className="mb-8 max-w-[620px] text-base leading-8 text-navy-light md:text-lg">
-              Natalyx helps fertility clinics organize participant preparation,
-              provider handoffs, outstanding records, appointments, and shared
-              journey context — while the clinic and its providers remain
+              Natalyx gives fertility clinics an operational layer for
+              coordinating carriers, intended parents, appointments, records,
+              and provider handoffs — however the journey began. The clinic
+              stays the coordinating center, and its providers remain
               authoritative throughout.
             </p>
           </ScrollReveal>

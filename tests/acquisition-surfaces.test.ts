@@ -1,41 +1,18 @@
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative, sep } from "node:path";
 import { describe, expect, it } from "vitest";
-
-const SRC = join(process.cwd(), "src");
-
-function walk(dir: string): string[] {
-  return readdirSync(dir).flatMap((entry) => {
-    const full = join(dir, entry);
-    return statSync(full).isDirectory() ? walk(full) : [full];
-  });
-}
-
-const sourceFiles = walk(SRC).filter((f) => /\.(ts|tsx|css)$/.test(f));
+import {
+  findInCode,
+  findMatches,
+  prose,
+  read,
+  sources,
+} from "./helpers/sources";
 
 /**
- * Comments legitimately name the retired flow (to explain why it is retired).
- * Identifier and route scans run against code only, so a doc comment cannot
- * fail them and cannot hide a real reference either.
+ * The repository reader lives in ./helpers/sources so this suite and the
+ * positioning suite walk the same files the same way. Two private walkers
+ * could pass here while missing a file there, and the absence guards below are
+ * only as good as the file list they run over.
  */
-function stripComments(text: string): string {
-  return text
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/(^|[^:])\/\/.*$/gm, "$1");
-}
-
-const sources = sourceFiles.map((path) => {
-  const text = readFileSync(path, "utf8");
-  return {
-    path: relative(process.cwd(), path).split(sep).join("/"),
-    text,
-    code: stripComments(text),
-  };
-});
-
-function read(relativePath: string): string {
-  return readFileSync(join(process.cwd(), relativePath), "utf8");
-}
 
 /** Files that exist to bring visitors into the interest flow. */
 const ACQUISITION_SURFACES = [
@@ -51,19 +28,6 @@ const ACQUISITION_SURFACES = [
   "src/components/layout/Footer.tsx",
   "src/app/clinic-interest/page.tsx",
 ];
-
-function findMatches(pattern: RegExp): string[] {
-  return sources
-    .filter(({ text }) => pattern.test(text))
-    .map(({ path }) => path);
-}
-
-/** Same as findMatches, ignoring comments. */
-function findInCode(pattern: RegExp): string[] {
-  return sources
-    .filter(({ code }) => pattern.test(code))
-    .map(({ path }) => path);
-}
 
 describe("no retired participant acquisition path survives", () => {
   it("links to the retired /signup route nowhere in the app", () => {
@@ -219,7 +183,13 @@ describe("acquisition copy speaks to clinics", () => {
       }
     }
 
-    expect([...anchors].sort()).toEqual(["faq", "for-clinics", "how-it-works"]);
+    expect([...anchors].sort()).toEqual([
+      "contact",
+      "faq",
+      "for-clinics",
+      "how-it-works",
+      "team",
+    ]);
     for (const anchor of anchors) {
       expect(ids.has(anchor), `#${anchor} has no matching section id`).toBe(
         true
@@ -229,7 +199,18 @@ describe("acquisition copy speaks to clinics", () => {
 });
 
 describe("metadata describes clinic-first infrastructure", () => {
-  const layout = () => read("src/app/layout.tsx");
+  // What the metadata *says* is asserted against the exported values in
+  // tests/positioning.test.ts (P12/P13). What this suite still owns is that no
+  // retired acquisition positioning survives in it, and that the page composes
+  // the strings instead of holding a second copy free to drift.
+  const metadataSources = () => [
+    { path: "src/lib/positioning.ts", text: prose("src/lib/positioning.ts") },
+    { path: "src/app/layout.tsx", text: prose("src/app/layout.tsx") },
+    {
+      path: "src/app/clinic-interest/page.tsx",
+      text: prose("src/app/clinic-interest/page.tsx"),
+    },
+  ];
 
   it.each([
     /fertility agency/i,
@@ -237,25 +218,26 @@ describe("metadata describes clinic-first infrastructure", () => {
     /marketplace/i,
     /Register interest in Natalyx/i,
   ])("drops the stale positioning %s", (pattern) => {
-    expect(layout()).not.toMatch(pattern);
+    expect(
+      metadataSources()
+        .filter(({ text }) => pattern.test(text))
+        .map(({ path }) => path)
+    ).toEqual([]);
   });
 
-  it("titles, OG and Twitter metadata all name the clinic audience", () => {
-    const text = layout();
-    const titles = [...text.matchAll(/title:\s*"([^"]+)"/g)].map((m) => m[1]);
-    expect(titles).toHaveLength(3);
-    for (const title of titles) {
-      expect(title).toMatch(/clinic/i);
-    }
-
-    const descriptions = [...text.matchAll(/"((?:[^"\\]|\\.)*clinic(?:[^"\\]|\\.)*)"/gi)];
-    expect(descriptions.length).toBeGreaterThanOrEqual(3);
+  it("fills every title and description slot from the shared definition", () => {
+    const layout = read("src/app/layout.tsx");
+    // Page title, OG title, Twitter title.
+    expect(layout.match(/title: SITE_TITLE/g)).toHaveLength(3);
+    // Page description, plus the OG and Twitter card descriptions.
+    expect(layout).toMatch(/description: SITE_DESCRIPTION/);
+    expect(layout.match(/description: SOCIAL_DESCRIPTION/g)).toHaveLength(2);
   });
 
   it("the interest page metadata is clinic-facing", () => {
     const page = read("src/app/clinic-interest/page.tsx");
-    expect(page).toMatch(/title: "Register your clinic's interest — Natalyx"/);
-    expect(page).toMatch(/description:[\s\S]{0,200}clinic/i);
+    expect(page).toMatch(/title: CLINIC_INTEREST_TITLE/);
+    expect(page).toMatch(/description: CLINIC_INTEREST_DESCRIPTION/);
   });
 });
 
@@ -338,11 +320,15 @@ describe("the form discloses what happens to the details", () => {
 });
 
 describe("participant education is preserved where it explains the journey", () => {
-  it("still explains what a known-surrogate journey is", () => {
-    const faq = read("src/components/landing/FAQ.tsx");
+  it("still explains the journey and who takes part in it", () => {
+    // The FAQ used to define one journey type, because the product was scoped
+    // to it. The scope is now every journey the clinic runs, so what the FAQ
+    // owes a clinic reader is who is involved and which journeys are covered -
+    // not a definition of the retired qualifier.
+    const faq = prose("src/components/landing/FAQ.tsx");
     expect(faq).toMatch(/intended parents/i);
     expect(faq).toMatch(/gestational carrier/i);
-    expect(faq).toMatch(/known-surrogate journey/i);
+    expect(faq).toMatch(/all of the ones your clinic runs/i);
   });
 
   it("still names the participants in the coordination copy", () => {

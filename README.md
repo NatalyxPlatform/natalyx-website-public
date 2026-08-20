@@ -7,14 +7,23 @@ This repo owns the marketing and interest-capture surface only.
 ## Positioning
 
 The audience is **fertility clinics**. Natalyx is presented as clinic-first
-operational infrastructure for coordinating known-surrogate journeys: one
-coordinated journey and case context, less repetitive participant and provider
-follow-up, organized operational handoffs, clearer outstanding work, and
-clinic-branded coordination where appropriate. The clinic and its providers
-stay authoritative throughout.
+operational infrastructure for running surrogacy journeys: one coordinated
+journey and case context, less repetitive participant and provider follow-up,
+organized operational handoffs, clearer outstanding work, and clinic-branded
+coordination where appropriate.
 
-Known-surrogate (BYOS) gestational surrogacy is the current wedge and proof
-case, not the limit of the company.
+The clinic remains the coordinating center. Natalyx is an extension of the
+clinic's operation, not a parallel service — participants and providers stay
+inside a clinic-led journey rather than being sent into a separate consumer
+product. It is designed to fit into clinic operations and to connect with
+existing clinic systems as integrations are enabled.
+
+Scope is the clinic's whole surrogacy population, **however a carrier entered
+the journey**. That breadth never implies supply: Natalyx does not source,
+screen, rank, match, recruit or supply carriers.
+
+`docs/acceptance-all-surrogacy-positioning.md` is the authority for what the
+copy must mean, and `tests/positioning.test.ts` enforces it.
 
 ## Boundaries
 
@@ -22,13 +31,16 @@ case, not the limit of the company.
   intended-parent, gestational-carrier, or donor registration to this site.
 - Intended parents and gestational carriers are still described where the copy
   explains a journey to a clinic. That is education, not acquisition, and it
-  should not be stripped out.
-- Do not position Natalyx as a matching marketplace or as an online agency that
-  owns clinical, legal, escrow, payment, eligibility, or matching decisions.
+  should not be stripped out. They are people in a journey, never capacity,
+  supply or inventory.
+- Never present Natalyx as a matching marketplace, a consumer surrogacy
+  service, or an online agency owning clinical, legal, escrow, payment,
+  eligibility, or matching decisions.
 - Do not claim Natalyx replaces clinic staff, medical judgment, attorneys,
-  mental-health evaluators, or other providers.
+  mental-health evaluators, other providers, or the clinic's EHR.
 - Do not claim PHI readiness, clinical validation, deployment, general
   availability, integrations that do not exist, or existing partner clinics.
+  Forward-looking capability is written as *built to* / *designed to*.
 - Public forms stay lead-capture oriented. Never request PHI, medical facts,
   legal documents, financial records, or case data from this site.
 - Server-side credentials belong only in server runtime configuration. Never
@@ -121,14 +133,23 @@ public key - nothing can, and nothing could before.
 
 ## Repo Ownership
 
-- `src/app` owns Next.js pages, metadata, and the API route.
-- `src/components/landing` owns public landing-page sections.
+- `src/app` owns Next.js pages and the API route. Page metadata composes the
+  strings from `src/lib/positioning.ts`; it does not define them.
+- `src/lib/positioning.ts` owns the site title, descriptions, social card copy
+  and JSON-LD, defined once so metadata cannot describe a different product
+  from the one the page shows.
+- `src/components/landing` owns public landing-page sections, including the
+  team and contact sections. Their content is quoted from the clinic pitch
+  deck - two founders only, no commercial figures, no added credentials - and
+  `public/team` holds the headshots cropped from that deck.
 - `src/app/clinic-interest` and `src/components/clinic-interest` own the
   clinic-interest flow.
 - `src/lib` owns validation, lead delivery, and rate limiting.
 - `supabase/migrations` owns the public lead-capture schema history.
-- `docs/acceptance-clinic-interest.md` is the acceptance matrix the tests are
-  written against.
+- `docs/acceptance-clinic-interest.md` is the acceptance matrix for the
+  submission flow, and `docs/acceptance-all-surrogacy-positioning.md` is the
+  matrix for what the public copy must mean. The tests are written against
+  both.
 
 Production participant journey, case context, provider handoffs, PHI handling,
 and app-service integration belong in `natalyx-app`, `natalyx-intelligence`, and

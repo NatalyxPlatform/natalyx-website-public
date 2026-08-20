@@ -3,7 +3,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 const steps = [
   {
     label: "Shared journey context",
-    body: "Intended parents, the gestational carrier, and clinic staff see one consistent view of where the journey stands, scoped to what each of them should see.",
+    body: "Intended parents, the gestational carrier, and clinic staff see one consistent view of where the journey stands — the same view for every journey the clinic runs — scoped to what each of them should see.",
   },
   {
     label: "Participant preparation",
@@ -19,7 +19,7 @@ const steps = [
   },
   {
     label: "Clinic-branded where it counts",
-    body: "Participant-facing coordination can carry the clinic's name, so the journey still feels like it belongs to the practice running it.",
+    body: "Participant-facing coordination is built to carry the clinic's name, so the journey still feels like it belongs to the practice running it.",
   },
 ];
 
@@ -38,7 +38,7 @@ export function HowItWorks() {
             </p>
             <h2
               id="how-it-works-heading"
-              className="mx-auto mb-3 max-w-[620px] font-serif text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
+              className="mx-auto mb-3 max-w-[620px] text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl"
             >
               The administrative weight around a journey, not the clinical
               judgment inside it.
@@ -59,7 +59,7 @@ export function HowItWorks() {
                   <span className="flex h-16 w-16 items-center justify-center rounded-full border border-brand-orange/25 bg-cream text-lg font-bold text-brand-orange shadow-[0_4px_14px_rgba(31,26,20,0.06)]">
                     0{index + 1}
                   </span>
-                  <h3 className="font-serif text-base font-semibold text-navy">
+                  <h3 className="text-base font-semibold text-navy">
                     {step.label}
                   </h3>
                   <p className="max-w-[250px] text-sm leading-6 text-navy-light">
