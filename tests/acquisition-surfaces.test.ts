@@ -265,9 +265,11 @@ describe("claims stay inside what the repository can support", () => {
   });
 
   it("states that the product is not generally available", () => {
+    // Phrasing moved to the FAQ ("has not launched publicly"); the claim did
+    // not move. Either form satisfies this, absence of both does not.
     const hero = read("src/components/landing/Hero.tsx");
     const faq = read("src/components/landing/FAQ.tsx");
-    expect(`${hero}${faq}`).toMatch(/not generally available|Not generally/i);
+    expect(`${hero}${faq}`).toMatch(/not generally available|haven't launched publicly|have not launched publicly/i);
   });
 
   it("says the clinic and its providers stay authoritative", () => {
