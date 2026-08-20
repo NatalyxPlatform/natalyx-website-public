@@ -3,7 +3,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 const benefits = [
   {
     title: "The relay runs itself",
-    body: "Preparation steps, reminders, and status chasing that an agency works through by hand are automated, so coordinators spend their time on the parts that need a person.",
+    body: "Preparation steps, reminders, and status chasing that an agency works through by hand are automated, so clinicians can spend their time on medical treatment.",
   },
   {
     title: "Journeys stay in-house",
