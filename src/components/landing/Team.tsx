@@ -61,9 +61,10 @@ export function Team() {
         </div>
 
         <ul className="mx-auto grid max-w-[980px] list-none grid-cols-1 gap-5 md:grid-cols-2">
+          {/* h-full runs through the ScrollReveal wrapper too - see ValueCards. */}
           {founders.map((founder, index) => (
-            <li key={founder.name}>
-              <ScrollReveal delay={index * 90}>
+            <li key={founder.name} className="h-full">
+              <ScrollReveal className="h-full" delay={index * 90}>
                 <article className="flex h-full flex-col items-center gap-5 rounded-2xl border-2 border-line bg-white px-7 py-8 text-center transition duration-150 hover:border-accent-deep sm:flex-row sm:items-start sm:text-left">
                   {/*
                     Served straight from /public rather than through the image

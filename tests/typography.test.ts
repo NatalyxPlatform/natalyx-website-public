@@ -65,3 +65,39 @@ describe("the site renders in a single typeface", () => {
     }
   });
 });
+
+describe("cards in a grid row are the same height", () => {
+  /**
+   * `h-full` only works if it runs the whole way down.
+   *
+   * These grids stretch the `<li>`, but ScrollReveal renders a plain `<div>`
+   * between the item and the card. Without `h-full` on that wrapper, the
+   * card's own `h-full` resolves against a box only as tall as its content, so
+   * cards size to their copy and the row comes out ragged. The bug is
+   * invisible in review - every element still carries `h-full`, and the one
+   * that is missing it is the one nobody thinks to look at.
+   */
+  it.each([
+    ["src/components/landing/ValueCards.tsx", /benefit\.title/],
+    ["src/components/landing/Team.tsx", /founder\.name/],
+  ])("%s keeps h-full unbroken from li to card", (path, keyPattern) => {
+    const text = read(path);
+
+    const li = text.match(/<li key=\{[^}]+\}[^>]*>/);
+    expect(li, `${path}: no keyed <li> found`).not.toBeNull();
+    expect(li![0], `${path}: <li> must carry h-full`).toMatch(/className="[^"]*\bh-full\b/);
+    expect(li![0]).toMatch(keyPattern);
+
+    // The wrapper between the item and the card - the link in the chain that
+    // actually broke.
+    const reveal = text.match(/<ScrollReveal[^>]*>/g)?.find((t) => /delay=/.test(t));
+    expect(reveal, `${path}: no delayed ScrollReveal found`).toBeDefined();
+    expect(reveal!, `${path}: ScrollReveal wrapper must carry h-full`).toMatch(
+      /className="[^"]*\bh-full\b/
+    );
+
+    expect(text, `${path}: card must carry h-full`).toMatch(
+      /<article[\s\S]{0,400}?\bh-full\b/
+    );
+  });
+});

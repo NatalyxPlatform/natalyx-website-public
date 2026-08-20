@@ -10,12 +10,12 @@ const faqs = [
   {
     question: "Does Natalyx work with the systems our clinic already runs?",
     answer:
-      "That is the intent. Natalyx is designed to fit into clinic operations rather than replace them, and to connect with existing clinic systems as integrations are enabled. It is not a replacement for your EHR. We are not claiming a completed connection to any particular system today.",
+      "Natalyx is designed to fit into clinic operations rather than replace them, and to connect with existing clinic systems as integrations are enabled. It is not a replacement for your EHR.",
   },
   {
     question: "Is Natalyx available now?",
     answer:
-      "Not generally. We are introducing it to clinics gradually, which is what the interest form is for. Registering is a record of interest rather than an application, and it commits your clinic to nothing.",
+      "We haven't launched publicly, but we are running a pilot program, which is what the interest form is for. Registering is a record of interest rather than an application, and it commits your clinic to nothing.",
   },
   {
     question: "Does Natalyx make clinical, legal, or eligibility decisions?",
