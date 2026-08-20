@@ -26,6 +26,11 @@ The clinic is the coordinating center and keeps full administrative control.
 Natalyx is an extension of the practice, not a parallel service participants
 are handed off into.
 
+"In-house" means the **coordination** runs through the clinic's workflow. It
+does not mean every service happens inside the clinic, and it does not mean no
+outside referral occurs: attorneys, evaluators, doulas, agencies and other
+outside providers still take part. Never write copy claiming otherwise.
+
 **What is automated is the relay, never the care.** Copy may say the agency's
 manual workflow is fully automated — it names its object. It may never say the
 journey, the care, or clinical/legal/eligibility decisions are automated. That
@@ -33,13 +38,20 @@ line is what separates the product from a claim we cannot make.
 
 It covers the clinic's surrogacy population broadly, **however a carrier
 entered the journey**: already known to the intended parents, referred through
-an agency, or arriving by another path the clinic approves. No public surface
+an agency, referred by the clinic itself, or arriving by another path the
+clinic approves. No public surface
 may narrow the product by journey origin — that qualifier is retired, and the
 vocabulary for it belongs only in the acceptance matrix that forbids it.
 
-That breadth is about scope, never about supply. Natalyx does not source,
-screen, rank, match, recruit or supply carriers, and is not a consumer
-marketplace. Never present it as one.
+Natalyx supports clinic-directed carrier discovery and referral workflows. It
+is not a direct-to-consumer marketplace: clinics remain responsible for
+screening, clinical eligibility and final decisions, and Natalyx does not
+automatically rank or select carriers.
+
+Do not restate this as a blanket denial that Natalyx will ever help source or
+find carriers - that conflicts with the clinic-led direction. Equally, do not
+write copy claiming automated matching exists today. Neither pole is accurate;
+the boundary above is.
 
 Capability that does not exist yet is stated as intent — *built to*, *designed
 to*, *helps clinics*. "Designed to fit into clinic operations" and "built to

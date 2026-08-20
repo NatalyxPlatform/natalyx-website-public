@@ -13,20 +13,23 @@ export function WhyNatalyx() {
               Patients trust the clinic, then get handed to an intermediary.
             </h2>
             <p className="mx-auto max-w-[700px] text-base leading-8 text-navy-light">
-              Referring a surrogacy journey out has always been the practical
-              option, because building the coordination in-house meant taking on
-              the work an agency does by hand. Whether the carrier is someone
-              the intended parents already know, someone referred through an
-              agency, or someone who arrives by another path the clinic
-              approves, that relay is the same: scheduling, record chasing,
-              repeated explanations, and handoffs to counsel, counselors, and
-              other professionals.
+              Handing a surrogacy journey to an agency has always been the
+              practical option, because coordinating it inside the practice
+              meant taking on the work that agency does by hand. Whether the
+              carrier is someone the intended parents already know, someone
+              referred through an agency, someone the clinic itself referred, or
+              someone who arrives by another path the clinic approves, that
+              relay is the same: scheduling, record chasing, repeated
+              explanations, and handoffs to counsel, counselors, and other
+              professionals.
             </p>
             <p className="mx-auto mt-5 max-w-[700px] text-base leading-8 text-navy-light">
-              Automating that relay is what removes the reason to refer out. The
-              journey stays with the clinicians the patient already trusts, at
-              the point in their care where continuity matters most, and the
-              overhead of running it stays small.
+              Automating that relay is what lets the clinic keep coordinating
+              the journey instead of handing it over. Outside professionals
+              still participate — what changes is that the journey runs through
+              the clinic&apos;s workflow, at the point in a patient&apos;s care
+              where continuity matters most, and the overhead of running it
+              stays small.
             </p>
             <p className="mx-auto mt-5 max-w-[700px] text-base leading-8 text-navy-light">
               Natalyx is designed to work as an extension of your clinic&apos;s

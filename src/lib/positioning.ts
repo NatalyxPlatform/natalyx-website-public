@@ -40,24 +40,24 @@ export const SITE_TITLE =
 export const SITE_DESCRIPTION =
   "Natalyx automates the manual relay a surrogacy agency runs by hand — " +
   "patient preparation, appointments, records, provider handoffs and shared " +
-  "journey context — so fertility clinics can run surrogacy journeys " +
-  "in-house, however the carrier entered the journey. The clinic stays the " +
-  "coordinating center, and the clinic and its providers keep full " +
-  "administrative control.";
+  "journey context — so fertility clinics can coordinate surrogacy journeys " +
+  "through their own workflow, however the carrier entered the journey. " +
+  "Outside providers still take part; the clinic stays the coordinating " +
+  "center, and the clinic and its providers keep full administrative control.";
 
 /** Shorter, for cards where only the first two lines survive the crop. */
 export const SOCIAL_DESCRIPTION =
   "Run every surrogacy journey through one clinic-led workflow. Natalyx " +
-  "automates the agency's manual coordination and runs it inside the clinic, " +
-  "so journeys stay with the practice the patient already trusts. Register " +
-  "your clinic's interest.";
+  "automates the agency's manual coordination so the journey runs through " +
+  "the practice the patient already trusts, rather than an intermediary. " +
+  "Register your clinic's interest.";
 
 export const CLINIC_INTEREST_TITLE = "Register your clinic's interest — Natalyx";
 
 export const CLINIC_INTEREST_DESCRIPTION =
   "Tell Natalyx about your clinic. Natalyx automates the agency's manual " +
-  "coordination and runs surrogacy journeys inside the clinic: four details, " +
-  "no patient information.";
+  "coordination and keeps surrogacy journeys running through the clinic: " +
+  "four details, no patient information.";
 
 /**
  * Structured data for the landing page.

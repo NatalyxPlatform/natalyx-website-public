@@ -15,8 +15,8 @@ export function CTABanner() {
               id="cta-heading"
               className="mb-4 text-[1.9rem] font-medium leading-tight text-navy sm:text-4xl md:text-[2.35rem]"
             >
-              See what running surrogacy in-house would look like for your
-              clinic.
+              See what running surrogacy through your own workflow would look
+              like.
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={90}>

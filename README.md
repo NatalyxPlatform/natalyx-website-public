@@ -24,8 +24,20 @@ product. It is designed to fit into clinic operations and to connect with
 existing clinic systems as integrations are enabled.
 
 Scope is the clinic's whole surrogacy population, **however a carrier entered
-the journey**. That breadth never implies supply: Natalyx does not source,
-screen, rank, match, recruit or supply carriers.
+the journey** - known to the intended parents, agency-referred, clinic-referred
+or another clinic-approved path.
+
+Natalyx supports clinic-directed carrier discovery and referral workflows. It
+is not a direct-to-consumer marketplace: clinics remain responsible for
+screening, clinical eligibility and final decisions, and Natalyx does not
+automatically rank or select carriers. Do not restate that as a blanket denial
+that Natalyx will ever help source carriers, and do not claim automated
+matching exists today - neither is accurate.
+
+"In-house" means the coordination runs through the clinic's workflow. It does
+not mean every service happens inside the clinic, and it does not mean no
+outside referral occurs: attorneys, evaluators, doulas, agencies and other
+outside providers still take part.
 
 `docs/acceptance-all-surrogacy-positioning.md` is the authority for what the
 copy must mean, and `tests/positioning.test.ts` enforces it.
@@ -38,9 +50,9 @@ copy must mean, and `tests/positioning.test.ts` enforces it.
   explains a journey to a clinic. That is education, not acquisition, and it
   should not be stripped out. They are people in a journey, never capacity,
   supply or inventory.
-- Never present Natalyx as a matching marketplace, a consumer surrogacy
-  service, or an online agency owning clinical, legal, escrow, payment,
-  eligibility, or matching decisions.
+- Never present Natalyx as a direct-to-consumer marketplace, or as an online
+  agency owning clinical, legal, escrow, payment or eligibility decisions.
+  Screening, clinical eligibility and final decisions stay with the clinic.
 - Do not claim Natalyx replaces clinic staff, medical judgment, attorneys,
   mental-health evaluators, other providers, or the clinic's EHR.
 - Do not claim PHI readiness, clinical validation, deployment, general

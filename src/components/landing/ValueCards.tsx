@@ -6,8 +6,8 @@ const benefits = [
     body: "Preparation steps, reminders, and status chasing that an agency works through by hand are automated, so clinicians can spend their time on medical treatment.",
   },
   {
-    title: "Journeys stay in-house",
-    body: "A practice can run the surrogacy journey itself rather than referring patients out at the moment they most need continuity — and keep the revenue that referral takes with it.",
+    title: "Coordination stays with the clinic",
+    body: "Outside providers still take part in the journey. What changes is that the practice keeps coordinating it, at the moment patients most need continuity, rather than handing them to an intermediary who does.",
   },
   {
     title: "Handoffs carry their context",
@@ -70,11 +70,13 @@ export function ValueCards() {
             </p>
             <p className="mx-auto mt-5 max-w-[760px] text-base leading-8 text-navy-light">
               Natalyx automates that relay and runs it inside the practice, with
-              nearly no administrative overhead. A clinic can take the surrogacy
-              journey in-house instead of referring patients out — keeping the
-              patients who already trust it, and the revenue that leaves with
-              them. The clinic stays the coordinating center throughout, and
-              keeps full administrative control of the journey.
+              nearly no administrative overhead. The journey stays coordinated
+              through the clinic&apos;s own workflow rather than being handed to
+              an intermediary — keeping the patients who already trust it, and
+              the revenue that leaves with them. Attorneys, evaluators, doulas,
+              agencies and other outside providers still take part; what changes
+              is who the journey runs through. The clinic stays the coordinating
+              center throughout, and keeps full administrative control of it.
             </p>
           </div>
         </ScrollReveal>

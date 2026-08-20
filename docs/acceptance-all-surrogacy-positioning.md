@@ -45,13 +45,28 @@ Three claims sit underneath that, and every row below defends one of them:
 3. **Honesty.** Everything forward-looking is stated as *built to* / *designed
    to*. No completed integration, adoption, deployment or readiness is claimed.
 
-## What this repositioning is *not*
+## Two boundaries, and neither pole
 
-Natalyx does not recruit, source, screen, rank, match or supply gestational
-carriers, and does not become a consumer marketplace by widening its scope.
-Broader scope means "the clinic's whole surrogacy population", never "we find
-you a surrogate". Participant language stays respectful: carriers are people in
-a journey, never capacity, inventory or supply.
+**Carrier discovery.** Natalyx supports clinic-directed carrier discovery and
+referral workflows. It is not a direct-to-consumer marketplace: clinics remain
+responsible for screening, clinical eligibility and final decisions, and
+Natalyx does not automatically rank or select carriers.
+
+Both poles are wrong and both are guarded. A blanket denial that Natalyx will
+ever help source or find carriers conflicts with the clinic-led direction - the
+site carried one, and it was removed. A claim that automated matching exists
+today is not something this repository can evidence. The boundary above is
+narrower than either and is the only formulation the docs may state.
+
+**In-house.** "In-house" describes where the *coordination* runs: through the
+clinic's own workflow. It does not mean every service happens inside the
+clinic, and it does not mean no outside referral occurs. Attorneys, evaluators,
+doulas, agencies and other outside providers still take part; what changes is
+who the journey runs through. Copy claiming otherwise - "entirely in-house",
+"no outside referrals" - is forbidden.
+
+Participant language stays respectful throughout: carriers are people in a
+journey, never capacity, inventory or supply.
 
 ## Matrix
 
@@ -64,7 +79,9 @@ a journey, never capacity, inventory or supply.
 | P4b | Any reader | Landing copy | Read the clinic-systems claim | Forward-looking wording appears somewhere in the landing copy (it lives in the FAQ, not the mission card) | Requiring one named component to carry it, which pins the guard to a draft rather than the requirement | `src/components/landing/**` | `source` |
 | P5 | Clinic visitor | On `/` | Read how-it-works | The five coordination areas stay visible: shared journey context, participant preparation, provider handoffs, records and appointments, clinic-branded participant contact | A step implying Natalyx makes clinical, legal or eligibility decisions | `src/components/landing/HowItWorks.tsx` | `source`, `browser` |
 | P6 | Clinic visitor | On `/` | Look for the breadth claim | The scope claim appears on the hero ("every surrogacy journey"), in the problem section (known / agency-referred / another clinic-approved path) and in the metadata ("however the carrier entered") | The site saying nothing about whether a journey's origin changes the answer | `Hero.tsx`, `WhyNatalyx.tsx`, `positioning.ts` | `source`, `browser` |
-| P7 | Any reader | Whole repo | Search for matching claims | Natalyx is never positioned as sourcing, screening, ranking or matching carriers, and never as a marketplace, matching service or agency | Any affirmative matching or sourcing claim | repo-wide | `source` |
+| P7 | Any reader | Whole repo | Search for matching claims | Natalyx is never positioned as a direct-to-consumer marketplace or as automatically ranking or selecting carriers | Any affirmative automated-matching claim | repo-wide | `source` |
+| P26 | Any reader | Whole repo | Read the in-house claim | Outside providers are named as still taking part, and the governing docs define in-house as the coordination running through the clinic | "entirely in-house", "no outside referrals", "every service inside the clinic" | repo-wide | `source`, `browser` |
+| P27 | Any reader | Governing docs | Read the carrier-discovery boundary | The boundary appears verbatim in `AGENTS.md` and `README.md`, with screening, clinical eligibility and final decisions left to the clinic | A blanket denial of ever sourcing carriers, or a claim that automated matching exists today | `AGENTS.md`, `README.md` | `source` |
 | P8 | Clinic visitor | On `/` | Open the FAQ | An answer on clinic systems using forward-looking wording only, plus an explicit statement that Natalyx does not replace the EHR | "fully integrated with your EHR", or any completed/universal integration claim | `src/components/landing/FAQ.tsx` | `source`, `browser` |
 | P9 | Any reader | Whole repo | Search for wedge vocabulary | Zero occurrences of `BYOS`, `bring your own surrogate`, `known surrogate`, `known carrier`, `already found your surrogate` in `src/**`, `README.md`, `AGENTS.md` and the docs set | The limitation surviving in a comment, a doc, or a collapsed/hidden element | repo-wide | `source` |
 | P10 | Any reader | Whole repo | Search for marketplace vocabulary | No sentence positions Natalyx *as* a marketplace, matching service or agency; negations ("is not a marketplace") are permitted and expected | An affirmative marketplace/matching/agency identity claim | repo-wide | `source` |
@@ -107,21 +124,28 @@ section was merged into them. The instruction to keep patient, medical, legal
 and case information out of those channels moved with them — the same boundary
 the interest form states, applied to the direct channels the cards open.
 
-### Change note: P7 no longer requires an explicit denial
+### Change note: the blanket denial was wrong, and is gone
 
-The FAQ carried an answer stating that Natalyx does not source, screen, rank or
-match carriers and is not a consumer marketplace. It was removed at the
-author's instruction, along with the "which surrogacy journeys" and "do we stop
-referring out" entries.
+Three FAQ entries were removed at the author's instruction - "which surrogacy
+journeys", "does Natalyx match, recruit or supply carriers", and "do we stop
+referring out" - because the claims in them were wrong, not merely surplus.
 
-What survives is the enforceable half: no surface may *claim* matching, and
-those guards are mutation-tested. What is gone is the site volunteering the
-distinction. That matters more here than it usually would, because the source
-pitch deck describes the product as "an automated surrogacy agency" and lists
-"Find surrogates" as a product step. A reader arriving with that framing now
-has nothing on the page that separates automating an agency's coordination from
-performing an agency's matching. Recorded here rather than argued: it is a
-product decision, not a defect, but it is the one place the site drew that line.
+The correction, per the author:
+
+- The **blanket denial** that Natalyx will never help source, screen, rank,
+  match, recruit or supply carriers is retired. It conflicted with the
+  clinic-led direction. It is replaced by the carrier-discovery boundary above,
+  not by a claim that automated matching exists.
+- **Journey-origin breadth stays.** Supporting known, agency-referred,
+  clinic-referred and other clinic-approved paths is the central
+  repositioning, so the claim moved to the hero, the problem section and the
+  metadata rather than being deleted with the FAQ entry.
+- **In-house stays, clarified.** It describes the coordination, not the
+  location of every service, and never implies that outside referral stops.
+
+Whether Natalyx will source or match carriers is undecided, so the guards still
+block that language: nothing can claim it by accident, and lifting the block is
+a one-line change when the answer is known.
 
 ## Rows discharged by tests that already exist
 
