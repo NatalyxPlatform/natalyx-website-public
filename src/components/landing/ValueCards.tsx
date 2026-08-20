@@ -7,7 +7,7 @@ const benefits = [
   },
   {
     title: "Coordination stays with the clinic",
-    body: "Outside providers still take part in the journey. What changes is that the practice keeps coordinating it, at the moment patients most need continuity, rather than handing them to an intermediary who does.",
+    body: "Outside providers still take part in the journey. What changes is that the practice keeps coordinating it, at the moment patients most need continuity.",
   },
   {
     title: "Handoffs carry their context",
@@ -84,9 +84,14 @@ export function ValueCards() {
         <ul className="mx-auto mt-16 grid max-w-[980px] list-none grid-cols-1 gap-5 md:grid-cols-2">
           {benefits.map((benefit, index) => {
             const styles = cardStyles[index] || cardStyles[0];
+            // h-full has to run the whole way down. The grid stretches the
+            // <li>, but ScrollReveal renders a plain div in between: without
+            // h-full on it the card's own h-full resolves against a wrapper
+            // only as tall as its content, so cards size to their copy and the
+            // rows come out ragged.
             return (
-              <li key={benefit.title}>
-                <ScrollReveal delay={80 + index * 90}>
+              <li key={benefit.title} className="h-full">
+                <ScrollReveal className="h-full" delay={80 + index * 90}>
                   <article
                     className={`group relative block h-full overflow-hidden rounded-2xl border-2 border-line bg-white px-8 py-9 transition duration-150 ${styles.hoverBorder} before:absolute before:-right-14 before:-top-14 before:h-40 before:w-40 before:rounded-full before:transition-transform before:duration-200 hover:before:scale-110 ${styles.hoverBgBlob}`}
                   >
